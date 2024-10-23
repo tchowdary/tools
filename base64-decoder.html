@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Base64 and Hex Converter</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #1e1e1e;
+            color: #e0e0e0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .container {
+            background-color: #2d2d2d;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            width: 90%;
+            max-width: 600px;
+        }
+        h1, h2 {
+            text-align: center;
+            color: #ffffff;
+        }
+        input, button {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: none;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        input {
+            background-color: #3a3a3a;
+            color: #ffffff;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #444;
+            background-color: #3a3a3a;
+            color: #ffffff;
+            word-wrap: break-word;
+            min-height: 50px;
+        }
+        .copy-button {
+            background-color: #007bff;
+            margin-top: 10px;
+        }
+        .copy-button:hover {
+            background-color: #0056b3;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding-bottom: 30px;
+            border-bottom: 1px solid #444;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Base64 and Hex Converter</h1>
+        
+        <div class="section">
+            <h2>Base64 to Hex</h2>
+            <input type="text" id="base64Input" placeholder="Enter base64 encoded string">
+            <button onclick="handleBase64ToHex()">Decode to Hex</button>
+            <div id="hexResult" class="result"></div>
+            <button onclick="copyToClipboard('hexResult')" class="copy-button">Copy to Clipboard</button>
+        </div>
+        
+        <div class="section">
+            <h2>Hex to Base64</h2>
+            <input type="text" id="hexInput" placeholder="Enter hex values (e.g., 0xFC 0x00 0x28 0x07 0xFF)">
+            <button onclick="handleHexToBase64()">Encode to Base64</button>
+            <div id="base64Result" class="result"></div>
+            <button onclick="copyToClipboard('base64Result')" class="copy-button">Copy to Clipboard</button>
+        </div>
+    </div>
+
+    <script>
+        function decodeBase64ToHex(encodedString) {
+            try {
+                const binaryString = atob(encodedString);
+                const hexArray = Array.from(binaryString).map(char => {
+                    const hex = char.charCodeAt(0).toString(16).padStart(2, '0');
+                    return '0x' + hex.toUpperCase();
+                });
+                return hexArray.join(' ');
+            } catch (error) {
+                return `Error decoding: ${error.message}`;
+            }
+        }
+
+        function encodeHexToBase64(hexString) {
+            try {
+                // Remove '0x' prefixes and spaces, then create byte array
+                const bytes = hexString.replace(/0x/g, '').replace(/\s/g, '').match(/.{1,2}/g).map(byte => parseInt(byte, 16));
+                const byteArray = new Uint8Array(bytes);
+                
+                // Convert byte array to base64
+                const base64 = btoa(String.fromCharCode.apply(null, byteArray));
+                return base64;
+            } catch (error) {
+                return `Error encoding: ${error.message}`;
+            }
+        }
+
+        function handleBase64ToHex() {
+            const input = document.getElementById('base64Input').value;
+            const result = decodeBase64ToHex(input);
+            document.getElementById('hexResult').textContent = result;
+        }
+
+        function handleHexToBase64() {
+            const input = document.getElementById('hexInput').value;
+            const result = encodeHexToBase64(input);
+            document.getElementById('base64Result').textContent = result;
+        }
+
+        function copyToClipboard(elementId) {
+            const resultText = document.getElementById(elementId).textContent;
+            navigator.clipboard.writeText(resultText).then(() => {
+                alert('Copied to clipboard!');
+            }).catch(err => {
+                console.error('Failed to copy: ', err);
+            });
+        }
+    </script>
+</body>
+</html>
