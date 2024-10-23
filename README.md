@@ -1,8 +1,10 @@
 # Tools
 
-Is my text secure?
 
-Yes, all text is processed client-side and never leaves your browser.
+> [!NOTE]
+> Is my text secure?
+> 
+> Yes, all text is processed client-side and never leaves your browser.
 
 ## JSON Formatter
 https://gistpreview.github.io/?3f5b536312f1b852483fe62f96cbbe77
