@@ -10,44 +10,50 @@
             background: #0f172a;
             color: white;
         }
-        h1 {
-            text-align: center;
-            color: white;
-            font-size: 2rem;
-            margin-bottom: 2rem;
-        }
         .container {
             background: #1e293b;
             border-radius: 8px;
-            padding: 20px;
+            padding: 16px;
             margin-bottom: 20px;
+        }
+        .controls {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 0 8px;
+            margin-bottom: 16px;
+        }
+        .textarea-container {
+            background: #2b3a4f;
+            border-radius: 8px;
+            padding: 8px;
+            margin: 0 8px;
         }
         textarea {
             width: 100%;
             min-height: 800px;
-            margin: 10px 0;
-            padding: 20px;
+            padding: 8px;
             font-family: monospace;
             border: none;
-            border-radius: 4px;
             font-size: 16px;
             line-height: 1.6;
             tab-size: 4;
-            background: #334155;
+            background: #2b3a4f;
             color: white;
+            resize: vertical;
+            outline: none;
         }
         textarea::placeholder {
-            color: #94a3b8;
+            color: #64748b;
         }
         button {
             background: #3b82f6;
             color: white;
             border: none;
-            padding: 8px 16px;
+            padding: 6px 16px;
             border-radius: 4px;
             cursor: pointer;
-            margin-right: 8px;
-            font-size: 15px;
+            font-size: 14px;
         }
         button:hover {
             background: #2563eb;
@@ -56,27 +62,25 @@
             color: #f87171;
             margin-top: 10px;
             font-size: 16px;
+            padding: 0 8px;
         }
         #spaces {
-            width: 60px;
-            padding: 8px;
-            margin-right: 8px;
-            font-size: 15px;
-            background: #334155;
+            width: 40px;
+            padding: 6px;
+            font-size: 14px;
+            background: #2b3a4f;
             border: none;
             border-radius: 4px;
             color: white;
+            text-align: center;
         }
         label {
             color: #94a3b8;
-        }
-        .controls {
-            margin-bottom: 1rem;
+            font-size: 14px;
         }
     </style>
 </head>
 <body>
-    <h1>JSON Formatter</h1>
     <div class="container">
         <div class="controls">
             <input type="number" id="spaces" value="2" min="0" max="8">
@@ -84,7 +88,9 @@
             <button onclick="formatJSON()">Format</button>
             <button onclick="minifyJSON()">Minify</button>
         </div>
-        <textarea id="input" placeholder="Paste your JSON here..."></textarea>
+        <div class="textarea-container">
+            <textarea id="input" placeholder="Paste your JSON here..."></textarea>
+        </div>
         <div id="error" class="error"></div>
     </div>
 
