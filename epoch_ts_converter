@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Epoch Timestamp Converter</title>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            background: #0f172a;
+            color: #e2e8f0;
+            margin: 0;
+            padding: 20px;
+            line-height: 1.5;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: #1e293b;
+            padding: 20px;
+            border-radius: 8px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #f8fafc;
+            margin-bottom: 20px;
+        }
+
+        .section {
+            background: #334155;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+        }
+
+        .current-time {
+            font-family: monospace;
+            font-size: 1.1em;
+            white-space: pre-wrap;
+        }
+
+        input {
+            background: #1e293b;
+            border: 1px solid #475569;
+            color: #f8fafc;
+            padding: 8px;
+            border-radius: 4px;
+            margin-right: 8px;
+            font-size: 1em;
+        }
+
+        button {
+            background: #2563eb;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #1d4ed8;
+        }
+
+        .flex {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+
+        pre {
+            white-space: pre-wrap;
+            margin: 10px 0;
+        }
+
+        .copy-button {
+            background: #475569;
+            font-size: 0.9em;
+        }
+
+        [data-frozen="true"] #freeze-button {
+            background: #dc2626;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Epoch Timestamp Converter</h1>
+
+        <div class="section">
+            <div class="flex">
+                <span>Current Time</span>
+                <button id="freeze-button" onclick="toggleFreeze()">Freeze</button>
+            </div>
+            <div id="current-time" class="current-time"></div>
+            <button class="copy-button" onclick="copyCurrentTime()">Copy</button>
+        </div>
+
+        <div class="section">
+            <h3>Timestamp to Date</h3>
+            <div class="flex">
+                <input type="text" id="epoch-input" placeholder="Enter epoch timestamp">
+                <button onclick="convertEpochToDate()">Convert</button>
+            </div>
+            <div id="date-result"></div>
+        </div>
+
+        <div class="section">
+            <h3>Date to Timestamp</h3>
+            <div class="flex">
+                <input type="datetime-local" id="date-input">
+                <button onclick="convertDateToEpoch()">Convert</button>
+            </div>
+            <div id="epoch-result"></div>
+        </div>
+    </div>
+
+    <script>
+        let isFrozen = false;
+        let currentTimeInterval;
+
+        function updateCurrentTime() {
+            if (isFrozen) return;
+            
+            const now = new Date();
+            const epochTime = now.getTime();
+            const format = 'milliseconds';
+            
+            const output = `Format detected: ${format}
+---
+Greenwich Mean Time: ${now.toUTCString()}
+Your time zone:      ${now.toString()}`;
+
+            document.getElementById('current-time').textContent = epochTime + '\n' + output;
+        }
+
+        function toggleFreeze() {
+            isFrozen = !isFrozen;
+            const button = document.getElementById('freeze-button');
+            button.textContent = isFrozen ? 'Resume' : 'Freeze';
+            document.body.dataset.frozen = isFrozen;
+        }
+
+        function formatDateTime(date) {
+            const format = date.getTime().toString().length > 10 ? 'milliseconds' : 'seconds';
+            return `Format detected: ${format}
+---
+Greenwich Mean Time: ${date.toUTCString()}
+Your time zone:      ${date.toString()}`;
+        }
+
+        function convertEpochToDate() {
+            const input = document.getElementById('epoch-input').value;
+            
+            if (!input) return;
+            
+            const timestamp = parseInt(input);
+            if (isNaN(timestamp)) {
+                document.getElementById('date-result').innerHTML = 'Invalid input';
+                return;
+            }
+
+            const milliseconds = input.length > 10 ? timestamp : timestamp * 1000;
+            const date = new Date(milliseconds);
+            const result = formatDateTime(date);
+
+            const resultDiv = document.getElementById('date-result');
+            resultDiv.innerHTML = `<pre>${result}</pre>
+                <button class="copy-button" onclick="copyText('${result}')">Copy</button>`;
+        }
+
+        function convertDateToEpoch() {
+            const input = document.getElementById('date-input').value;
+            
+            if (!input) return;
+            
+            const date = new Date(input);
+            if (isNaN(date.getTime())) {
+                document.getElementById('epoch-result').innerHTML = 'Invalid date';
+                return;
+            }
+
+            const epoch = date.getTime();
+            const resultDiv = document.getElementById('epoch-result');
+            resultDiv.innerHTML = `<pre>${epoch}</pre>
+                <button class="copy-button" onclick="copyText('${epoch}')">Copy</button>`;
+        }
+
+        function copyText(text) {
+            navigator.clipboard.writeText(text)
+                .then(() => {
+                    // Could add copy feedback here if desired
+                })
+                .catch(err => console.error('Failed to copy:', err));
+        }
+
+        function copyCurrentTime() {
+            const currentTime = document.getElementById('current-time').textContent;
+            copyText(currentTime);
+        }
+
+        // Start the current time update
+        updateCurrentTime();
+        currentTimeInterval = setInterval(updateCurrentTime, 1000);
+    </script>
+</body>
+</html>
