@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 0 20px;
+            background: #0f172a;
+            color: white;
+        }
+        h1 {
+            text-align: center;
+            color: white;
+            font-size: 2rem;
+            margin-bottom: 2rem;
+        }
+        .container {
+            background: #1e293b;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        textarea {
+            width: 100%;
+            min-height: 800px;
+            margin: 10px 0;
+            padding: 20px;
+            font-family: monospace;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            line-height: 1.6;
+            tab-size: 4;
+            background: #334155;
+            color: white;
+        }
+        textarea::placeholder {
+            color: #94a3b8;
+        }
+        button {
+            background: #3b82f6;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 8px;
+            font-size: 15px;
+        }
+        button:hover {
+            background: #2563eb;
+        }
+        .error {
+            color: #f87171;
+            margin-top: 10px;
+            font-size: 16px;
+        }
+        #spaces {
+            width: 60px;
+            padding: 8px;
+            margin-right: 8px;
+            font-size: 15px;
+            background: #334155;
+            border: none;
+            border-radius: 4px;
+            color: white;
+        }
+        label {
+            color: #94a3b8;
+        }
+        .controls {
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <h1>JSON Formatter</h1>
+    <div class="container">
+        <div class="controls">
+            <input type="number" id="spaces" value="2" min="0" max="8">
+            <label for="spaces">Spaces</label>
+            <button onclick="formatJSON()">Format</button>
+            <button onclick="minifyJSON()">Minify</button>
+        </div>
+        <textarea id="input" placeholder="Paste your JSON here..."></textarea>
+        <div id="error" class="error"></div>
+    </div>
+
+    <script>
+        function formatJSON() {
+            const input = document.getElementById('input');
+            const error = document.getElementById('error');
+            const spaces = parseInt(document.getElementById('spaces').value);
+            
+            try {
+                const parsed = JSON.parse(input.value);
+                input.value = JSON.stringify(parsed, null, spaces);
+                error.textContent = '';
+            } catch (e) {
+                error.textContent = 'Invalid JSON: ' + e.message;
+            }
+        }
+
+        function minifyJSON() {
+            const input = document.getElementById('input');
+            const error = document.getElementById('error');
+            
+            try {
+                const parsed = JSON.parse(input.value);
+                input.value = JSON.stringify(parsed);
+                error.textContent = '';
+            } catch (e) {
+                error.textContent = 'Invalid JSON: ' + e.message;
+            }
+        }
+    </script>
+</body>
+</html>
