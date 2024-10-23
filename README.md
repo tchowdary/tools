@@ -16,3 +16,5 @@ https://gistpreview.github.io/?97a78bb5bb8dd5fafb16a885ab8f2b45
 ## JWT Decoder
 https://gistpreview.github.io/?060b0d0375f6844e47138db665949f12
 
+## Text Diff
+https://gistpreview.github.io/?e96ecdb4e05b9a7cd810c22c426fcb9d
