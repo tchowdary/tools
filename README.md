@@ -1,5 +1,4 @@
-# tools
-Assorted tools
+# Tools
 
 ## JSON Formatter
 https://gistpreview.github.io/?3f5b536312f1b852483fe62f96cbbe77
