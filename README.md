@@ -1,6 +1,9 @@
 # tools
 Assorted tools
 
+## JSON Formatter
+https://gistpreview.github.io/?3f5b536312f1b852483fe62f96cbbe77
+
 ## Base64 and Hex Converter
 https://gistpreview.github.io/?a99aa91cafe640cfa580864236a06529
 
