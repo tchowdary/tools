@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Base64 Encoder/Decoder</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background-color: #0f1216;
+            color: #e0e0e0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .container {
+            background-color: #1a2027;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+            width: 90%;
+            max-width: 900px;
+        }
+        h1 {
+            text-align: left;
+            color: #ffffff;
+            font-weight: 500;
+            margin-bottom: 8px;
+            font-size: 24px;
+        }
+        .subtitle {
+            color: #94a3b8;
+            font-size: 14px;
+            margin-bottom: 32px;
+        }
+        h2 {
+            text-align: left;
+            color: #ffffff;
+            font-weight: 500;
+            font-size: 18px;
+            margin-bottom: 16px;
+            margin-top: 0;
+        }
+        textarea {
+            width: 100%;
+            padding: 12px 16px;
+            margin: 8px 0;
+            border: 1px solid #2d3748;
+            border-radius: 6px;
+            box-sizing: border-box;
+            font-size: 14px;
+            background-color: #2d3748;
+            color: #ffffff;
+            transition: border-color 0.2s ease;
+            font-family: 'Monaco', 'Consolas', monospace;
+            resize: vertical;
+            min-height: 120px;
+        }
+        textarea:focus {
+            outline: none;
+            border-color: #3b82f6;
+        }
+        textarea::placeholder {
+            color: #64748b;
+        }
+        button {
+            width: 100%;
+            padding: 12px 16px;
+            margin: 8px 0;
+            border-radius: 6px;
+            box-sizing: border-box;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+            border: none;
+            font-weight: 500;
+        }
+        .action-button {
+            background-color: #3b82f6;
+            color: white;
+        }
+        .action-button:hover {
+            background-color: #2563eb;
+        }
+        .copy-button {
+            background-color: #4b5563;
+            color: white;
+            margin-top: 0;
+        }
+        .copy-button:hover {
+            background-color: #374151;
+        }
+        .clear-button {
+            background-color: #6b7280;
+            color: white;
+            margin-top: 0;
+        }
+        .clear-button:hover {
+            background-color: #4b5563;
+        }
+        .section {
+            margin-bottom: 40px;
+            padding-bottom: 40px;
+            border-bottom: 1px solid #2d3748;
+        }
+        .section:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+        .button-group {
+            display: flex;
+            gap: 8px;
+        }
+        .button-group button {
+            flex: 1;
+        }
+        .error {
+            color: #ef4444;
+            font-size: 14px;
+            margin-top: 8px;
+            padding: 8px 12px;
+            background-color: rgba(239, 68, 68, 0.1);
+            border-radius: 6px;
+            border-left: 3px solid #ef4444;
+        }
+        .char-count {
+            color: #94a3b8;
+            font-size: 12px;
+            margin-top: 4px;
+            text-align: right;
+        }
+        .info-box {
+            background-color: #2d3748;
+            padding: 12px 16px;
+            border-radius: 6px;
+            margin-top: 24px;
+            border-left: 3px solid #3b82f6;
+        }
+        .info-box h3 {
+            margin-top: 0;
+            font-size: 14px;
+            color: #3b82f6;
+        }
+        .info-box p {
+            margin: 4px 0;
+            font-size: 13px;
+            color: #cbd5e1;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Base64 Encoder/Decoder</h1>
+        <div class="subtitle">Encode and decode text to and from Base64 format</div>
+
+        <div class="section">
+            <h2>Encode Text to Base64</h2>
+            <textarea id="textInput" placeholder="Enter plain text to encode..."></textarea>
+            <div class="char-count" id="textCharCount">0 characters</div>
+            <button onclick="encodeToBase64()" class="action-button">Encode to Base64</button>
+            <textarea id="encodedOutput" placeholder="Base64 encoded output will appear here..." readonly></textarea>
+            <div class="char-count" id="encodedCharCount">0 characters</div>
+            <div id="encodeError" class="error" style="display: none;"></div>
+            <div class="button-group">
+                <button onclick="copyToClipboard('encodedOutput')" class="copy-button">Copy Encoded</button>
+                <button onclick="clearSection('encode')" class="clear-button">Clear</button>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Decode Base64 to Text</h2>
+            <textarea id="base64Input" placeholder="Enter Base64 encoded string to decode..."></textarea>
+            <div class="char-count" id="base64CharCount">0 characters</div>
+            <button onclick="decodeFromBase64()" class="action-button">Decode from Base64</button>
+            <textarea id="decodedOutput" placeholder="Decoded text will appear here..." readonly></textarea>
+            <div class="char-count" id="decodedCharCount">0 characters</div>
+            <div id="decodeError" class="error" style="display: none;"></div>
+            <div class="button-group">
+                <button onclick="copyToClipboard('decodedOutput')" class="copy-button">Copy Decoded</button>
+                <button onclick="clearSection('decode')" class="clear-button">Clear</button>
+            </div>
+        </div>
+
+        <div class="info-box">
+            <h3>About Base64</h3>
+            <p>Base64 is a binary-to-text encoding scheme that represents binary data in an ASCII string format. It's commonly used for encoding data in emails, URLs, and web applications where binary data needs to be transmitted through text-based protocols.</p>
+        </div>
+    </div>
+
+    <script>
+        // Character count updates
+        document.getElementById('textInput').addEventListener('input', function() {
+            updateCharCount('textInput', 'textCharCount');
+        });
+        document.getElementById('base64Input').addEventListener('input', function() {
+            updateCharCount('base64Input', 'base64CharCount');
+        });
+
+        function updateCharCount(inputId, countId) {
+            const input = document.getElementById(inputId);
+            const count = document.getElementById(countId);
+            const length = input.value.length;
+            count.textContent = `${length.toLocaleString()} character${length !== 1 ? 's' : ''}`;
+        }
+
+        function encodeToBase64() {
+            const input = document.getElementById('textInput').value;
+            const output = document.getElementById('encodedOutput');
+            const errorDiv = document.getElementById('encodeError');
+
+            try {
+                if (!input) {
+                    errorDiv.textContent = 'Please enter some text to encode.';
+                    errorDiv.style.display = 'block';
+                    output.value = '';
+                    updateCharCount('encodedOutput', 'encodedCharCount');
+                    return;
+                }
+
+                // Encode to Base64 using btoa with UTF-8 support
+                const encoded = btoa(unescape(encodeURIComponent(input)));
+                output.value = encoded;
+                errorDiv.style.display = 'none';
+                updateCharCount('encodedOutput', 'encodedCharCount');
+            } catch (error) {
+                errorDiv.textContent = `Error encoding: ${error.message}`;
+                errorDiv.style.display = 'block';
+                output.value = '';
+                updateCharCount('encodedOutput', 'encodedCharCount');
+            }
+        }
+
+        function decodeFromBase64() {
+            const input = document.getElementById('base64Input').value;
+            const output = document.getElementById('decodedOutput');
+            const errorDiv = document.getElementById('decodeError');
+
+            try {
+                if (!input) {
+                    errorDiv.textContent = 'Please enter Base64 encoded text to decode.';
+                    errorDiv.style.display = 'block';
+                    output.value = '';
+                    updateCharCount('decodedOutput', 'decodedCharCount');
+                    return;
+                }
+
+                // Decode from Base64 using atob with UTF-8 support
+                const decoded = decodeURIComponent(escape(atob(input.trim())));
+                output.value = decoded;
+                errorDiv.style.display = 'none';
+                updateCharCount('decodedOutput', 'decodedCharCount');
+            } catch (error) {
+                errorDiv.textContent = `Error decoding: ${error.message}. Make sure the input is valid Base64.`;
+                errorDiv.style.display = 'block';
+                output.value = '';
+                updateCharCount('decodedOutput', 'decodedCharCount');
+            }
+        }
+
+        function copyToClipboard(elementId) {
+            const element = document.getElementById(elementId);
+            const text = element.value;
+
+            if (!text) {
+                alert('Nothing to copy!');
+                return;
+            }
+
+            navigator.clipboard.writeText(text).then(() => {
+                // Visual feedback
+                const originalBg = element.style.backgroundColor;
+                element.style.backgroundColor = '#1e40af';
+                setTimeout(() => {
+                    element.style.backgroundColor = originalBg;
+                }, 200);
+
+                alert('Copied to clipboard!');
+            }).catch(err => {
+                console.error('Failed to copy: ', err);
+                alert('Failed to copy to clipboard. Please try again.');
+            });
+        }
+
+        function clearSection(section) {
+            if (section === 'encode') {
+                document.getElementById('textInput').value = '';
+                document.getElementById('encodedOutput').value = '';
+                document.getElementById('encodeError').style.display = 'none';
+                updateCharCount('textInput', 'textCharCount');
+                updateCharCount('encodedOutput', 'encodedCharCount');
+            } else if (section === 'decode') {
+                document.getElementById('base64Input').value = '';
+                document.getElementById('decodedOutput').value = '';
+                document.getElementById('decodeError').style.display = 'none';
+                updateCharCount('base64Input', 'base64CharCount');
+                updateCharCount('decodedOutput', 'decodedCharCount');
+            }
+        }
+
+        // Initialize character counts
+        updateCharCount('textInput', 'textCharCount');
+        updateCharCount('encodedOutput', 'encodedCharCount');
+        updateCharCount('base64Input', 'base64CharCount');
+        updateCharCount('decodedOutput', 'decodedCharCount');
+
+        // Allow Enter key to trigger encoding/decoding
+        document.getElementById('textInput').addEventListener('keydown', function(e) {
+            if (e.ctrlKey && e.key === 'Enter') {
+                encodeToBase64();
+            }
+        });
+
+        document.getElementById('base64Input').addEventListener('keydown', function(e) {
+            if (e.ctrlKey && e.key === 'Enter') {
+                decodeFromBase64();
+            }
+        });
+    </script>
+</body>
+</html>
