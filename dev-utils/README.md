@@ -4,14 +4,30 @@ A lightweight collection of essential developer tools built with vanilla HTML, C
 
 ## Features
 
+### Core Tools
 - 📄 **JSON Parser & Formatter** - Parse, validate, format, and minify JSON data
-- 🔐 **Base64 Encoder** - Encode and decode Base64 strings (Coming soon)
-- 🔑 **JWT Decoder** - Decode and inspect JWT tokens (Coming soon)
-- **#** **Hash Generator** - Generate MD5, SHA-1, SHA-256 hashes (Coming soon)
-- 🆔 **UUID Generator** - Generate unique identifiers (Coming soon)
-- 🔗 **URL Encoder** - Encode and decode URLs (Coming soon)
-- 📊 **Text Compare** - Compare two text documents (Coming soon)
-- 🔍 **Regex Tester** - Test and validate regular expressions (Coming soon)
+  - Configurable indentation (0-8 spaces)
+  - Format and minify JSON
+  - Copy to clipboard
+  - Download formatted JSON
+  - Real-time validation with error messages
+
+### Coming Soon
+- 🔐 **Base64 Encoder** - Encode and decode Base64 strings
+- 🔑 **JWT Decoder** - Decode and inspect JWT tokens
+- **#** **Hash Generator** - Generate MD5, SHA-1, SHA-256 hashes
+- 🆔 **UUID Generator** - Generate unique identifiers
+- 🔗 **URL Encoder** - Encode and decode URLs
+- 📊 **Text Compare** - Compare two text documents
+- 🔍 **Regex Tester** - Test and validate regular expressions
+
+### UI Features
+- 🌓 **Dark/Light Mode** - Toggle between dark and light themes
+  - Smooth transitions between themes
+  - Persistent theme preference (localStorage)
+  - Applies to both sidebar and main content area
+- 🔍 **Search** - Quickly find tools in the sidebar
+- 📱 **Responsive Design** - Works on desktop and mobile devices
 
 ## Design Principles
 
