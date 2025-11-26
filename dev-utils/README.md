@@ -29,8 +29,17 @@ A lightweight collection of essential developer tools built with vanilla HTML, C
   - Relative time display (e.g., "5 minutes ago")
   - Copy any format to clipboard
 
+- 🔑 **JWT Decoder** - Decode, validate, and verify JWT tokens
+  - Real-time JWT parsing and validation
+  - Decode header and payload with JSON syntax highlighting
+  - Display decoded data in formatted JSON
+  - Optional signature verification interface
+  - Generate example JWT for testing
+  - Copy individual sections (header, payload, secret)
+  - Support for base64url decoding
+  - Error handling for malformed tokens
+
 ### Coming Soon
-- 🔑 **JWT Decoder** - Decode and inspect JWT tokens
 - **#** **Hash Generator** - Generate MD5, SHA-1, SHA-256 hashes
 - 🆔 **UUID Generator** - Generate unique identifiers
 - 🔗 **URL Encoder** - Encode and decode URLs
