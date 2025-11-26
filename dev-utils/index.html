@@ -4,546 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dev Utilities - Essential Tools</title>
-    <style>
-        :root {
-            /* Light Theme - Sidebar */
-            --sidebar-bg: #2d3748;
-            --sidebar-border: #4a5568;
-            --sidebar-text: #e2e8f0;
-            --sidebar-text-secondary: #a0aec0;
-            --sidebar-hover: #374151;
-            --sidebar-active: #1a202c;
-            --sidebar-input-bg: #1a202c;
-            --sidebar-input-border: #4a5568;
-            --sidebar-scrollbar-track: #1a202c;
-            --sidebar-scrollbar-thumb: #4a5568;
-            --sidebar-scrollbar-thumb-hover: #718096;
-
-            /* Light Theme - Main Content */
-            --main-bg: #f5f7fa;
-            --content-bg: #ffffff;
-            --content-text: #2d3748;
-            --content-text-secondary: #718096;
-            --content-border: #e2e8f0;
-            --panel-bg: #ffffff;
-            --panel-header-bg: #f7fafc;
-            --input-bg: #ffffff;
-            --input-border: #cbd5e0;
-            --input-text: #2d3748;
-            --input-placeholder: #a0aec0;
-
-            /* Buttons */
-            --btn-primary-bg: #2d3748;
-            --btn-primary-hover: #1a202c;
-            --btn-secondary-bg: #ffffff;
-            --btn-secondary-border: #cbd5e0;
-            --btn-secondary-hover-bg: #f7fafc;
-
-            /* Other elements */
-            --icon-btn-hover: #e2e8f0;
-            --error-bg: #fff5f5;
-            --error-border: #fc8181;
-            --error-text: #c53030;
-            --shadow: rgba(0, 0, 0, 0.1);
-        }
-
-        [data-theme="dark"] {
-            /* Dark Theme - Sidebar */
-            --sidebar-bg: #1a1a1a;
-            --sidebar-border: #2d2d2d;
-            --sidebar-text: #e5e5e5;
-            --sidebar-text-secondary: #999999;
-            --sidebar-hover: #2d2d2d;
-            --sidebar-active: #0a0a0a;
-            --sidebar-input-bg: #0a0a0a;
-            --sidebar-input-border: #2d2d2d;
-            --sidebar-scrollbar-track: #0a0a0a;
-            --sidebar-scrollbar-thumb: #2d2d2d;
-            --sidebar-scrollbar-thumb-hover: #404040;
-
-            /* Dark Theme - Main Content */
-            --main-bg: #0f0f0f;
-            --content-bg: #1a1a1a;
-            --content-text: #e5e5e5;
-            --content-text-secondary: #999999;
-            --content-border: #2d2d2d;
-            --panel-bg: #1a1a1a;
-            --panel-header-bg: #141414;
-            --input-bg: #0a0a0a;
-            --input-border: #2d2d2d;
-            --input-text: #e5e5e5;
-            --input-placeholder: #666666;
-
-            /* Buttons */
-            --btn-primary-bg: #4299e1;
-            --btn-primary-hover: #3182ce;
-            --btn-secondary-bg: #2d2d2d;
-            --btn-secondary-border: #404040;
-            --btn-secondary-hover-bg: #333333;
-
-            /* Other elements */
-            --icon-btn-hover: #2d2d2d;
-            --error-bg: #2d1a1a;
-            --error-border: #8b3a3a;
-            --error-text: #fc8181;
-            --shadow: rgba(0, 0, 0, 0.3);
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-            background: var(--main-bg);
-            color: var(--content-text);
-            height: 100vh;
-            overflow: hidden;
-            transition: background-color 0.3s ease, color 0.3s ease;
-        }
-
-        .app-container {
-            display: flex;
-            height: 100vh;
-        }
-
-        /* Sidebar Styles */
-        .sidebar {
-            width: 280px;
-            background: var(--sidebar-bg);
-            color: var(--sidebar-text);
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            transition: background-color 0.3s ease, color 0.3s ease;
-        }
-
-        .sidebar-header {
-            padding: 20px;
-            border-bottom: 1px solid var(--sidebar-border);
-            transition: border-color 0.3s ease;
-        }
-
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 18px;
-            font-weight: 600;
-            color: var(--sidebar-text);
-        }
-
-        .logo-icon {
-            width: 32px;
-            height: 32px;
-            background: #4299e1;
-            border-radius: 6px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 20px;
-        }
-
-        .subtitle {
-            font-size: 12px;
-            color: var(--sidebar-text-secondary);
-            margin-top: 4px;
-            transition: color 0.3s ease;
-        }
-
-        .search-box {
-            padding: 12px 20px;
-            border-bottom: 1px solid var(--sidebar-border);
-            transition: border-color 0.3s ease;
-        }
-
-        .search-input {
-            width: 100%;
-            padding: 8px 12px;
-            background: var(--sidebar-input-bg);
-            border: 1px solid var(--sidebar-input-border);
-            border-radius: 6px;
-            color: var(--sidebar-text);
-            font-size: 14px;
-            outline: none;
-            transition: all 0.3s ease;
-        }
-
-        .search-input::placeholder {
-            color: var(--sidebar-text-secondary);
-        }
-
-        .nav-section {
-            padding: 12px 0;
-        }
-
-        .nav-section-title {
-            padding: 8px 20px;
-            font-size: 11px;
-            font-weight: 600;
-            color: var(--sidebar-text-secondary);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            cursor: pointer;
-            user-select: none;
-            transition: color 0.3s ease;
-        }
-
-        .nav-section-title:hover {
-            color: var(--sidebar-text);
-        }
-
-        .collapse-icon {
-            transition: transform 0.2s;
-        }
-
-        .nav-section.collapsed .collapse-icon {
-            transform: rotate(-90deg);
-        }
-
-        .nav-section.collapsed .nav-items {
-            display: none;
-        }
-
-        .nav-items {
-            padding: 4px 0;
-        }
-
-        .nav-item {
-            padding: 10px 20px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 14px;
-            color: var(--sidebar-text);
-            transition: all 0.2s;
-        }
-
-        .nav-item:hover {
-            background: var(--sidebar-hover);
-        }
-
-        .nav-item.active {
-            background: var(--sidebar-active);
-            border-left: 3px solid #4299e1;
-        }
-
-        .nav-item-icon {
-            font-size: 16px;
-            width: 20px;
-            text-align: center;
-        }
-
-        /* Main Content Styles */
-        .main-content {
-            flex: 1;
-            overflow-y: auto;
-            background: var(--main-bg);
-            transition: background-color 0.3s ease;
-        }
-
-        .content-header {
-            background: var(--content-bg);
-            padding: 24px 32px;
-            border-bottom: 1px solid var(--content-border);
-            transition: all 0.3s ease;
-        }
-
-        .content-title {
-            font-size: 28px;
-            font-weight: 600;
-            color: var(--content-text);
-            margin-bottom: 4px;
-            transition: color 0.3s ease;
-        }
-
-        .content-description {
-            font-size: 14px;
-            color: var(--content-text-secondary);
-            transition: color 0.3s ease;
-        }
-
-        .content-body {
-            padding: 24px 32px;
-        }
-
-        .tool-section {
-            display: none;
-        }
-
-        .tool-section.active {
-            display: block;
-        }
-
-        /* Format Options */
-        .format-options {
-            background: var(--panel-bg);
-            padding: 20px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            box-shadow: 0 1px 3px var(--shadow);
-            transition: all 0.3s ease;
-        }
-
-        .format-options-title {
-            font-size: 16px;
-            font-weight: 600;
-            margin-bottom: 4px;
-            color: var(--content-text);
-            transition: color 0.3s ease;
-        }
-
-        .format-options-subtitle {
-            font-size: 13px;
-            color: var(--content-text-secondary);
-            margin-bottom: 16px;
-            transition: color 0.3s ease;
-        }
-
-        .options-row {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-            margin-bottom: 16px;
-        }
-
-        .option-group {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .option-label {
-            font-size: 14px;
-            color: var(--content-text);
-            transition: color 0.3s ease;
-        }
-
-        .indent-input {
-            width: 60px;
-            padding: 6px 10px;
-            border: 1px solid var(--input-border);
-            border-radius: 4px;
-            font-size: 14px;
-            text-align: center;
-            background: var(--input-bg);
-            color: var(--input-text);
-            transition: all 0.3s ease;
-        }
-
-        .button-group {
-            display: flex;
-            gap: 10px;
-        }
-
-        .btn {
-            padding: 8px 16px;
-            border: none;
-            border-radius: 6px;
-            font-size: 14px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.2s;
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .btn-primary {
-            background: var(--btn-primary-bg);
-            color: #fff;
-        }
-
-        .btn-primary:hover {
-            background: var(--btn-primary-hover);
-        }
-
-        .btn-secondary {
-            background: var(--btn-secondary-bg);
-            color: var(--content-text);
-            border: 1px solid var(--btn-secondary-border);
-        }
-
-        .btn-secondary:hover {
-            background: var(--btn-secondary-hover-bg);
-        }
-
-        /* Editor Panels */
-        .editor-container {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-            margin-bottom: 20px;
-        }
-
-        .editor-panel {
-            background: var(--panel-bg);
-            border-radius: 8px;
-            overflow: hidden;
-            box-shadow: 0 1px 3px var(--shadow);
-            transition: all 0.3s ease;
-        }
-
-        .editor-header {
-            padding: 12px 16px;
-            background: var(--panel-header-bg);
-            border-bottom: 1px solid var(--content-border);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            transition: all 0.3s ease;
-        }
-
-        .editor-title {
-            font-size: 14px;
-            font-weight: 600;
-            color: var(--content-text);
-            transition: color 0.3s ease;
-        }
-
-        .editor-subtitle {
-            font-size: 12px;
-            color: var(--content-text-secondary);
-            margin-top: 2px;
-            transition: color 0.3s ease;
-        }
-
-        .editor-actions {
-            display: flex;
-            gap: 8px;
-        }
-
-        .icon-btn {
-            padding: 6px;
-            background: transparent;
-            border: none;
-            cursor: pointer;
-            border-radius: 4px;
-            color: var(--content-text-secondary);
-            transition: all 0.2s;
-        }
-
-        .icon-btn:hover {
-            background: var(--icon-btn-hover);
-            color: var(--content-text);
-        }
-
-        .editor-body {
-            position: relative;
-        }
-
-        .code-editor {
-            width: 100%;
-            min-height: 500px;
-            padding: 16px;
-            border: none;
-            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
-            font-size: 13px;
-            line-height: 1.6;
-            resize: vertical;
-            outline: none;
-            background: var(--input-bg);
-            color: var(--input-text);
-            transition: all 0.3s ease;
-        }
-
-        .code-editor::placeholder {
-            color: var(--input-placeholder);
-        }
-
-        /* Error Message */
-        .error-message {
-            background: var(--error-bg);
-            border: 1px solid var(--error-border);
-            border-radius: 6px;
-            padding: 12px 16px;
-            color: var(--error-text);
-            font-size: 14px;
-            margin-bottom: 20px;
-            display: none;
-            transition: all 0.3s ease;
-        }
-
-        .error-message.show {
-            display: block;
-        }
-
-        /* Theme Toggle */
-        .theme-toggle {
-            padding: 12px 20px;
-            margin-top: auto;
-            border-top: 1px solid var(--sidebar-border);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            font-size: 14px;
-            color: var(--sidebar-text);
-            cursor: pointer;
-            user-select: none;
-            transition: all 0.3s ease;
-        }
-
-        .theme-toggle:hover {
-            background: var(--sidebar-hover);
-        }
-
-        .theme-icon {
-            font-size: 18px;
-            transition: transform 0.3s ease;
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            .editor-container {
-                grid-template-columns: 1fr;
-            }
-
-            .sidebar {
-                width: 240px;
-            }
-        }
-
-        /* Scrollbar */
-        .sidebar::-webkit-scrollbar {
-            width: 6px;
-        }
-
-        .sidebar::-webkit-scrollbar-track {
-            background: var(--sidebar-scrollbar-track);
-        }
-
-        .sidebar::-webkit-scrollbar-thumb {
-            background: var(--sidebar-scrollbar-thumb);
-            border-radius: 3px;
-        }
-
-        .sidebar::-webkit-scrollbar-thumb:hover {
-            background: var(--sidebar-scrollbar-thumb-hover);
-        }
-
-        .main-content::-webkit-scrollbar {
-            width: 8px;
-        }
-
-        .main-content::-webkit-scrollbar-track {
-            background: var(--main-bg);
-        }
-
-        .main-content::-webkit-scrollbar-thumb {
-            background: var(--content-border);
-            border-radius: 4px;
-        }
-
-        .main-content::-webkit-scrollbar-thumb:hover {
-            background: var(--content-text-secondary);
-        }
-    </style>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <div class="app-container">
@@ -564,8 +25,6 @@
             </div>
 
             <nav>
-
-
                 <div class="nav-section">
                     <div class="nav-section-title" onclick="toggleSection(this)">
                         <span>▼ Developer Tools</span>
@@ -578,6 +37,10 @@
                         <div class="nav-item" data-tool="base64-encoder">
                             <span class="nav-item-icon">🔐</span>
                             <span>Base64 Encoder</span>
+                        </div>
+                        <div class="nav-item" data-tool="timestamp-converter">
+                            <span class="nav-item-icon">🕐</span>
+                            <span>Timestamp Converter</span>
                         </div>
                         <div class="nav-item" data-tool="jwt-decoder">
                             <span class="nav-item-icon">🔑</span>
@@ -659,9 +122,7 @@
                                     <div class="editor-subtitle">Paste your JSON data here</div>
                                 </div>
                                 <div class="editor-actions">
-                                    <button class="icon-btn" onclick="copyInput()" title="Copy">
-                                        📋
-                                    </button>
+                                    <button class="icon-btn" onclick="copyInput()" title="Copy">📋</button>
                                 </div>
                             </div>
                             <div class="editor-body">
@@ -676,12 +137,8 @@
                                     <div class="editor-subtitle">Formatted and validated JSON output</div>
                                 </div>
                                 <div class="editor-actions">
-                                    <button class="icon-btn" onclick="copyOutput()" title="Copy">
-                                        📋
-                                    </button>
-                                    <button class="icon-btn" onclick="downloadJSON()" title="Download">
-                                        ⬇️
-                                    </button>
+                                    <button class="icon-btn" onclick="copyOutput()" title="Copy">📋</button>
+                                    <button class="icon-btn" onclick="downloadJSON()" title="Download">⬇️</button>
                                 </div>
                             </div>
                             <div class="editor-body">
@@ -692,7 +149,7 @@
                 </div>
             </div>
 
-            <!-- Placeholder for other tools -->
+            <!-- Base64 Encoder/Decoder Tool -->
             <div class="tool-section" id="base64-encoder">
                 <div class="content-header">
                     <div class="content-title">🔐 Base64 Encoder/Decoder</div>
@@ -700,14 +157,10 @@
                 </div>
 
                 <div class="content-body">
-                    <!-- Mode Indicator -->
                     <div style="margin-bottom: 16px;">
-                        <span id="base64ModeLabel" class="btn btn-primary" style="padding: 6px 12px; font-size: 13px; cursor: default;">
-                            Encode Mode
-                        </span>
+                        <span id="base64ModeLabel" class="btn btn-primary" style="padding: 6px 12px; font-size: 13px; cursor: default;">Encode Mode</span>
                     </div>
 
-                    <!-- Operations Section -->
                     <div class="format-options">
                         <div class="format-options-title">Base64 Operations</div>
                         <div class="format-options-subtitle">Choose your operation and input data</div>
@@ -745,9 +198,7 @@
                                     <div class="editor-subtitle" id="base64InputSubtitle">Enter text or upload a file to encode to Base64</div>
                                 </div>
                                 <div class="editor-actions">
-                                    <button class="icon-btn" onclick="copyBase64Input()" title="Copy">
-                                        📋
-                                    </button>
+                                    <button class="icon-btn" onclick="copyBase64Input()" title="Copy">📋</button>
                                 </div>
                             </div>
                             <div class="editor-body">
@@ -762,12 +213,8 @@
                                     <div class="editor-subtitle" id="base64OutputSubtitle">Base64 encoded output</div>
                                 </div>
                                 <div class="editor-actions">
-                                    <button class="icon-btn" onclick="copyBase64Output()" title="Copy">
-                                        📋
-                                    </button>
-                                    <button class="icon-btn" onclick="downloadBase64()" title="Download">
-                                        ⬇️
-                                    </button>
+                                    <button class="icon-btn" onclick="copyBase64Output()" title="Copy">📋</button>
+                                    <button class="icon-btn" onclick="downloadBase64()" title="Download">⬇️</button>
                                 </div>
                             </div>
                             <div class="editor-body">
@@ -778,121 +225,273 @@
                 </div>
             </div>
 
+            <!-- Timestamp Converter Tool -->
+            <div class="tool-section" id="timestamp-converter">
+                <div class="content-header">
+                    <div class="content-title">🕐 Timestamp Converter</div>
+                    <div class="content-description">Convert between Unix timestamps and human-readable dates</div>
+                </div>
+
+                <div class="content-body">
+                    <!-- Current Time Display -->
+                    <div class="format-options" style="margin-bottom: 24px;">
+                        <div class="format-options-title">Current Time</div>
+                        <div class="format-options-subtitle">Current timestamp and date formats</div>
+                        
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 12px; margin-top: 16px;">
+                            <div style="background: var(--editor-bg); padding: 12px; border-radius: 6px;">
+                                <div style="font-size: 12px; color: var(--content-subtitle); margin-bottom: 6px;">Unix Timestamp (ms)</div>
+                                <div style="font-family: monospace; font-size: 14px; color: var(--content-text);" id="currentTimestampMs">-</div>
+                            </div>
+                            <div style="background: var(--editor-bg); padding: 12px; border-radius: 6px;">
+                                <div style="font-size: 12px; color: var(--content-subtitle); margin-bottom: 6px;">Unix Timestamp (s)</div>
+                                <div style="font-family: monospace; font-size: 14px; color: var(--content-text);" id="currentTimestampS">-</div>
+                            </div>
+                            <div style="background: var(--editor-bg); padding: 12px; border-radius: 6px;">
+                                <div style="font-size: 12px; color: var(--content-subtitle); margin-bottom: 6px;">ISO 8601</div>
+                                <div style="font-family: monospace; font-size: 14px; color: var(--content-text);" id="currentISO">-</div>
+                            </div>
+                            <div style="background: var(--editor-bg); padding: 12px; border-radius: 6px;">
+                                <div style="font-size: 12px; color: var(--content-subtitle); margin-bottom: 6px;">UTC</div>
+                                <div style="font-family: monospace; font-size: 14px; color: var(--content-text);" id="currentUTC">-</div>
+                            </div>
+                            <div style="background: var(--editor-bg); padding: 12px; border-radius: 6px;">
+                                <div style="font-size: 12px; color: var(--content-subtitle); margin-bottom: 6px;">Local Time</div>
+                                <div style="font-family: monospace; font-size: 14px; color: var(--content-text);" id="currentLocal">-</div>
+                            </div>
+                            <div style="background: var(--editor-bg); padding: 12px; border-radius: 6px;">
+                                <div style="font-size: 12px; color: var(--content-subtitle); margin-bottom: 6px;">Relative</div>
+                                <div style="font-family: monospace; font-size: 14px; color: var(--content-text);" id="currentRelative">Just now</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Conversion Tabs -->
+                    <div class="format-options">
+                        <div class="format-options-title">Convert Timestamp</div>
+                        <div class="format-options-subtitle">Convert between timestamp and date formats</div>
+
+                        <div style="display: flex; gap: 8px; margin-top: 16px; margin-bottom: 16px;">
+                            <button class="btn btn-primary" id="tabTimestampToDate" onclick="switchTimestampTab('timestampToDate')" style="flex: 1;">
+                                Timestamp → Date
+                            </button>
+                            <button class="btn btn-secondary" id="tabDateToTimestamp" onclick="switchTimestampTab('dateToTimestamp')" style="flex: 1;">
+                                Date → Timestamp
+                            </button>
+                        </div>
+
+                        <!-- Tab: Timestamp to Date -->
+                        <div id="timestampToDateTab" style="display: block;">
+                            <div style="margin-bottom: 16px;">
+                                <label style="display: block; font-size: 13px; color: var(--content-subtitle); margin-bottom: 8px;">Enter Unix Timestamp</label>
+                                <div style="display: flex; gap: 8px;">
+                                    <input type="text" id="timestampInput" placeholder="e.g., 1701234567 or 1701234567890" 
+                                           style="flex: 1; padding: 10px; background: var(--editor-bg); border: 1px solid var(--border-color); border-radius: 6px; color: var(--content-text); font-family: monospace;"
+                                           oninput="convertTimestampToDate()">
+                                    <button class="btn btn-secondary" onclick="useCurrentTimestamp()">Use Current</button>
+                                    <button class="btn btn-secondary" onclick="clearTimestampInput()">Clear</button>
+                                </div>
+                            </div>
+
+                            <div id="timestampResults" style="display: none;">
+                                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 12px;">
+                                    <div style="background: var(--editor-bg); padding: 12px; border-radius: 6px;">
+                                        <div style="font-size: 12px; color: var(--content-subtitle); margin-bottom: 6px;">ISO 8601</div>
+                                        <div style="font-family: monospace; font-size: 14px; color: var(--content-text); display: flex; justify-content: space-between; align-items: center;">
+                                            <span id="resultISO">-</span>
+                                            <button class="icon-btn" onclick="copyToClipboard(document.getElementById('resultISO').textContent)" title="Copy">📋</button>
+                                        </div>
+                                    </div>
+                                    <div style="background: var(--editor-bg); padding: 12px; border-radius: 6px;">
+                                        <div style="font-size: 12px; color: var(--content-subtitle); margin-bottom: 6px;">UTC</div>
+                                        <div style="font-family: monospace; font-size: 14px; color: var(--content-text); display: flex; justify-content: space-between; align-items: center;">
+                                            <span id="resultUTC">-</span>
+                                            <button class="icon-btn" onclick="copyToClipboard(document.getElementById('resultUTC').textContent)" title="Copy">📋</button>
+                                        </div>
+                                    </div>
+                                    <div style="background: var(--editor-bg); padding: 12px; border-radius: 6px;">
+                                        <div style="font-size: 12px; color: var(--content-subtitle); margin-bottom: 6px;">Local Time</div>
+                                        <div style="font-family: monospace; font-size: 14px; color: var(--content-text); display: flex; justify-content: space-between; align-items: center;">
+                                            <span id="resultLocal">-</span>
+                                            <button class="icon-btn" onclick="copyToClipboard(document.getElementById('resultLocal').textContent)" title="Copy">📋</button>
+                                        </div>
+                                    </div>
+                                    <div style="background: var(--editor-bg); padding: 12px; border-radius: 6px;">
+                                        <div style="font-size: 12px; color: var(--content-subtitle); margin-bottom: 6px;">Relative</div>
+                                        <div style="font-family: monospace; font-size: 14px; color: var(--content-text);" id="resultRelative">-</div>
+                                    </div>
+                                    <div style="background: var(--editor-bg); padding: 12px; border-radius: 6px;">
+                                        <div style="font-size: 12px; color: var(--content-subtitle); margin-bottom: 6px;">Unix (seconds)</div>
+                                        <div style="font-family: monospace; font-size: 14px; color: var(--content-text); display: flex; justify-content: space-between; align-items: center;">
+                                            <span id="resultUnixS">-</span>
+                                            <button class="icon-btn" onclick="copyToClipboard(document.getElementById('resultUnixS').textContent)" title="Copy">📋</button>
+                                        </div>
+                                    </div>
+                                    <div style="background: var(--editor-bg); padding: 12px; border-radius: 6px;">
+                                        <div style="font-size: 12px; color: var(--content-subtitle); margin-bottom: 6px;">Unix (milliseconds)</div>
+                                        <div style="font-family: monospace; font-size: 14px; color: var(--content-text); display: flex; justify-content: space-between; align-items: center;">
+                                            <span id="resultUnixMs">-</span>
+                                            <button class="icon-btn" onclick="copyToClipboard(document.getElementById('resultUnixMs').textContent)" title="Copy">📋</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Tab: Date to Timestamp -->
+                        <div id="dateToTimestampTab" style="display: none;">
+                            <div style="margin-bottom: 16px;">
+                                <label style="display: block; font-size: 13px; color: var(--content-subtitle); margin-bottom: 8px;">Enter Date and Time</label>
+                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px;">
+                                    <input type="date" id="dateInput" 
+                                           style="padding: 10px; background: var(--editor-bg); border: 1px solid var(--border-color); border-radius: 6px; color: var(--content-text);"
+                                           onchange="convertDateToTimestamp()">
+                                    <input type="time" id="timeInput" step="1"
+                                           style="padding: 10px; background: var(--editor-bg); border: 1px solid var(--border-color); border-radius: 6px; color: var(--content-text);"
+                                           onchange="convertDateToTimestamp()">
+                                </div>
+                                <div style="display: flex; gap: 8px;">
+                                    <button class="btn btn-secondary" onclick="useCurrentDate()">Use Current</button>
+                                    <button class="btn btn-secondary" onclick="clearDateInput()">Clear</button>
+                                </div>
+                            </div>
+
+                            <div id="dateResults" style="display: none;">
+                                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 12px;">
+                                    <div style="background: var(--editor-bg); padding: 12px; border-radius: 6px;">
+                                        <div style="font-size: 12px; color: var(--content-subtitle); margin-bottom: 6px;">Unix Timestamp (seconds)</div>
+                                        <div style="font-family: monospace; font-size: 14px; color: var(--content-text); display: flex; justify-content: space-between; align-items: center;">
+                                            <span id="dateResultUnixS">-</span>
+                                            <button class="icon-btn" onclick="copyToClipboard(document.getElementById('dateResultUnixS').textContent)" title="Copy">📋</button>
+                                        </div>
+                                    </div>
+                                    <div style="background: var(--editor-bg); padding: 12px; border-radius: 6px;">
+                                        <div style="font-size: 12px; color: var(--content-subtitle); margin-bottom: 6px;">Unix Timestamp (milliseconds)</div>
+                                        <div style="font-family: monospace; font-size: 14px; color: var(--content-text); display: flex; justify-content: space-between; align-items: center;">
+                                            <span id="dateResultUnixMs">-</span>
+                                            <button class="icon-btn" onclick="copyToClipboard(document.getElementById('dateResultUnixMs').textContent)" title="Copy">📋</button>
+                                        </div>
+                                    </div>
+                                    <div style="background: var(--editor-bg); padding: 12px; border-radius: 6px;">
+                                        <div style="font-size: 12px; color: var(--content-subtitle); margin-bottom: 6px;">ISO 8601</div>
+                                        <div style="font-family: monospace; font-size: 14px; color: var(--content-text); display: flex; justify-content: space-between; align-items: center;">
+                                            <span id="dateResultISO">-</span>
+                                            <button class="icon-btn" onclick="copyToClipboard(document.getElementById('dateResultISO').textContent)" title="Copy">📋</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="error-message" id="timestampErrorMessage"></div>
+                </div>
+            </div>
+
+            <!-- Placeholder Tools -->
             <div class="tool-section" id="jwt-decoder">
                 <div class="content-header">
                     <div class="content-title">🔑 JWT Decoder</div>
-                    <div class="content-description">Decode and inspect JWT tokens</div>
-                </div>
-                <div class="content-body">
-                    <p style="color: #718096;">Coming soon...</p>
+                    <div class="content-description">Coming soon...</div>
                 </div>
             </div>
 
             <div class="tool-section" id="hash-generator">
                 <div class="content-header">
                     <div class="content-title"># Hash Generator</div>
-                    <div class="content-description">Generate MD5, SHA-1, SHA-256 hashes</div>
-                </div>
-                <div class="content-body">
-                    <p style="color: #718096;">Coming soon...</p>
+                    <div class="content-description">Coming soon...</div>
                 </div>
             </div>
 
             <div class="tool-section" id="uuid-generator">
                 <div class="content-header">
                     <div class="content-title">🆔 UUID Generator</div>
-                    <div class="content-description">Generate unique identifiers</div>
-                </div>
-                <div class="content-body">
-                    <p style="color: #718096;">Coming soon...</p>
+                    <div class="content-description">Coming soon...</div>
                 </div>
             </div>
 
             <div class="tool-section" id="url-encoder">
                 <div class="content-header">
                     <div class="content-title">🔗 URL Encoder</div>
-                    <div class="content-description">Encode and decode URLs</div>
-                </div>
-                <div class="content-body">
-                    <p style="color: #718096;">Coming soon...</p>
+                    <div class="content-description">Coming soon...</div>
                 </div>
             </div>
 
             <div class="tool-section" id="text-diff">
                 <div class="content-header">
                     <div class="content-title">📊 Text Compare</div>
-                    <div class="content-description">Compare two text documents</div>
-                </div>
-                <div class="content-body">
-                    <p style="color: #718096;">Coming soon...</p>
+                    <div class="content-description">Coming soon...</div>
                 </div>
             </div>
 
             <div class="tool-section" id="regex-tester">
                 <div class="content-header">
                     <div class="content-title">🔍 Regex Tester</div>
-                    <div class="content-description">Test and validate regular expressions</div>
-                </div>
-                <div class="content-body">
-                    <p style="color: #718096;">Coming soon...</p>
+                    <div class="content-description">Coming soon...</div>
                 </div>
             </div>
         </main>
     </div>
 
+
     <script>
-        // Theme Management
-        function initTheme() {
-            const savedTheme = localStorage.getItem('devutils-theme') || 'light';
-            applyTheme(savedTheme);
-        }
+        // ============================================
+        // Navigation and UI Functions
+        // ============================================
+        
+        // Tool navigation
+        document.addEventListener('DOMContentLoaded', function() {
+            const navItems = document.querySelectorAll('.nav-item');
+            const toolSections = document.querySelectorAll('.tool-section');
+            
+            navItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    const toolId = this.getAttribute('data-tool');
+                    
+                    // Update active nav item
+                    navItems.forEach(nav => nav.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // Show selected tool section
+                    toolSections.forEach(section => {
+                        section.classList.remove('active');
+                        if (section.id === toolId) {
+                            section.classList.add('active');
+                        }
+                    });
+                });
+            });
 
-        function toggleTheme() {
-            const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
-            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
-            applyTheme(newTheme);
-            localStorage.setItem('devutils-theme', newTheme);
-        }
+            // Initialize theme
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            updateThemeIcon(savedTheme);
 
-        function applyTheme(theme) {
-            document.documentElement.setAttribute('data-theme', theme);
-            const themeIcon = document.getElementById('themeIcon');
-            if (theme === 'dark') {
-                themeIcon.textContent = '☀️';
-            } else {
-                themeIcon.textContent = '🌙';
-            }
-        }
+            // Start current time updates
+            updateCurrentTime();
+            setInterval(updateCurrentTime, 1000);
+        });
 
-        // Initialize theme on page load
-        document.addEventListener('DOMContentLoaded', initTheme);
-
-        // Navigation functionality
+        // Section collapse/expand
         function toggleSection(element) {
             const section = element.parentElement;
+            const items = section.querySelector('.nav-items');
             section.classList.toggle('collapsed');
+            
+            const icon = element.querySelector('span');
+            if (section.classList.contains('collapsed')) {
+                icon.textContent = icon.textContent.replace('▼', '▶');
+            } else {
+                icon.textContent = icon.textContent.replace('▶', '▼');
+            }
         }
-
-        // Tool navigation
-        document.querySelectorAll('.nav-item').forEach(item => {
-            item.addEventListener('click', function() {
-                // Remove active class from all items
-                document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
-                // Add active class to clicked item
-                this.classList.add('active');
-
-                // Hide all tool sections
-                document.querySelectorAll('.tool-section').forEach(section => section.classList.remove('active'));
-                // Show selected tool section
-                const toolId = this.getAttribute('data-tool');
-                document.getElementById(toolId).classList.add('active');
-            });
-        });
 
         // Search functionality
         document.getElementById('searchInput').addEventListener('input', function(e) {
             const searchTerm = e.target.value.toLowerCase();
-            document.querySelectorAll('.nav-item').forEach(item => {
+            const navItems = document.querySelectorAll('.nav-item');
+            
+            navItems.forEach(item => {
                 const text = item.textContent.toLowerCase();
                 if (text.includes(searchTerm)) {
                     item.style.display = 'flex';
@@ -902,81 +501,128 @@
             });
         });
 
+        // Theme toggle
+        function toggleTheme() {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            updateThemeIcon(newTheme);
+        }
+
+        function updateThemeIcon(theme) {
+            const themeIcon = document.getElementById('themeIcon');
+            themeIcon.textContent = theme === 'dark' ? '☀️' : '🌙';
+        }
+
+        // Toast notification
+        function showToast(message, toastType) {
+            toastType = toastType || 'success';
+            const toast = document.createElement('div');
+            toast.textContent = message;
+            const bgColor = toastType === 'success' ? '#10b981' : '#ef4444';
+            toast.style.cssText = 'position: fixed; bottom: 24px; right: 24px; background: ' + bgColor + '; color: white; padding: 12px 24px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); z-index: 10000; animation: slideIn 0.3s ease;';
+            document.body.appendChild(toast);
+            
+            setTimeout(function() {
+                toast.style.animation = 'slideOut 0.3s ease';
+                setTimeout(function() { toast.remove(); }, 300);
+            }, 3000);
+        }
+
+        // ============================================
         // JSON Parser Functions
+        // ============================================
+        
         function formatJSON() {
             const input = document.getElementById('jsonInput').value;
             const output = document.getElementById('jsonOutput');
-            const errorMsg = document.getElementById('errorMessage');
+            const error = document.getElementById('errorMessage');
             const indentSize = parseInt(document.getElementById('indentSize').value);
-
+            
+            if (!input.trim()) {
+                error.textContent = '';
+                output.value = '';
+                return;
+            }
+            
             try {
                 const parsed = JSON.parse(input);
                 output.value = JSON.stringify(parsed, null, indentSize);
-                errorMsg.classList.remove('show');
-                errorMsg.textContent = '';
+                error.textContent = '';
+                showToast('JSON formatted successfully');
             } catch (e) {
-                errorMsg.textContent = '❌ Invalid JSON: ' + e.message;
-                errorMsg.classList.add('show');
+                error.textContent = '❌ Invalid JSON: ' + e.message;
+                output.value = '';
             }
         }
 
         function minifyJSON() {
             const input = document.getElementById('jsonInput').value;
             const output = document.getElementById('jsonOutput');
-            const errorMsg = document.getElementById('errorMessage');
-
+            const error = document.getElementById('errorMessage');
+            
+            if (!input.trim()) {
+                error.textContent = '';
+                output.value = '';
+                return;
+            }
+            
             try {
                 const parsed = JSON.parse(input);
                 output.value = JSON.stringify(parsed);
-                errorMsg.classList.remove('show');
-                errorMsg.textContent = '';
+                error.textContent = '';
+                showToast('JSON minified successfully');
             } catch (e) {
-                errorMsg.textContent = '❌ Invalid JSON: ' + e.message;
-                errorMsg.classList.add('show');
+                error.textContent = '❌ Invalid JSON: ' + e.message;
+                output.value = '';
             }
         }
 
         function clearJSON() {
             document.getElementById('jsonInput').value = '';
             document.getElementById('jsonOutput').value = '';
-            document.getElementById('errorMessage').classList.remove('show');
+            document.getElementById('errorMessage').textContent = '';
         }
 
         function copyInput() {
             const input = document.getElementById('jsonInput');
             input.select();
-            document.execCommand('copy');
-            showToast('Input copied to clipboard!');
+            navigator.clipboard.writeText(input.value);
+            showToast('Input copied to clipboard');
         }
 
         function copyOutput() {
             const output = document.getElementById('jsonOutput');
-            output.select();
-            document.execCommand('copy');
-            showToast('Output copied to clipboard!');
+            if (output.value) {
+                navigator.clipboard.writeText(output.value);
+                showToast('Output copied to clipboard');
+            }
         }
 
         function downloadJSON() {
             const output = document.getElementById('jsonOutput').value;
             if (!output) {
-                showToast('No JSON to download!');
+                showToast('No formatted JSON to download', 'error');
                 return;
             }
-
+            
             const blob = new Blob([output], { type: 'application/json' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
             a.download = 'formatted.json';
-            document.body.appendChild(a);
             a.click();
-            document.body.removeChild(a);
             URL.revokeObjectURL(url);
-            showToast('JSON downloaded!');
+            showToast('JSON downloaded');
         }
 
+        // ============================================
         // Base64 Encoder/Decoder Functions
-        let base64Mode = 'encode'; // 'encode' or 'decode'
+        // ============================================
+        
+        let base64Mode = 'encode';
 
         function toggleBase64Mode() {
             base64Mode = base64Mode === 'encode' ? 'decode' : 'encode';
@@ -991,7 +637,7 @@
             const inputSubtitle = document.getElementById('base64InputSubtitle');
             const outputTitle = document.getElementById('base64OutputTitle');
             const outputSubtitle = document.getElementById('base64OutputSubtitle');
-            const inputTextarea = document.getElementById('base64Input');
+            const inputField = document.getElementById('base64Input');
 
             if (base64Mode === 'encode') {
                 modeLabel.textContent = 'Encode Mode';
@@ -1000,26 +646,26 @@
                 inputSubtitle.textContent = 'Enter text or upload a file to encode to Base64';
                 outputTitle.textContent = 'Base64 Encoded';
                 outputSubtitle.textContent = 'Base64 encoded output';
-                inputTextarea.placeholder = 'Enter text to encode...';
+                inputField.placeholder = 'Enter text to encode...';
             } else {
                 modeLabel.textContent = 'Decode Mode';
                 modeToggle.innerHTML = '<span>🔄</span> Switch to Encode';
                 inputTitle.textContent = 'Base64 to Decode';
-                inputSubtitle.textContent = 'Enter Base64 string to decode';
+                inputSubtitle.textContent = 'Enter Base64 encoded text to decode';
                 outputTitle.textContent = 'Decoded Text';
                 outputSubtitle.textContent = 'Decoded output';
-                inputTextarea.placeholder = 'Enter Base64 string to decode...';
+                inputField.placeholder = 'Enter Base64 to decode...';
             }
         }
 
         function processBase64() {
             const input = document.getElementById('base64Input').value;
             const output = document.getElementById('base64Output');
-            const errorMsg = document.getElementById('base64ErrorMessage');
+            const error = document.getElementById('base64ErrorMessage');
 
             if (!input.trim()) {
                 output.value = '';
-                errorMsg.classList.remove('show');
+                error.textContent = '';
                 return;
             }
 
@@ -1029,11 +675,9 @@
                 } else {
                     output.value = decodeURIComponent(escape(atob(input)));
                 }
-                errorMsg.classList.remove('show');
-                errorMsg.textContent = '';
+                error.textContent = '';
             } catch (e) {
-                errorMsg.textContent = '❌ Error: ' + e.message;
-                errorMsg.classList.add('show');
+                error.textContent = '❌ Error: ' + e.message;
                 output.value = '';
             }
         }
@@ -1049,125 +693,236 @@
             const reader = new FileReader();
             reader.onload = function(e) {
                 if (base64Mode === 'encode') {
-                    // For encode mode, read as text
-                    const textReader = new FileReader();
-                    textReader.onload = function(te) {
-                        document.getElementById('base64Input').value = te.target.result;
-                        processBase64();
-                        showToast('File loaded successfully!');
-                    };
-                    textReader.readAsText(file);
+                    document.getElementById('base64Input').value = e.target.result;
                 } else {
-                    // For decode mode, assume file contains base64
                     const textReader = new FileReader();
                     textReader.onload = function(te) {
                         document.getElementById('base64Input').value = te.target.result;
                         processBase64();
-                        showToast('File loaded successfully!');
                     };
                     textReader.readAsText(file);
+                    return;
                 }
+                processBase64();
             };
-            reader.readAsDataURL(file);
-
-            // Reset file input
-            event.target.value = '';
+            
+            if (base64Mode === 'encode') {
+                reader.readAsText(file);
+            }
         }
 
         function loadBase64Sample() {
-            const sampleText = 'Hello, World! This is a sample text for Base64 encoding.';
+            const sampleText = base64Mode === 'encode' 
+                ? 'Hello, World! This is a sample text for Base64 encoding.'
+                : 'SGVsbG8sIFdvcmxkISBUaGlzIGlzIGEgc2FtcGxlIHRleHQgZm9yIEJhc2U2NCBlbmNvZGluZy4=';
+            
             document.getElementById('base64Input').value = sampleText;
             processBase64();
-            showToast('Sample data loaded!');
+            showToast('Sample data loaded');
         }
 
         function clearBase64() {
             document.getElementById('base64Input').value = '';
             document.getElementById('base64Output').value = '';
-            document.getElementById('base64ErrorMessage').classList.remove('show');
+            document.getElementById('base64ErrorMessage').textContent = '';
         }
 
         function copyBase64Input() {
             const input = document.getElementById('base64Input');
-            input.select();
-            document.execCommand('copy');
-            showToast('Input copied to clipboard!');
+            if (input.value) {
+                navigator.clipboard.writeText(input.value);
+                showToast('Input copied to clipboard');
+            }
         }
 
         function copyBase64Output() {
             const output = document.getElementById('base64Output');
-            output.select();
-            document.execCommand('copy');
-            showToast('Output copied to clipboard!');
+            if (output.value) {
+                navigator.clipboard.writeText(output.value);
+                showToast('Output copied to clipboard');
+            }
         }
 
         function downloadBase64() {
             const output = document.getElementById('base64Output').value;
             if (!output) {
-                showToast('No data to download!');
+                showToast('No output to download', 'error');
                 return;
             }
-
+            
             const blob = new Blob([output], { type: 'text/plain' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = base64Mode === 'encode' ? 'base64-encoded.txt' : 'base64-decoded.txt';
-            document.body.appendChild(a);
+            a.download = base64Mode === 'encode' ? 'encoded.txt' : 'decoded.txt';
             a.click();
-            document.body.removeChild(a);
             URL.revokeObjectURL(url);
-            showToast('File downloaded!');
+            showToast('File downloaded');
         }
 
-        function showToast(message) {
-            // Simple toast notification
-            const toast = document.createElement('div');
-            toast.textContent = message;
-            toast.style.cssText = `
-                position: fixed;
-                bottom: 20px;
-                right: 20px;
-                background: #2d3748;
-                color: white;
-                padding: 12px 20px;
-                border-radius: 6px;
-                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-                z-index: 1000;
-                animation: slideIn 0.3s ease;
-            `;
-            document.body.appendChild(toast);
-            setTimeout(() => {
-                toast.style.animation = 'slideOut 0.3s ease';
-                setTimeout(() => document.body.removeChild(toast), 300);
-            }, 2000);
+        // ============================================
+        // Timestamp Converter Functions
+        // ============================================
+        
+        function updateCurrentTime() {
+            const now = new Date();
+            const timestampMs = now.getTime();
+            const timestampS = Math.floor(timestampMs / 1000);
+
+            document.getElementById('currentTimestampMs').textContent = timestampMs;
+            document.getElementById('currentTimestampS').textContent = timestampS;
+            document.getElementById('currentISO').textContent = now.toISOString();
+            document.getElementById('currentUTC').textContent = now.toUTCString();
+            document.getElementById('currentLocal').textContent = now.toLocaleString();
+            document.getElementById('currentRelative').textContent = 'Just now';
         }
 
-        // Add CSS animations
-        const style = document.createElement('style');
-        style.textContent = `
-            @keyframes slideIn {
-                from {
-                    transform: translateX(400px);
-                    opacity: 0;
-                }
-                to {
-                    transform: translateX(0);
-                    opacity: 1;
-                }
+        function switchTimestampTab(tab) {
+            const tabTimestampToDate = document.getElementById('tabTimestampToDate');
+            const tabDateToTimestamp = document.getElementById('tabDateToTimestamp');
+            const timestampToDateTab = document.getElementById('timestampToDateTab');
+            const dateToTimestampTab = document.getElementById('dateToTimestampTab');
+
+            if (tab === 'timestampToDate') {
+                tabTimestampToDate.classList.remove('btn-secondary');
+                tabTimestampToDate.classList.add('btn-primary');
+                tabDateToTimestamp.classList.remove('btn-primary');
+                tabDateToTimestamp.classList.add('btn-secondary');
+                timestampToDateTab.style.display = 'block';
+                dateToTimestampTab.style.display = 'none';
+            } else {
+                tabDateToTimestamp.classList.remove('btn-secondary');
+                tabDateToTimestamp.classList.add('btn-primary');
+                tabTimestampToDate.classList.remove('btn-primary');
+                tabTimestampToDate.classList.add('btn-secondary');
+                dateToTimestampTab.style.display = 'block';
+                timestampToDateTab.style.display = 'none';
             }
-            @keyframes slideOut {
-                from {
-                    transform: translateX(0);
-                    opacity: 1;
-                }
-                to {
-                    transform: translateX(400px);
-                    opacity: 0;
-                }
+        }
+
+        function convertTimestampToDate() {
+            const input = document.getElementById('timestampInput').value.trim();
+            const results = document.getElementById('timestampResults');
+            const error = document.getElementById('timestampErrorMessage');
+
+            if (!input) {
+                results.style.display = 'none';
+                error.textContent = '';
+                return;
             }
-        `;
-        document.head.appendChild(style);
+
+            try {
+                let timestamp = parseInt(input);
+                
+                if (timestamp < 10000000000) {
+                    timestamp = timestamp * 1000;
+                }
+
+                const date = new Date(timestamp);
+                
+                if (isNaN(date.getTime())) {
+                    throw new Error('Invalid timestamp');
+                }
+
+                document.getElementById('resultISO').textContent = date.toISOString();
+                document.getElementById('resultUTC').textContent = date.toUTCString();
+                document.getElementById('resultLocal').textContent = date.toLocaleString();
+                document.getElementById('resultRelative').textContent = getRelativeTime(date);
+                document.getElementById('resultUnixS').textContent = Math.floor(timestamp / 1000);
+                document.getElementById('resultUnixMs').textContent = timestamp;
+
+                results.style.display = 'block';
+                error.textContent = '';
+            } catch (e) {
+                error.textContent = '❌ Invalid timestamp: ' + e.message;
+                results.style.display = 'none';
+            }
+        }
+
+        function convertDateToTimestamp() {
+            const dateInput = document.getElementById('dateInput').value;
+            const timeInput = document.getElementById('timeInput').value;
+            const results = document.getElementById('dateResults');
+            const error = document.getElementById('timestampErrorMessage');
+
+            if (!dateInput) {
+                results.style.display = 'none';
+                error.textContent = '';
+                return;
+            }
+
+            try {
+                const dateTimeString = dateInput + (timeInput ? 'T' + timeInput : 'T00:00:00');
+                const date = new Date(dateTimeString);
+
+                if (isNaN(date.getTime())) {
+                    throw new Error('Invalid date');
+                }
+
+                const timestampMs = date.getTime();
+                const timestampS = Math.floor(timestampMs / 1000);
+
+                document.getElementById('dateResultUnixS').textContent = timestampS;
+                document.getElementById('dateResultUnixMs').textContent = timestampMs;
+                document.getElementById('dateResultISO').textContent = date.toISOString();
+
+                results.style.display = 'block';
+                error.textContent = '';
+            } catch (e) {
+                error.textContent = '❌ Invalid date: ' + e.message;
+                results.style.display = 'none';
+            }
+        }
+
+        function getRelativeTime(date) {
+            const now = new Date();
+            const diffMs = now - date;
+            const diffSec = Math.floor(diffMs / 1000);
+            const diffMin = Math.floor(diffSec / 60);
+            const diffHour = Math.floor(diffMin / 60);
+            const diffDay = Math.floor(diffHour / 24);
+
+            if (diffSec < 60) return diffSec + ' seconds ago';
+            if (diffMin < 60) return diffMin + ' minutes ago';
+            if (diffHour < 24) return diffHour + ' hours ago';
+            if (diffDay < 30) return diffDay + ' days ago';
+            if (diffDay < 365) return Math.floor(diffDay / 30) + ' months ago';
+            return Math.floor(diffDay / 365) + ' years ago';
+        }
+
+        function useCurrentTimestamp() {
+            const now = new Date();
+            document.getElementById('timestampInput').value = now.getTime();
+            convertTimestampToDate();
+        }
+
+        function clearTimestampInput() {
+            document.getElementById('timestampInput').value = '';
+            document.getElementById('timestampResults').style.display = 'none';
+            document.getElementById('timestampErrorMessage').textContent = '';
+        }
+
+        function useCurrentDate() {
+            const now = new Date();
+            const dateStr = now.toISOString().split('T')[0];
+            const timeStr = now.toTimeString().split(' ')[0];
+            
+            document.getElementById('dateInput').value = dateStr;
+            document.getElementById('timeInput').value = timeStr;
+            convertDateToTimestamp();
+        }
+
+        function clearDateInput() {
+            document.getElementById('dateInput').value = '';
+            document.getElementById('timeInput').value = '';
+            document.getElementById('dateResults').style.display = 'none';
+            document.getElementById('timestampErrorMessage').textContent = '';
+        }
+
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text);
+            showToast('Copied to clipboard');
+        }
     </script>
 </body>
 </html>

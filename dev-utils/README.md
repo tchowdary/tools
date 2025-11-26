@@ -21,6 +21,14 @@ A lightweight collection of essential developer tools built with vanilla HTML, C
   - Download results
   - Support for UTF-8 text
 
+- 🕐 **Timestamp Converter** - Convert between Unix timestamps and human-readable dates
+  - Real-time current time display in multiple formats
+  - Convert timestamp to date (supports seconds and milliseconds)
+  - Convert date to timestamp
+  - ISO 8601, UTC, and local time formats
+  - Relative time display (e.g., "5 minutes ago")
+  - Copy any format to clipboard
+
 ### Coming Soon
 - 🔑 **JWT Decoder** - Decode and inspect JWT tokens
 - **#** **Hash Generator** - Generate MD5, SHA-1, SHA-256 hashes
