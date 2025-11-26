@@ -368,13 +368,130 @@
                 </div>
             </div>
 
-            <!-- Placeholder Tools -->
+            <!-- JWT Decoder Tool -->
             <div class="tool-section" id="jwt-decoder">
                 <div class="content-header">
                     <div class="content-title">🔑 JWT Decoder</div>
-                    <div class="content-description">Coming soon...</div>
+                    <div class="content-description">Paste a JWT below to decode, validate, and verify</div>
+                    <button class="btn btn-secondary" onclick="generateJWTExample()" style="margin-left: auto;">Generate example</button>
+                </div>
+
+                <div class="content-body">
+                    <div class="editor-container">
+                        <!-- Left Panel - Encoded JWT -->
+                        <div class="editor-panel">
+                            <div class="panel-header">
+                                <div>
+                                    <div class="panel-title">ENCODED VALUE</div>
+                                </div>
+                                <div style="display: flex; gap: 8px; align-items: center;">
+                                    <label style="display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--content-subtitle); cursor: pointer;">
+                                        <input type="checkbox" id="jwtAutoFocus" style="cursor: pointer;">
+                                        Enable auto-focus
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="panel-content" style="display: flex; flex-direction: column; gap: 12px;">
+                                <div style="flex: 1; display: flex; flex-direction: column;">
+                                    <label style="display: block; font-size: 12px; color: var(--content-subtitle); margin-bottom: 6px; font-weight: 500;">JSON WEB TOKEN (JWT)</label>
+                                    <textarea id="jwtInput" placeholder="Paste JWT token here..."
+                                              style="flex: 1; min-height: 200px; padding: 12px; background: var(--editor-bg); border: 1px solid var(--border-color); border-radius: 6px; color: var(--content-text); font-family: monospace; font-size: 13px; resize: vertical; line-height: 1.5;"
+                                              oninput="decodeJWT()"></textarea>
+                                </div>
+
+                                <div id="jwtStatus" style="display: none;">
+                                    <div id="jwtValidStatus" style="padding: 8px 12px; background: #d1fae5; color: #065f46; border-radius: 6px; font-size: 13px; font-weight: 500; margin-bottom: 6px;">
+                                        ✓ Valid JWT
+                                    </div>
+                                    <div id="jwtSignatureStatus" style="padding: 8px 12px; background: #d1fae5; color: #065f46; border-radius: 6px; font-size: 13px; font-weight: 500; display: none;">
+                                        ✓ Signature Verified
+                                    </div>
+                                </div>
+
+                                <div style="display: flex; gap: 8px;">
+                                    <button class="btn btn-secondary" onclick="copyJWTInput()">COPY</button>
+                                    <button class="btn btn-secondary" onclick="clearJWT()">CLEAR</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Right Panel - Decoded JWT -->
+                        <div class="editor-panel">
+                            <div style="display: flex; flex-direction: column; gap: 16px; height: 100%;">
+                                <!-- Decoded Header -->
+                                <div style="flex: 1; display: flex; flex-direction: column; border: 1px solid var(--border-color); border-radius: 8px; overflow: hidden;">
+                                    <div class="panel-header" style="border-bottom: 1px solid var(--border-color);">
+                                        <div class="panel-title">DECODED HEADER</div>
+                                        <div style="display: flex; gap: 8px;">
+                                            <button class="btn btn-secondary btn-sm active" id="headerJsonTab" onclick="switchJWTTab('header', 'json')" style="padding: 4px 12px; font-size: 12px;">JSON</button>
+                                            <button class="btn btn-secondary btn-sm" id="headerClaimsTab" onclick="switchJWTTab('header', 'claims')" style="padding: 4px 12px; font-size: 12px;">CLAIMS TABLE</button>
+                                            <button class="icon-btn" onclick="copyJWTHeader()" title="Copy">📋</button>
+                                        </div>
+                                    </div>
+                                    <div class="panel-content" style="flex: 1;">
+                                        <pre id="jwtHeaderOutput" style="margin: 0; padding: 12px; background: var(--editor-bg); color: var(--content-text); font-family: monospace; font-size: 13px; line-height: 1.6; overflow: auto; height: 100%;"></pre>
+                                    </div>
+                                </div>
+
+                                <!-- Decoded Payload -->
+                                <div style="flex: 1; display: flex; flex-direction: column; border: 1px solid var(--border-color); border-radius: 8px; overflow: hidden;">
+                                    <div class="panel-header" style="border-bottom: 1px solid var(--border-color);">
+                                        <div class="panel-title">DECODED PAYLOAD</div>
+                                        <div style="display: flex; gap: 8px;">
+                                            <button class="btn btn-secondary btn-sm active" id="payloadJsonTab" onclick="switchJWTTab('payload', 'json')" style="padding: 4px 12px; font-size: 12px;">JSON</button>
+                                            <button class="btn btn-secondary btn-sm" id="payloadClaimsTab" onclick="switchJWTTab('payload', 'claims')" style="padding: 4px 12px; font-size: 12px;">CLAIMS TABLE</button>
+                                            <button class="icon-btn" onclick="copyJWTPayload()" title="Copy">📋</button>
+                                        </div>
+                                    </div>
+                                    <div class="panel-content" style="flex: 1;">
+                                        <pre id="jwtPayloadOutput" style="margin: 0; padding: 12px; background: var(--editor-bg); color: var(--content-text); font-family: monospace; font-size: 13px; line-height: 1.6; overflow: auto; height: 100%;"></pre>
+                                    </div>
+                                </div>
+
+                                <!-- JWT Signature Verification -->
+                                <div style="border: 1px solid var(--border-color); border-radius: 8px; padding: 16px;">
+                                    <div style="margin-bottom: 12px;">
+                                        <div style="font-size: 13px; font-weight: 600; color: var(--content-text); margin-bottom: 4px;">
+                                            JWT SIGNATURE VERIFICATION <span style="color: var(--content-subtitle); font-weight: 400;">(OPTIONAL)</span>
+                                        </div>
+                                        <div style="font-size: 12px; color: var(--content-subtitle);">
+                                            Enter the secret used to sign the JWT below:
+                                        </div>
+                                    </div>
+
+                                    <div style="margin-bottom: 12px;">
+                                        <label style="display: block; font-size: 12px; color: var(--content-subtitle); margin-bottom: 6px; font-weight: 500;">SECRET</label>
+                                        <input type="text" id="jwtSecret" placeholder="a-string-secret-at-least-256-bits-long"
+                                               style="width: 100%; padding: 10px; background: var(--editor-bg); border: 1px solid var(--border-color); border-radius: 6px; color: var(--content-text); font-family: monospace; font-size: 13px;"
+                                               oninput="verifyJWTSignature()">
+                                    </div>
+
+                                    <div id="jwtSecretStatus" style="padding: 8px 12px; background: #d1fae5; color: #065f46; border-radius: 6px; font-size: 13px; font-weight: 500; margin-bottom: 12px; display: none;">
+                                        ✓ Valid secret
+                                    </div>
+
+                                    <div style="display: flex; gap: 8px; align-items: center;">
+                                        <button class="btn btn-secondary" onclick="copyJWTSecret()">COPY</button>
+                                        <button class="btn btn-secondary" onclick="clearJWTSecret()">CLEAR</button>
+                                        <div style="margin-left: auto; display: flex; align-items: center; gap: 8px;">
+                                            <label style="font-size: 12px; color: var(--content-subtitle);">Encoding Format</label>
+                                            <select id="jwtEncoding" style="padding: 6px 10px; background: var(--editor-bg); border: 1px solid var(--border-color); border-radius: 4px; color: var(--content-text); font-size: 12px;">
+                                                <option value="utf8">UTF-8</option>
+                                                <option value="base64">Base64</option>
+                                                <option value="hex">Hex</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="error-message" id="jwtErrorMessage"></div>
                 </div>
             </div>
+
+            <!-- Placeholder Tools -->
             
         </main>
     </div>
