@@ -12,8 +12,16 @@ A lightweight collection of essential developer tools built with vanilla HTML, C
   - Download formatted JSON
   - Real-time validation with error messages
 
+- 🔐 **Base64 Encoder/Decoder** - Encode and decode Base64 data
+  - Toggle between encode and decode modes
+  - Real-time encoding/decoding as you type
+  - Upload files for encoding
+  - Load sample data
+  - Copy to clipboard
+  - Download results
+  - Support for UTF-8 text
+
 ### Coming Soon
-- 🔐 **Base64 Encoder** - Encode and decode Base64 strings
 - 🔑 **JWT Decoder** - Decode and inspect JWT tokens
 - **#** **Hash Generator** - Generate MD5, SHA-1, SHA-256 hashes
 - 🆔 **UUID Generator** - Generate unique identifiers

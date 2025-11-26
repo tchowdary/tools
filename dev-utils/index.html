@@ -695,11 +695,86 @@
             <!-- Placeholder for other tools -->
             <div class="tool-section" id="base64-encoder">
                 <div class="content-header">
-                    <div class="content-title">🔐 Base64 Encoder</div>
-                    <div class="content-description">Encode and decode Base64 strings</div>
+                    <div class="content-title">🔐 Base64 Encoder/Decoder</div>
+                    <div class="content-description">Encode and decode Base64 data</div>
                 </div>
+
                 <div class="content-body">
-                    <p style="color: #718096;">Coming soon...</p>
+                    <!-- Mode Indicator -->
+                    <div style="margin-bottom: 16px;">
+                        <span id="base64ModeLabel" class="btn btn-primary" style="padding: 6px 12px; font-size: 13px; cursor: default;">
+                            Encode Mode
+                        </span>
+                    </div>
+
+                    <!-- Operations Section -->
+                    <div class="format-options">
+                        <div class="format-options-title">Base64 Operations</div>
+                        <div class="format-options-subtitle">Choose your operation and input data</div>
+
+                        <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;">
+                            <div class="button-group">
+                                <button class="btn btn-secondary" onclick="toggleBase64Mode()" id="base64ModeToggle">
+                                    <span>🔄</span> Switch to Decode
+                                </button>
+                                <button class="btn btn-secondary" onclick="uploadBase64File()">
+                                    <span>📁</span> Upload File
+                                </button>
+                            </div>
+
+                            <div class="button-group">
+                                <button class="btn btn-secondary" onclick="loadBase64Sample()">
+                                    <span>🔖</span> Load Sample
+                                </button>
+                                <button class="btn btn-secondary" onclick="clearBase64()">
+                                    <span>✖</span> Clear All
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <input type="file" id="base64FileInput" style="display: none;" onchange="handleBase64FileUpload(event)">
+
+                    <div class="error-message" id="base64ErrorMessage"></div>
+
+                    <div class="editor-container">
+                        <div class="editor-panel">
+                            <div class="editor-header">
+                                <div>
+                                    <div class="editor-title" id="base64InputTitle">Text to Encode</div>
+                                    <div class="editor-subtitle" id="base64InputSubtitle">Enter text or upload a file to encode to Base64</div>
+                                </div>
+                                <div class="editor-actions">
+                                    <button class="icon-btn" onclick="copyBase64Input()" title="Copy">
+                                        📋
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="editor-body">
+                                <textarea class="code-editor" id="base64Input" placeholder="Enter text to encode..." oninput="processBase64()"></textarea>
+                            </div>
+                        </div>
+
+                        <div class="editor-panel">
+                            <div class="editor-header">
+                                <div>
+                                    <div class="editor-title" id="base64OutputTitle">Base64 Encoded</div>
+                                    <div class="editor-subtitle" id="base64OutputSubtitle">Base64 encoded output</div>
+                                </div>
+                                <div class="editor-actions">
+                                    <button class="icon-btn" onclick="copyBase64Output()" title="Copy">
+                                        📋
+                                    </button>
+                                    <button class="icon-btn" onclick="downloadBase64()" title="Download">
+                                        ⬇️
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="editor-body">
+                                <textarea class="code-editor" id="base64Output" placeholder="Base64 encoded result will appear here..." readonly></textarea>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -898,6 +973,151 @@
             document.body.removeChild(a);
             URL.revokeObjectURL(url);
             showToast('JSON downloaded!');
+        }
+
+        // Base64 Encoder/Decoder Functions
+        let base64Mode = 'encode'; // 'encode' or 'decode'
+
+        function toggleBase64Mode() {
+            base64Mode = base64Mode === 'encode' ? 'decode' : 'encode';
+            updateBase64UI();
+            processBase64();
+        }
+
+        function updateBase64UI() {
+            const modeLabel = document.getElementById('base64ModeLabel');
+            const modeToggle = document.getElementById('base64ModeToggle');
+            const inputTitle = document.getElementById('base64InputTitle');
+            const inputSubtitle = document.getElementById('base64InputSubtitle');
+            const outputTitle = document.getElementById('base64OutputTitle');
+            const outputSubtitle = document.getElementById('base64OutputSubtitle');
+            const inputTextarea = document.getElementById('base64Input');
+
+            if (base64Mode === 'encode') {
+                modeLabel.textContent = 'Encode Mode';
+                modeToggle.innerHTML = '<span>🔄</span> Switch to Decode';
+                inputTitle.textContent = 'Text to Encode';
+                inputSubtitle.textContent = 'Enter text or upload a file to encode to Base64';
+                outputTitle.textContent = 'Base64 Encoded';
+                outputSubtitle.textContent = 'Base64 encoded output';
+                inputTextarea.placeholder = 'Enter text to encode...';
+            } else {
+                modeLabel.textContent = 'Decode Mode';
+                modeToggle.innerHTML = '<span>🔄</span> Switch to Encode';
+                inputTitle.textContent = 'Base64 to Decode';
+                inputSubtitle.textContent = 'Enter Base64 string to decode';
+                outputTitle.textContent = 'Decoded Text';
+                outputSubtitle.textContent = 'Decoded output';
+                inputTextarea.placeholder = 'Enter Base64 string to decode...';
+            }
+        }
+
+        function processBase64() {
+            const input = document.getElementById('base64Input').value;
+            const output = document.getElementById('base64Output');
+            const errorMsg = document.getElementById('base64ErrorMessage');
+
+            if (!input.trim()) {
+                output.value = '';
+                errorMsg.classList.remove('show');
+                return;
+            }
+
+            try {
+                if (base64Mode === 'encode') {
+                    output.value = btoa(unescape(encodeURIComponent(input)));
+                } else {
+                    output.value = decodeURIComponent(escape(atob(input)));
+                }
+                errorMsg.classList.remove('show');
+                errorMsg.textContent = '';
+            } catch (e) {
+                errorMsg.textContent = '❌ Error: ' + e.message;
+                errorMsg.classList.add('show');
+                output.value = '';
+            }
+        }
+
+        function uploadBase64File() {
+            document.getElementById('base64FileInput').click();
+        }
+
+        function handleBase64FileUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                if (base64Mode === 'encode') {
+                    // For encode mode, read as text
+                    const textReader = new FileReader();
+                    textReader.onload = function(te) {
+                        document.getElementById('base64Input').value = te.target.result;
+                        processBase64();
+                        showToast('File loaded successfully!');
+                    };
+                    textReader.readAsText(file);
+                } else {
+                    // For decode mode, assume file contains base64
+                    const textReader = new FileReader();
+                    textReader.onload = function(te) {
+                        document.getElementById('base64Input').value = te.target.result;
+                        processBase64();
+                        showToast('File loaded successfully!');
+                    };
+                    textReader.readAsText(file);
+                }
+            };
+            reader.readAsDataURL(file);
+
+            // Reset file input
+            event.target.value = '';
+        }
+
+        function loadBase64Sample() {
+            const sampleText = 'Hello, World! This is a sample text for Base64 encoding.';
+            document.getElementById('base64Input').value = sampleText;
+            processBase64();
+            showToast('Sample data loaded!');
+        }
+
+        function clearBase64() {
+            document.getElementById('base64Input').value = '';
+            document.getElementById('base64Output').value = '';
+            document.getElementById('base64ErrorMessage').classList.remove('show');
+        }
+
+        function copyBase64Input() {
+            const input = document.getElementById('base64Input');
+            input.select();
+            document.execCommand('copy');
+            showToast('Input copied to clipboard!');
+        }
+
+        function copyBase64Output() {
+            const output = document.getElementById('base64Output');
+            output.select();
+            document.execCommand('copy');
+            showToast('Output copied to clipboard!');
+        }
+
+        function downloadBase64() {
+            const output = document.getElementById('base64Output').value;
+            if (!output) {
+                showToast('No data to download!');
+                return;
+            }
+
+            const blob = new Blob([output], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = base64Mode === 'encode' ? 'base64-encoded.txt' : 'base64-decoded.txt';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            showToast('File downloaded!');
         }
 
         function showToast(message) {
