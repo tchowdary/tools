@@ -1,0 +1,953 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dev Utilities - Essential Tools</title>
+    <style>
+        :root {
+            /* Light Theme - Sidebar */
+            --sidebar-bg: #2d3748;
+            --sidebar-border: #4a5568;
+            --sidebar-text: #e2e8f0;
+            --sidebar-text-secondary: #a0aec0;
+            --sidebar-hover: #374151;
+            --sidebar-active: #1a202c;
+            --sidebar-input-bg: #1a202c;
+            --sidebar-input-border: #4a5568;
+            --sidebar-scrollbar-track: #1a202c;
+            --sidebar-scrollbar-thumb: #4a5568;
+            --sidebar-scrollbar-thumb-hover: #718096;
+
+            /* Light Theme - Main Content */
+            --main-bg: #f5f7fa;
+            --content-bg: #ffffff;
+            --content-text: #2d3748;
+            --content-text-secondary: #718096;
+            --content-border: #e2e8f0;
+            --panel-bg: #ffffff;
+            --panel-header-bg: #f7fafc;
+            --input-bg: #ffffff;
+            --input-border: #cbd5e0;
+            --input-text: #2d3748;
+            --input-placeholder: #a0aec0;
+
+            /* Buttons */
+            --btn-primary-bg: #2d3748;
+            --btn-primary-hover: #1a202c;
+            --btn-secondary-bg: #ffffff;
+            --btn-secondary-border: #cbd5e0;
+            --btn-secondary-hover-bg: #f7fafc;
+
+            /* Other elements */
+            --icon-btn-hover: #e2e8f0;
+            --error-bg: #fff5f5;
+            --error-border: #fc8181;
+            --error-text: #c53030;
+            --shadow: rgba(0, 0, 0, 0.1);
+        }
+
+        [data-theme="dark"] {
+            /* Dark Theme - Sidebar */
+            --sidebar-bg: #1a1a1a;
+            --sidebar-border: #2d2d2d;
+            --sidebar-text: #e5e5e5;
+            --sidebar-text-secondary: #999999;
+            --sidebar-hover: #2d2d2d;
+            --sidebar-active: #0a0a0a;
+            --sidebar-input-bg: #0a0a0a;
+            --sidebar-input-border: #2d2d2d;
+            --sidebar-scrollbar-track: #0a0a0a;
+            --sidebar-scrollbar-thumb: #2d2d2d;
+            --sidebar-scrollbar-thumb-hover: #404040;
+
+            /* Dark Theme - Main Content */
+            --main-bg: #0f0f0f;
+            --content-bg: #1a1a1a;
+            --content-text: #e5e5e5;
+            --content-text-secondary: #999999;
+            --content-border: #2d2d2d;
+            --panel-bg: #1a1a1a;
+            --panel-header-bg: #141414;
+            --input-bg: #0a0a0a;
+            --input-border: #2d2d2d;
+            --input-text: #e5e5e5;
+            --input-placeholder: #666666;
+
+            /* Buttons */
+            --btn-primary-bg: #4299e1;
+            --btn-primary-hover: #3182ce;
+            --btn-secondary-bg: #2d2d2d;
+            --btn-secondary-border: #404040;
+            --btn-secondary-hover-bg: #333333;
+
+            /* Other elements */
+            --icon-btn-hover: #2d2d2d;
+            --error-bg: #2d1a1a;
+            --error-border: #8b3a3a;
+            --error-text: #fc8181;
+            --shadow: rgba(0, 0, 0, 0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: var(--main-bg);
+            color: var(--content-text);
+            height: 100vh;
+            overflow: hidden;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .app-container {
+            display: flex;
+            height: 100vh;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            width: 280px;
+            background: var(--sidebar-bg);
+            color: var(--sidebar-text);
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .sidebar-header {
+            padding: 20px;
+            border-bottom: 1px solid var(--sidebar-border);
+            transition: border-color 0.3s ease;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--sidebar-text);
+        }
+
+        .logo-icon {
+            width: 32px;
+            height: 32px;
+            background: #4299e1;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .subtitle {
+            font-size: 12px;
+            color: var(--sidebar-text-secondary);
+            margin-top: 4px;
+            transition: color 0.3s ease;
+        }
+
+        .search-box {
+            padding: 12px 20px;
+            border-bottom: 1px solid var(--sidebar-border);
+            transition: border-color 0.3s ease;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 8px 12px;
+            background: var(--sidebar-input-bg);
+            border: 1px solid var(--sidebar-input-border);
+            border-radius: 6px;
+            color: var(--sidebar-text);
+            font-size: 14px;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .search-input::placeholder {
+            color: var(--sidebar-text-secondary);
+        }
+
+        .nav-section {
+            padding: 12px 0;
+        }
+
+        .nav-section-title {
+            padding: 8px 20px;
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--sidebar-text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            user-select: none;
+            transition: color 0.3s ease;
+        }
+
+        .nav-section-title:hover {
+            color: var(--sidebar-text);
+        }
+
+        .collapse-icon {
+            transition: transform 0.2s;
+        }
+
+        .nav-section.collapsed .collapse-icon {
+            transform: rotate(-90deg);
+        }
+
+        .nav-section.collapsed .nav-items {
+            display: none;
+        }
+
+        .nav-items {
+            padding: 4px 0;
+        }
+
+        .nav-item {
+            padding: 10px 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+            color: var(--sidebar-text);
+            transition: all 0.2s;
+        }
+
+        .nav-item:hover {
+            background: var(--sidebar-hover);
+        }
+
+        .nav-item.active {
+            background: var(--sidebar-active);
+            border-left: 3px solid #4299e1;
+        }
+
+        .nav-item-icon {
+            font-size: 16px;
+            width: 20px;
+            text-align: center;
+        }
+
+        /* Main Content Styles */
+        .main-content {
+            flex: 1;
+            overflow-y: auto;
+            background: var(--main-bg);
+            transition: background-color 0.3s ease;
+        }
+
+        .content-header {
+            background: var(--content-bg);
+            padding: 24px 32px;
+            border-bottom: 1px solid var(--content-border);
+            transition: all 0.3s ease;
+        }
+
+        .content-title {
+            font-size: 28px;
+            font-weight: 600;
+            color: var(--content-text);
+            margin-bottom: 4px;
+            transition: color 0.3s ease;
+        }
+
+        .content-description {
+            font-size: 14px;
+            color: var(--content-text-secondary);
+            transition: color 0.3s ease;
+        }
+
+        .content-body {
+            padding: 24px 32px;
+        }
+
+        .tool-section {
+            display: none;
+        }
+
+        .tool-section.active {
+            display: block;
+        }
+
+        /* Format Options */
+        .format-options {
+            background: var(--panel-bg);
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 1px 3px var(--shadow);
+            transition: all 0.3s ease;
+        }
+
+        .format-options-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 4px;
+            color: var(--content-text);
+            transition: color 0.3s ease;
+        }
+
+        .format-options-subtitle {
+            font-size: 13px;
+            color: var(--content-text-secondary);
+            margin-bottom: 16px;
+            transition: color 0.3s ease;
+        }
+
+        .options-row {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 16px;
+        }
+
+        .option-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .option-label {
+            font-size: 14px;
+            color: var(--content-text);
+            transition: color 0.3s ease;
+        }
+
+        .indent-input {
+            width: 60px;
+            padding: 6px 10px;
+            border: 1px solid var(--input-border);
+            border-radius: 4px;
+            font-size: 14px;
+            text-align: center;
+            background: var(--input-bg);
+            color: var(--input-text);
+            transition: all 0.3s ease;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-primary {
+            background: var(--btn-primary-bg);
+            color: #fff;
+        }
+
+        .btn-primary:hover {
+            background: var(--btn-primary-hover);
+        }
+
+        .btn-secondary {
+            background: var(--btn-secondary-bg);
+            color: var(--content-text);
+            border: 1px solid var(--btn-secondary-border);
+        }
+
+        .btn-secondary:hover {
+            background: var(--btn-secondary-hover-bg);
+        }
+
+        /* Editor Panels */
+        .editor-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .editor-panel {
+            background: var(--panel-bg);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 1px 3px var(--shadow);
+            transition: all 0.3s ease;
+        }
+
+        .editor-header {
+            padding: 12px 16px;
+            background: var(--panel-header-bg);
+            border-bottom: 1px solid var(--content-border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: all 0.3s ease;
+        }
+
+        .editor-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--content-text);
+            transition: color 0.3s ease;
+        }
+
+        .editor-subtitle {
+            font-size: 12px;
+            color: var(--content-text-secondary);
+            margin-top: 2px;
+            transition: color 0.3s ease;
+        }
+
+        .editor-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .icon-btn {
+            padding: 6px;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            border-radius: 4px;
+            color: var(--content-text-secondary);
+            transition: all 0.2s;
+        }
+
+        .icon-btn:hover {
+            background: var(--icon-btn-hover);
+            color: var(--content-text);
+        }
+
+        .editor-body {
+            position: relative;
+        }
+
+        .code-editor {
+            width: 100%;
+            min-height: 500px;
+            padding: 16px;
+            border: none;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 13px;
+            line-height: 1.6;
+            resize: vertical;
+            outline: none;
+            background: var(--input-bg);
+            color: var(--input-text);
+            transition: all 0.3s ease;
+        }
+
+        .code-editor::placeholder {
+            color: var(--input-placeholder);
+        }
+
+        /* Error Message */
+        .error-message {
+            background: var(--error-bg);
+            border: 1px solid var(--error-border);
+            border-radius: 6px;
+            padding: 12px 16px;
+            color: var(--error-text);
+            font-size: 14px;
+            margin-bottom: 20px;
+            display: none;
+            transition: all 0.3s ease;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        /* Theme Toggle */
+        .theme-toggle {
+            padding: 12px 20px;
+            margin-top: auto;
+            border-top: 1px solid var(--sidebar-border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 14px;
+            color: var(--sidebar-text);
+            cursor: pointer;
+            user-select: none;
+            transition: all 0.3s ease;
+        }
+
+        .theme-toggle:hover {
+            background: var(--sidebar-hover);
+        }
+
+        .theme-icon {
+            font-size: 18px;
+            transition: transform 0.3s ease;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .editor-container {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar {
+                width: 240px;
+            }
+        }
+
+        /* Scrollbar */
+        .sidebar::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .sidebar::-webkit-scrollbar-track {
+            background: var(--sidebar-scrollbar-track);
+        }
+
+        .sidebar::-webkit-scrollbar-thumb {
+            background: var(--sidebar-scrollbar-thumb);
+            border-radius: 3px;
+        }
+
+        .sidebar::-webkit-scrollbar-thumb:hover {
+            background: var(--sidebar-scrollbar-thumb-hover);
+        }
+
+        .main-content::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .main-content::-webkit-scrollbar-track {
+            background: var(--main-bg);
+        }
+
+        .main-content::-webkit-scrollbar-thumb {
+            background: var(--content-border);
+            border-radius: 4px;
+        }
+
+        .main-content::-webkit-scrollbar-thumb:hover {
+            background: var(--content-text-secondary);
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <div class="logo-icon">⚡</div>
+                    <div>
+                        <div>Dev Utilities</div>
+                        <div class="subtitle">Essential Tools</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="search-box">
+                <input type="text" class="search-input" placeholder="Search features..." id="searchInput">
+            </div>
+
+            <nav>
+
+
+                <div class="nav-section">
+                    <div class="nav-section-title" onclick="toggleSection(this)">
+                        <span>▼ Developer Tools</span>
+                    </div>
+                    <div class="nav-items">
+                        <div class="nav-item active" data-tool="json-parser">
+                            <span class="nav-item-icon">📄</span>
+                            <span>JSON Parser</span>
+                        </div>
+                        <div class="nav-item" data-tool="base64-encoder">
+                            <span class="nav-item-icon">🔐</span>
+                            <span>Base64 Encoder</span>
+                        </div>
+                        <div class="nav-item" data-tool="jwt-decoder">
+                            <span class="nav-item-icon">🔑</span>
+                            <span>JWT Decoder</span>
+                        </div>
+                        <div class="nav-item" data-tool="hash-generator">
+                            <span class="nav-item-icon">#</span>
+                            <span>Hash Generator</span>
+                        </div>
+                        <div class="nav-item" data-tool="uuid-generator">
+                            <span class="nav-item-icon">🆔</span>
+                            <span>UUID Generator</span>
+                        </div>
+                        <div class="nav-item" data-tool="url-encoder">
+                            <span class="nav-item-icon">🔗</span>
+                            <span>URL Encoder</span>
+                        </div>
+                        <div class="nav-item" data-tool="text-diff">
+                            <span class="nav-item-icon">📊</span>
+                            <span>Text Compare</span>
+                        </div>
+                        <div class="nav-item" data-tool="regex-tester">
+                            <span class="nav-item-icon">🔍</span>
+                            <span>Regex Tester</span>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+
+            <div class="theme-toggle" onclick="toggleTheme()">
+                <span>Theme</span>
+                <span class="theme-icon" id="themeIcon">🌙</span>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- JSON Parser Tool -->
+            <div class="tool-section active" id="json-parser">
+                <div class="content-header">
+                    <div class="content-title">📄 JSON Parser & Formatter</div>
+                    <div class="content-description">Parse, validate, and format JSON data with ease</div>
+                </div>
+
+                <div class="content-body">
+                    <div class="format-options">
+                        <div class="format-options-title">Format Options</div>
+                        <div class="format-options-subtitle">Customize the JSON formatting</div>
+
+                        <div style="display: flex; align-items: center; justify-content: space-between;">
+                            <div class="options-row">
+                                <div class="option-group">
+                                    <label class="option-label">Indent Size:</label>
+                                    <input type="number" class="indent-input" id="indentSize" value="2" min="0" max="8">
+                                </div>
+                            </div>
+
+                            <div class="button-group">
+                                <button class="btn btn-primary" onclick="formatJSON()">
+                                    <span>📋</span> Format
+                                </button>
+                                <button class="btn btn-secondary" onclick="minifyJSON()">
+                                    <span>🔄</span> Minify
+                                </button>
+                                <button class="btn btn-secondary" onclick="clearJSON()">
+                                    <span>✖</span> Clear
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="error-message" id="errorMessage"></div>
+
+                    <div class="editor-container">
+                        <div class="editor-panel">
+                            <div class="editor-header">
+                                <div>
+                                    <div class="editor-title">Input JSON</div>
+                                    <div class="editor-subtitle">Paste your JSON data here</div>
+                                </div>
+                                <div class="editor-actions">
+                                    <button class="icon-btn" onclick="copyInput()" title="Copy">
+                                        📋
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="editor-body">
+                                <textarea class="code-editor" id="jsonInput" placeholder='Paste your JSON here...'></textarea>
+                            </div>
+                        </div>
+
+                        <div class="editor-panel">
+                            <div class="editor-header">
+                                <div>
+                                    <div class="editor-title">Formatted Output</div>
+                                    <div class="editor-subtitle">Formatted and validated JSON output</div>
+                                </div>
+                                <div class="editor-actions">
+                                    <button class="icon-btn" onclick="copyOutput()" title="Copy">
+                                        📋
+                                    </button>
+                                    <button class="icon-btn" onclick="downloadJSON()" title="Download">
+                                        ⬇️
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="editor-body">
+                                <textarea class="code-editor" id="jsonOutput" placeholder="Formatted JSON will appear here..." readonly></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Placeholder for other tools -->
+            <div class="tool-section" id="base64-encoder">
+                <div class="content-header">
+                    <div class="content-title">🔐 Base64 Encoder</div>
+                    <div class="content-description">Encode and decode Base64 strings</div>
+                </div>
+                <div class="content-body">
+                    <p style="color: #718096;">Coming soon...</p>
+                </div>
+            </div>
+
+            <div class="tool-section" id="jwt-decoder">
+                <div class="content-header">
+                    <div class="content-title">🔑 JWT Decoder</div>
+                    <div class="content-description">Decode and inspect JWT tokens</div>
+                </div>
+                <div class="content-body">
+                    <p style="color: #718096;">Coming soon...</p>
+                </div>
+            </div>
+
+            <div class="tool-section" id="hash-generator">
+                <div class="content-header">
+                    <div class="content-title"># Hash Generator</div>
+                    <div class="content-description">Generate MD5, SHA-1, SHA-256 hashes</div>
+                </div>
+                <div class="content-body">
+                    <p style="color: #718096;">Coming soon...</p>
+                </div>
+            </div>
+
+            <div class="tool-section" id="uuid-generator">
+                <div class="content-header">
+                    <div class="content-title">🆔 UUID Generator</div>
+                    <div class="content-description">Generate unique identifiers</div>
+                </div>
+                <div class="content-body">
+                    <p style="color: #718096;">Coming soon...</p>
+                </div>
+            </div>
+
+            <div class="tool-section" id="url-encoder">
+                <div class="content-header">
+                    <div class="content-title">🔗 URL Encoder</div>
+                    <div class="content-description">Encode and decode URLs</div>
+                </div>
+                <div class="content-body">
+                    <p style="color: #718096;">Coming soon...</p>
+                </div>
+            </div>
+
+            <div class="tool-section" id="text-diff">
+                <div class="content-header">
+                    <div class="content-title">📊 Text Compare</div>
+                    <div class="content-description">Compare two text documents</div>
+                </div>
+                <div class="content-body">
+                    <p style="color: #718096;">Coming soon...</p>
+                </div>
+            </div>
+
+            <div class="tool-section" id="regex-tester">
+                <div class="content-header">
+                    <div class="content-title">🔍 Regex Tester</div>
+                    <div class="content-description">Test and validate regular expressions</div>
+                </div>
+                <div class="content-body">
+                    <p style="color: #718096;">Coming soon...</p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Theme Management
+        function initTheme() {
+            const savedTheme = localStorage.getItem('devutils-theme') || 'light';
+            applyTheme(savedTheme);
+        }
+
+        function toggleTheme() {
+            const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            applyTheme(newTheme);
+            localStorage.setItem('devutils-theme', newTheme);
+        }
+
+        function applyTheme(theme) {
+            document.documentElement.setAttribute('data-theme', theme);
+            const themeIcon = document.getElementById('themeIcon');
+            if (theme === 'dark') {
+                themeIcon.textContent = '☀️';
+            } else {
+                themeIcon.textContent = '🌙';
+            }
+        }
+
+        // Initialize theme on page load
+        document.addEventListener('DOMContentLoaded', initTheme);
+
+        // Navigation functionality
+        function toggleSection(element) {
+            const section = element.parentElement;
+            section.classList.toggle('collapsed');
+        }
+
+        // Tool navigation
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', function() {
+                // Remove active class from all items
+                document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+                // Add active class to clicked item
+                this.classList.add('active');
+
+                // Hide all tool sections
+                document.querySelectorAll('.tool-section').forEach(section => section.classList.remove('active'));
+                // Show selected tool section
+                const toolId = this.getAttribute('data-tool');
+                document.getElementById(toolId).classList.add('active');
+            });
+        });
+
+        // Search functionality
+        document.getElementById('searchInput').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            document.querySelectorAll('.nav-item').forEach(item => {
+                const text = item.textContent.toLowerCase();
+                if (text.includes(searchTerm)) {
+                    item.style.display = 'flex';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        });
+
+        // JSON Parser Functions
+        function formatJSON() {
+            const input = document.getElementById('jsonInput').value;
+            const output = document.getElementById('jsonOutput');
+            const errorMsg = document.getElementById('errorMessage');
+            const indentSize = parseInt(document.getElementById('indentSize').value);
+
+            try {
+                const parsed = JSON.parse(input);
+                output.value = JSON.stringify(parsed, null, indentSize);
+                errorMsg.classList.remove('show');
+                errorMsg.textContent = '';
+            } catch (e) {
+                errorMsg.textContent = '❌ Invalid JSON: ' + e.message;
+                errorMsg.classList.add('show');
+            }
+        }
+
+        function minifyJSON() {
+            const input = document.getElementById('jsonInput').value;
+            const output = document.getElementById('jsonOutput');
+            const errorMsg = document.getElementById('errorMessage');
+
+            try {
+                const parsed = JSON.parse(input);
+                output.value = JSON.stringify(parsed);
+                errorMsg.classList.remove('show');
+                errorMsg.textContent = '';
+            } catch (e) {
+                errorMsg.textContent = '❌ Invalid JSON: ' + e.message;
+                errorMsg.classList.add('show');
+            }
+        }
+
+        function clearJSON() {
+            document.getElementById('jsonInput').value = '';
+            document.getElementById('jsonOutput').value = '';
+            document.getElementById('errorMessage').classList.remove('show');
+        }
+
+        function copyInput() {
+            const input = document.getElementById('jsonInput');
+            input.select();
+            document.execCommand('copy');
+            showToast('Input copied to clipboard!');
+        }
+
+        function copyOutput() {
+            const output = document.getElementById('jsonOutput');
+            output.select();
+            document.execCommand('copy');
+            showToast('Output copied to clipboard!');
+        }
+
+        function downloadJSON() {
+            const output = document.getElementById('jsonOutput').value;
+            if (!output) {
+                showToast('No JSON to download!');
+                return;
+            }
+
+            const blob = new Blob([output], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'formatted.json';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            showToast('JSON downloaded!');
+        }
+
+        function showToast(message) {
+            // Simple toast notification
+            const toast = document.createElement('div');
+            toast.textContent = message;
+            toast.style.cssText = `
+                position: fixed;
+                bottom: 20px;
+                right: 20px;
+                background: #2d3748;
+                color: white;
+                padding: 12px 20px;
+                border-radius: 6px;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+                z-index: 1000;
+                animation: slideIn 0.3s ease;
+            `;
+            document.body.appendChild(toast);
+            setTimeout(() => {
+                toast.style.animation = 'slideOut 0.3s ease';
+                setTimeout(() => document.body.removeChild(toast), 300);
+            }, 2000);
+        }
+
+        // Add CSS animations
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideIn {
+                from {
+                    transform: translateX(400px);
+                    opacity: 0;
+                }
+                to {
+                    transform: translateX(0);
+                    opacity: 1;
+                }
+            }
+            @keyframes slideOut {
+                from {
+                    transform: translateX(0);
+                    opacity: 1;
+                }
+                to {
+                    transform: translateX(400px);
+                    opacity: 0;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>
