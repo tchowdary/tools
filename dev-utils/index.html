@@ -106,7 +106,7 @@
                                 </div>
                             </div>
                             <div class="editor-body">
-                                <textarea class="code-editor" id="jsonInput" placeholder='Paste your JSON here...'></textarea>
+                                <textarea class="code-editor" id="jsonInput" placeholder='Paste your JSON here...' oninput="formatJSON()"></textarea>
                             </div>
                         </div>
 
@@ -122,7 +122,7 @@
                                 </div>
                             </div>
                             <div class="editor-body">
-                                <textarea class="code-editor" id="jsonOutput" placeholder="Formatted JSON will appear here..." readonly></textarea>
+                                <div class="json-tree-viewer" id="jsonOutput"></div>
                             </div>
                         </div>
                     </div>
