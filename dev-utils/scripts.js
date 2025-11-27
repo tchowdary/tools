@@ -98,6 +98,8 @@ function showToast(message, toastType) {
 // JSON Parser Functions
 // ============================================
 
+let jsonParsedData = null;
+
 function formatJSON() {
   const input = document.getElementById('jsonInput').value;
   const output = document.getElementById('jsonOutput');
@@ -106,19 +108,164 @@ function formatJSON() {
 
   if (!input.trim()) {
     error.textContent = '';
-    output.value = '';
+    output.innerHTML = '';
+    jsonParsedData = null;
     return;
   }
 
   try {
     const parsed = JSON.parse(input);
-    output.value = JSON.stringify(parsed, null, indentSize);
+    jsonParsedData = parsed;
+    renderJSONTree(parsed, output);
     error.textContent = '';
-    showToast('JSON formatted successfully');
   } catch (e) {
     error.textContent = '❌ Invalid JSON: ' + e.message;
-    output.value = '';
+    output.innerHTML = '';
+    jsonParsedData = null;
   }
+}
+
+function renderJSONTree(data, container, isCollapsed = false) {
+  container.innerHTML = '';
+  const tree = createJSONNode(data, '', 0);
+  container.appendChild(tree);
+}
+
+function createJSONNode(data, key, level) {
+  const container = document.createElement('div');
+  container.className = 'json-node';
+  container.style.marginLeft = (level * 20) + 'px';
+
+  if (data === null) {
+    container.innerHTML = createKeyValue(key, 'null', 'json-null');
+  } else if (typeof data === 'boolean') {
+    container.innerHTML = createKeyValue(key, data.toString(), 'json-boolean');
+  } else if (typeof data === 'number') {
+    container.innerHTML = createKeyValue(key, data.toString(), 'json-number');
+  } else if (typeof data === 'string') {
+    container.innerHTML = createKeyValue(key, `"${escapeHtml(data)}"`, 'json-string');
+  } else if (Array.isArray(data)) {
+    const header = document.createElement('div');
+    header.className = 'json-expandable';
+
+    const toggle = document.createElement('span');
+    toggle.className = 'json-toggle';
+    toggle.textContent = '⊟';
+    toggle.onclick = function() {
+      const content = header.nextElementSibling;
+      if (content.style.display === 'none') {
+        content.style.display = 'block';
+        toggle.textContent = '⊟';
+      } else {
+        content.style.display = 'none';
+        toggle.textContent = '⊞';
+      }
+    };
+
+    header.appendChild(toggle);
+
+    if (key) {
+      const keySpan = document.createElement('span');
+      keySpan.className = 'json-key';
+      keySpan.textContent = `"${key}": `;
+      header.appendChild(keySpan);
+    }
+
+    const bracket = document.createElement('span');
+    bracket.className = 'json-bracket';
+    bracket.textContent = '[';
+    header.appendChild(bracket);
+
+    container.appendChild(header);
+
+    const content = document.createElement('div');
+    content.className = 'json-content';
+
+    data.forEach((item, index) => {
+      const child = createJSONNode(item, '', level + 1);
+      const comma = document.createElement('span');
+      comma.className = 'json-comma';
+      comma.textContent = index < data.length - 1 ? ',' : '';
+      child.appendChild(comma);
+      content.appendChild(child);
+    });
+
+    const closeBracket = document.createElement('div');
+    closeBracket.style.marginLeft = (level * 20) + 'px';
+    closeBracket.innerHTML = '<span class="json-bracket">]</span>';
+    content.appendChild(closeBracket);
+
+    container.appendChild(content);
+  } else if (typeof data === 'object') {
+    const header = document.createElement('div');
+    header.className = 'json-expandable';
+
+    const toggle = document.createElement('span');
+    toggle.className = 'json-toggle';
+    toggle.textContent = '⊟';
+    toggle.onclick = function() {
+      const content = header.nextElementSibling;
+      if (content.style.display === 'none') {
+        content.style.display = 'block';
+        toggle.textContent = '⊟';
+      } else {
+        content.style.display = 'none';
+        toggle.textContent = '⊞';
+      }
+    };
+
+    header.appendChild(toggle);
+
+    if (key) {
+      const keySpan = document.createElement('span');
+      keySpan.className = 'json-key';
+      keySpan.textContent = `"${key}": `;
+      header.appendChild(keySpan);
+    }
+
+    const brace = document.createElement('span');
+    brace.className = 'json-bracket';
+    brace.textContent = '{';
+    header.appendChild(brace);
+
+    container.appendChild(header);
+
+    const keys = Object.keys(data);
+
+    const content = document.createElement('div');
+    content.className = 'json-content';
+
+    keys.forEach((k, index) => {
+      const child = createJSONNode(data[k], k, level + 1);
+      const comma = document.createElement('span');
+      comma.className = 'json-comma';
+      comma.textContent = index < keys.length - 1 ? ',' : '';
+      child.appendChild(comma);
+      content.appendChild(child);
+    });
+
+    const closeBrace = document.createElement('div');
+    closeBrace.style.marginLeft = (level * 20) + 'px';
+    closeBrace.innerHTML = '<span class="json-bracket">}</span>';
+    content.appendChild(closeBrace);
+
+    container.appendChild(content);
+  }
+
+  return container;
+}
+
+function createKeyValue(key, value, className) {
+  if (key) {
+    return `<span class="json-key">"${escapeHtml(key)}"</span>: <span class="${className}">${value}</span>`;
+  }
+  return `<span class="${className}">${value}</span>`;
+}
+
+function escapeHtml(text) {
+  const div = document.createElement('div');
+  div.textContent = text;
+  return div.innerHTML;
 }
 
 function minifyJSON() {
@@ -128,25 +275,30 @@ function minifyJSON() {
 
   if (!input.trim()) {
     error.textContent = '';
-    output.value = '';
+    output.innerHTML = '';
+    jsonParsedData = null;
     return;
   }
 
   try {
     const parsed = JSON.parse(input);
-    output.value = JSON.stringify(parsed);
+    jsonParsedData = parsed;
+    const minified = JSON.stringify(parsed);
+    output.innerHTML = `<pre style="margin: 0; white-space: pre-wrap; word-wrap: break-word;">${escapeHtml(minified)}</pre>`;
     error.textContent = '';
     showToast('JSON minified successfully');
   } catch (e) {
     error.textContent = '❌ Invalid JSON: ' + e.message;
-    output.value = '';
+    output.innerHTML = '';
+    jsonParsedData = null;
   }
 }
 
 function clearJSON() {
   document.getElementById('jsonInput').value = '';
-  document.getElementById('jsonOutput').value = '';
+  document.getElementById('jsonOutput').innerHTML = '';
   document.getElementById('errorMessage').textContent = '';
+  jsonParsedData = null;
 }
 
 function copyInput() {
@@ -157,21 +309,21 @@ function copyInput() {
 }
 
 function copyOutput() {
-  const output = document.getElementById('jsonOutput');
-  if (output.value) {
-    navigator.clipboard.writeText(output.value);
+  if (jsonParsedData) {
+    const formatted = JSON.stringify(jsonParsedData, null, 2);
+    navigator.clipboard.writeText(formatted);
     showToast('Output copied to clipboard');
   }
 }
 
 function downloadJSON() {
-  const output = document.getElementById('jsonOutput').value;
-  if (!output) {
+  if (!jsonParsedData) {
     showToast('No formatted JSON to download', 'error');
     return;
   }
 
-  const blob = new Blob([output], { type: 'application/json' });
+  const formatted = JSON.stringify(jsonParsedData, null, 2);
+  const blob = new Blob([formatted], { type: 'application/json' });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url;
