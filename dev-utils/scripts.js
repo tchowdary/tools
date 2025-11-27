@@ -150,15 +150,15 @@ function createJSONNode(data, key, level) {
 
     const toggle = document.createElement('span');
     toggle.className = 'json-toggle';
-    toggle.textContent = '▼';
+    toggle.textContent = '⊟';
     toggle.onclick = function() {
       const content = header.nextElementSibling;
       if (content.style.display === 'none') {
         content.style.display = 'block';
-        toggle.textContent = '▼';
+        toggle.textContent = '⊟';
       } else {
         content.style.display = 'none';
-        toggle.textContent = '▶';
+        toggle.textContent = '⊞';
       }
     };
 
@@ -202,15 +202,15 @@ function createJSONNode(data, key, level) {
 
     const toggle = document.createElement('span');
     toggle.className = 'json-toggle';
-    toggle.textContent = '▼';
+    toggle.textContent = '⊟';
     toggle.onclick = function() {
       const content = header.nextElementSibling;
       if (content.style.display === 'none') {
         content.style.display = 'block';
-        toggle.textContent = '▼';
+        toggle.textContent = '⊟';
       } else {
         content.style.display = 'none';
-        toggle.textContent = '▶';
+        toggle.textContent = '⊞';
       }
     };
 
