@@ -176,11 +176,6 @@ function createJSONNode(data, key, level) {
     bracket.textContent = '[';
     header.appendChild(bracket);
 
-    const count = document.createElement('span');
-    count.className = 'json-count';
-    count.textContent = ` ${data.length} items`;
-    header.appendChild(count);
-
     container.appendChild(header);
 
     const content = document.createElement('div');
@@ -233,13 +228,9 @@ function createJSONNode(data, key, level) {
     brace.textContent = '{';
     header.appendChild(brace);
 
-    const keys = Object.keys(data);
-    const count = document.createElement('span');
-    count.className = 'json-count';
-    count.textContent = ` ${keys.length} keys`;
-    header.appendChild(count);
-
     container.appendChild(header);
+
+    const keys = Object.keys(data);
 
     const content = document.createElement('div');
     content.className = 'json-content';

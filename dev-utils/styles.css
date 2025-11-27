@@ -648,7 +648,7 @@ body {
 }
 
 .json-key {
-    color: #0ea5e9;
+    color: #0369a1;
     font-weight: 500;
 }
 
@@ -657,7 +657,7 @@ body {
 }
 
 .json-string {
-    color: #10b981;
+    color: #047857;
 }
 
 [data-theme="dark"] .json-string {
@@ -665,7 +665,7 @@ body {
 }
 
 .json-number {
-    color: #f59e0b;
+    color: #c2410c;
 }
 
 [data-theme="dark"] .json-number {
@@ -673,7 +673,7 @@ body {
 }
 
 .json-boolean {
-    color: #8b5cf6;
+    color: #6d28d9;
 }
 
 [data-theme="dark"] .json-boolean {
@@ -681,7 +681,7 @@ body {
 }
 
 .json-null {
-    color: #ef4444;
+    color: #dc2626;
     font-style: italic;
 }
 
