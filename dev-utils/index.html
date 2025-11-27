@@ -32,7 +32,7 @@
                     <div class="nav-items">
                         <div class="nav-item active" data-tool="json-parser">
                             <span class="nav-item-icon">📄</span>
-                            <span>JSON Parser</span>
+                            <span>JSON Formatter</span>
                         </div>
                         <div class="nav-item" data-tool="base64-encoder">
                             <span class="nav-item-icon">🔐</span>
@@ -67,18 +67,7 @@
 
                 <div class="content-body">
                     <div class="format-options">
-                        <div class="format-options-title">Format Options</div>
-                        <div class="format-options-subtitle">Customize the JSON formatting</div>
-
-                        <div style="display: flex; align-items: center; justify-content: space-between;">
-                            <div class="options-row">
-                                <div class="option-group">
-                                    <label class="option-label">Indent Size:</label>
-                                    <input type="number" class="indent-input" id="indentSize" value="2" min="0" max="8">
-                                </div>
-                            </div>
-
-                            <div class="button-group">
+                      <div class="button-group">
                                 <button class="btn btn-primary" onclick="formatJSON()">
                                     <span>📋</span> Format
                                 </button>
@@ -89,7 +78,6 @@
                                     <span>✖</span> Clear
                                 </button>
                             </div>
-                        </div>
                     </div>
 
                     <div class="error-message" id="errorMessage"></div>

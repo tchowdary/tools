@@ -104,7 +104,6 @@ function formatJSON() {
   const input = document.getElementById('jsonInput').value;
   const output = document.getElementById('jsonOutput');
   const error = document.getElementById('errorMessage');
-  const indentSize = parseInt(document.getElementById('indentSize').value);
 
   if (!input.trim()) {
     error.textContent = '';
