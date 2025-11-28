@@ -699,7 +699,7 @@ body {
 }
 
 .json-count {
-    color: var(--content-subtitle);
+    color: var(--content-text-secondary);
     font-size: 11px;
     margin-left: 8px;
     font-weight: normal;
@@ -708,4 +708,62 @@ body {
 .json-comma {
     color: var(--content-text);
     margin-left: 2px;
+}
+
+/* Full Screen Modal */
+.fullscreen-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100vw;
+    height: 100vh;
+    background: var(--main-bg);
+    z-index: 9999;
+    flex-direction: column;
+}
+
+.fullscreen-modal.active {
+    display: flex;
+}
+
+.fullscreen-header {
+    padding: 20px 32px;
+    background: var(--content-bg);
+    border-bottom: 1px solid var(--content-border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-shrink: 0;
+}
+
+.fullscreen-title {
+    font-size: 24px;
+    font-weight: 600;
+    color: var(--content-text);
+    margin-bottom: 4px;
+}
+
+.fullscreen-subtitle {
+    font-size: 13px;
+    color: var(--content-text-secondary);
+}
+
+.fullscreen-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.fullscreen-content {
+    flex: 1;
+    overflow: auto;
+    padding: 24px 32px;
+    min-height: 0;
+}
+
+.fullscreen-content .json-tree-viewer {
+    min-height: 100%;
+    height: auto;
 }

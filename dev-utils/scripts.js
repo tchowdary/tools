@@ -33,6 +33,16 @@ document.addEventListener('DOMContentLoaded', function () {
   // Start current time updates
   updateCurrentTime();
   setInterval(updateCurrentTime, 1000);
+
+  // Add keyboard support for full screen modal (ESC to close)
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+      const modal = document.getElementById('fullScreenModal');
+      if (modal && modal.classList.contains('active')) {
+        toggleFullScreen();
+      }
+    }
+  });
 });
 
 // Section collapse/expand
@@ -124,16 +134,38 @@ function formatJSON() {
   }
 }
 
+function toggleFullScreen() {
+  const modal = document.getElementById('fullScreenModal');
+  const fullScreenOutput = document.getElementById('jsonOutputFullScreen');
+
+  if (modal.classList.contains('active')) {
+    modal.classList.remove('active');
+  } else {
+    if (jsonParsedData) {
+      modal.classList.add('active');
+      renderJSONTree(jsonParsedData, fullScreenOutput);
+    } else {
+      showToast('No JSON data to display', 'error');
+    }
+  }
+}
+
 function renderJSONTree(data, container, isCollapsed = false) {
   container.innerHTML = '';
-  const tree = createJSONNode(data, '', 0);
+  const tree = createJSONNode(data, '', 0, true);
   container.appendChild(tree);
 }
 
-function createJSONNode(data, key, level) {
+function createJSONNode(data, key, level, isRoot = false) {
   const container = document.createElement('div');
   container.className = 'json-node';
   container.style.marginLeft = (level * 20) + 'px';
+
+  // Determine if this node should start collapsed
+  // Collapse arrays/objects at level 2+ or if they have many items
+  const shouldStartCollapsed = !isRoot && (level >= 2 ||
+    (Array.isArray(data) && data.length > 10) ||
+    (typeof data === 'object' && data !== null && !Array.isArray(data) && Object.keys(data).length > 10));
 
   if (data === null) {
     container.innerHTML = createKeyValue(key, 'null', 'json-null');
@@ -149,7 +181,7 @@ function createJSONNode(data, key, level) {
 
     const toggle = document.createElement('span');
     toggle.className = 'json-toggle';
-    toggle.textContent = '⊟';
+    toggle.textContent = shouldStartCollapsed ? '⊞' : '⊟';
     toggle.onclick = function() {
       const content = header.nextElementSibling;
       if (content.style.display === 'none') {
@@ -175,10 +207,18 @@ function createJSONNode(data, key, level) {
     bracket.textContent = '[';
     header.appendChild(bracket);
 
+    const itemCount = document.createElement('span');
+    itemCount.className = 'json-count';
+    itemCount.textContent = `${data.length} items`;
+    header.appendChild(itemCount);
+
     container.appendChild(header);
 
     const content = document.createElement('div');
     content.className = 'json-content';
+    if (shouldStartCollapsed) {
+      content.style.display = 'none';
+    }
 
     data.forEach((item, index) => {
       const child = createJSONNode(item, '', level + 1);
@@ -201,7 +241,7 @@ function createJSONNode(data, key, level) {
 
     const toggle = document.createElement('span');
     toggle.className = 'json-toggle';
-    toggle.textContent = '⊟';
+    toggle.textContent = shouldStartCollapsed ? '⊞' : '⊟';
     toggle.onclick = function() {
       const content = header.nextElementSibling;
       if (content.style.display === 'none') {
@@ -227,12 +267,19 @@ function createJSONNode(data, key, level) {
     brace.textContent = '{';
     header.appendChild(brace);
 
-    container.appendChild(header);
-
     const keys = Object.keys(data);
+    const itemCount = document.createElement('span');
+    itemCount.className = 'json-count';
+    itemCount.textContent = `${keys.length} keys`;
+    header.appendChild(itemCount);
+
+    container.appendChild(header);
 
     const content = document.createElement('div');
     content.className = 'json-content';
+    if (shouldStartCollapsed) {
+      content.style.display = 'none';
+    }
 
     keys.forEach((k, index) => {
       const child = createJSONNode(data[k], k, level + 1);

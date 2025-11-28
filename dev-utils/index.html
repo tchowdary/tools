@@ -105,6 +105,7 @@
                                     <div class="editor-subtitle">Formatted and validated JSON output</div>
                                 </div>
                                 <div class="editor-actions">
+                                    <button class="icon-btn" onclick="toggleFullScreen()" title="Full Screen">⛶</button>
                                     <button class="icon-btn" onclick="copyOutput()" title="Copy">📋</button>
                                     <button class="icon-btn" onclick="downloadJSON()" title="Download">⬇️</button>
                                 </div>
@@ -480,8 +481,26 @@
             </div>
 
             <!-- Placeholder Tools -->
-            
+
         </main>
+    </div>
+
+    <!-- Full Screen Modal -->
+    <div id="fullScreenModal" class="fullscreen-modal">
+        <div class="fullscreen-header">
+            <div>
+                <div class="fullscreen-title">Formatted JSON Output</div>
+                <div class="fullscreen-subtitle">Full Screen View</div>
+            </div>
+            <div class="fullscreen-actions">
+                <button class="icon-btn" onclick="copyOutput()" title="Copy">📋</button>
+                <button class="icon-btn" onclick="downloadJSON()" title="Download">⬇️</button>
+                <button class="icon-btn" onclick="toggleFullScreen()" title="Exit Full Screen">✖</button>
+            </div>
+        </div>
+        <div class="fullscreen-content">
+            <div class="json-tree-viewer" id="jsonOutputFullScreen"></div>
+        </div>
     </div>
 </body>
 <script src="scripts.js"></script>
