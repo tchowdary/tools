@@ -606,8 +606,8 @@ body {
     background: var(--input-bg);
     color: var(--input-text);
     font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
-    font-size: 15px;
-    line-height: 1.6;
+    font-size: 14px;
+    line-height: 1.4;
     overflow: auto;
     box-sizing: border-box;
     flex: 1;
@@ -615,6 +615,7 @@ body {
 
 .json-node {
     position: relative;
+    line-height: 1.4;
 }
 
 .json-expandable {
@@ -623,7 +624,8 @@ body {
     display: flex;
     align-items: center;
     gap: 4px;
-    padding: 2px 0;
+    padding: 0;
+    line-height: 1.4;
 }
 
 .json-expandable:hover {
