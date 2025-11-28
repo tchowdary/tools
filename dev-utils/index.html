@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="css/components.css">
     <link rel="stylesheet" href="css/editor.css">
     <link rel="stylesheet" href="css/json-viewer.css">
+    <link rel="stylesheet" href="css/text-compare.css">
     <link rel="stylesheet" href="css/responsive.css">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><text y='50%' x='50%' dominant-baseline='middle' text-anchor='middle' font-size='48'>🐾</text></svg>">
 </head>
@@ -54,7 +55,11 @@
                         <div class="nav-item" data-tool="jwt-decoder">
                             <span class="nav-item-icon">🔑</span>
                             <span>JWT Decoder</span>
-                        </div>                        
+                        </div>
+                        <div class="nav-item" data-tool="text-compare">
+                            <span class="nav-item-icon">🔍</span>
+                            <span>Text Compare</span>
+                        </div>
                     </div>
                 </div>
             </nav>
@@ -504,8 +509,109 @@
                 </div>
             </div>
 
+            <!-- Text Compare Tool -->
+            <div class="tool-section" id="text-compare">
+                <div class="content-header">
+                    <div>
+                        <div class="content-title">🔍 Text Compare</div>
+                        <div class="content-description">Compare two texts side by side and visualize differences</div>
+                    </div>
+                    <button class="btn btn-secondary fullscreen-btn" onclick="toggleFullscreen('text-compare')" title="Toggle fullscreen">
+                        <span>⛶</span> Fullscreen
+                    </button>
+                </div>
+
+                <div class="content-body">
+                    <!-- Text Input Areas -->
+                    <div class="text-compare-inputs">
+                        <!-- Text 1 Input -->
+                        <div class="text-input-panel">
+                            <div class="text-input-header">
+                                <div class="text-input-title">Text 1</div>
+                                <div class="text-input-actions">
+                                    <button class="btn btn-secondary btn-sm" onclick="loadTextCompareExample()">Example</button>
+                                    <button class="icon-btn" onclick="clearTextCompareInput(1)" title="Clear">🔄</button>
+                                </div>
+                            </div>
+                            <div class="text-input-body">
+                                <textarea class="text-compare-textarea" id="textCompareInput1" placeholder="Enter first text..."></textarea>
+                            </div>
+                        </div>
+
+                        <!-- Text 2 Input -->
+                        <div class="text-input-panel">
+                            <div class="text-input-header">
+                                <div class="text-input-title">Text 2</div>
+                                <div class="text-input-actions">
+                                    <button class="btn btn-secondary btn-sm" onclick="loadTextCompareExample()">Example</button>
+                                    <button class="icon-btn" onclick="clearTextCompareInput(2)" title="Clear">🔄</button>
+                                </div>
+                            </div>
+                            <div class="text-input-body">
+                                <textarea class="text-compare-textarea" id="textCompareInput2" placeholder="Enter second text..."></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Compare Button -->
+                    <div class="compare-button-container">
+                        <button class="btn btn-primary" onclick="compareTexts()">
+                            <span>🔄</span> Compare Texts
+                        </button>
+                    </div>
+
+                    <!-- Comparison Results -->
+                    <div class="comparison-results hidden" id="textCompareResults">
+                        <div class="comparison-results-header">
+                            <div class="comparison-results-title">Comparison Results</div>
+                            <div class="comparison-results-actions">
+                                <button class="icon-btn" onclick="copyComparisonResults()" title="Copy">📋</button>
+                                <button class="icon-btn" onclick="downloadComparisonResults()" title="Download">⬇️</button>
+                                <button class="icon-btn" onclick="clearComparisonResults()" title="Clear">🔄</button>
+                            </div>
+                        </div>
+
+                        <div class="view-mode-toggle">
+                            <button class="view-mode-btn active">
+                                <span>↔</span> Side by Side
+                            </button>
+                        </div>
+
+                        <div class="comparison-results-body">
+                            <div class="diff-container">
+                                <div class="diff-side-by-side">
+                                    <div class="diff-side">
+                                        <div class="diff-side-header">Text 1</div>
+                                        <div class="diff-side-content" id="diffLeftSide"></div>
+                                    </div>
+                                    <div class="diff-side">
+                                        <div class="diff-side-header">Text 2</div>
+                                        <div class="diff-side-content" id="diffRightSide"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="diff-legend">
+                            <div class="diff-legend-item">
+                                <div class="diff-legend-color added"></div>
+                                <div class="diff-legend-label">Added</div>
+                            </div>
+                            <div class="diff-legend-item">
+                                <div class="diff-legend-color removed"></div>
+                                <div class="diff-legend-label">Removed</div>
+                            </div>
+                            <div class="diff-legend-item">
+                                <div class="diff-legend-color unchanged"></div>
+                                <div class="diff-legend-label">Unchanged</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <!-- Placeholder Tools -->
-            
+
         </main>
     </div>
 </body>
