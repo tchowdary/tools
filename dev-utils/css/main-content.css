@@ -1,0 +1,71 @@
+/* Main Content Styles */
+.main-content {
+    flex: 1;
+    overflow-y: auto;
+    background: var(--main-bg);
+    transition: background-color 0.3s ease;
+    display: flex;
+    flex-direction: column;
+}
+
+.content-header {
+    background: var(--content-bg);
+    padding: 24px 32px;
+    border-bottom: 1px solid var(--content-border);
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.content-title {
+    font-size: 28px;
+    font-weight: 600;
+    color: var(--content-text);
+    margin-bottom: 4px;
+    transition: color 0.3s ease;
+}
+
+.content-description {
+    font-size: 14px;
+    color: var(--content-text-secondary);
+    transition: color 0.3s ease;
+}
+
+.content-body {
+    padding: 24px 32px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+}
+
+.tool-section {
+    display: none;
+}
+
+.tool-section.active {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+}
+
+/* Main Content Scrollbar */
+.main-content::-webkit-scrollbar {
+    width: 8px;
+}
+
+.main-content::-webkit-scrollbar-track {
+    background: var(--main-bg);
+}
+
+.main-content::-webkit-scrollbar-thumb {
+    background: var(--content-border);
+    border-radius: 4px;
+}
+
+.main-content::-webkit-scrollbar-thumb:hover {
+    background: var(--content-text-secondary);
+}

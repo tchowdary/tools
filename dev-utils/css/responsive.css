@@ -1,0 +1,10 @@
+/* Responsive */
+@media (max-width: 768px) {
+    .editor-container {
+        grid-template-columns: 1fr;
+    }
+
+    .sidebar {
+        width: 240px;
+    }
+}
