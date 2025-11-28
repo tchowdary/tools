@@ -74,6 +74,34 @@ function toggleTheme() {
   updateThemeIcon(newTheme);
 }
 
+// Fullscreen toggle
+function toggleFullscreen(toolId) {
+  const toolSection = document.getElementById(toolId);
+  const btn = toolSection.querySelector('.fullscreen-btn');
+
+  if (toolSection.classList.contains('fullscreen')) {
+    toolSection.classList.remove('fullscreen');
+    btn.innerHTML = '<span>⛶</span> Fullscreen';
+  } else {
+    toolSection.classList.add('fullscreen');
+    btn.innerHTML = '<span>⛶</span> Exit Fullscreen';
+  }
+}
+
+// JSON Output Panel Fullscreen toggle
+function toggleJSONOutputFullscreen() {
+  const panel = document.getElementById('jsonOutputPanel');
+  const btn = document.getElementById('jsonOutputFullscreenBtn');
+
+  if (panel.classList.contains('fullscreen')) {
+    panel.classList.remove('fullscreen');
+    btn.title = 'Toggle fullscreen';
+  } else {
+    panel.classList.add('fullscreen');
+    btn.title = 'Exit fullscreen';
+  }
+}
+
 function updateThemeIcon(theme) {
   const themeIcon = document.getElementById('themeIcon');
   themeIcon.textContent = theme === 'dark' ? '☀️' : '🌙';
@@ -133,7 +161,7 @@ function renderJSONTree(data, container, isCollapsed = false) {
 function createJSONNode(data, key, level) {
   const container = document.createElement('div');
   container.className = 'json-node';
-  container.style.marginLeft = (level * 20) + 'px';
+  container.style.marginLeft = (level * 16) + 'px';
 
   if (data === null) {
     container.innerHTML = createKeyValue(key, 'null', 'json-null');
@@ -190,7 +218,8 @@ function createJSONNode(data, key, level) {
     });
 
     const closeBracket = document.createElement('div');
-    closeBracket.style.marginLeft = (level * 20) + 'px';
+    closeBracket.style.marginLeft = (level * 16) + 'px';
+    closeBracket.style.lineHeight = '1.3';
     closeBracket.innerHTML = '<span class="json-bracket">]</span>';
     content.appendChild(closeBracket);
 
@@ -210,7 +239,7 @@ function createJSONNode(data, key, level) {
       } else {
         content.style.display = 'none';
         toggle.textContent = '⊞';
-      }
+      } 
     };
 
     header.appendChild(toggle);
@@ -244,7 +273,8 @@ function createJSONNode(data, key, level) {
     });
 
     const closeBrace = document.createElement('div');
-    closeBrace.style.marginLeft = (level * 20) + 'px';
+    closeBrace.style.marginLeft = (level * 16) + 'px';
+    closeBrace.style.lineHeight = '1.3';
     closeBrace.innerHTML = '<span class="json-bracket">}</span>';
     content.appendChild(closeBrace);
 
@@ -484,11 +514,9 @@ function updateCurrentTime() {
   const timestampS = Math.floor(timestampMs / 1000);
 
   document.getElementById('currentTimestampMs').textContent = timestampMs;
-  document.getElementById('currentTimestampS').textContent = timestampS;
-  document.getElementById('currentISO').textContent = now.toISOString();
+  document.getElementById('currentTimestampS').textContent = timestampS;  
   document.getElementById('currentUTC').textContent = now.toUTCString();
   document.getElementById('currentLocal').textContent = now.toLocaleString();
-  document.getElementById('currentRelative').textContent = 'Just now';
 }
 
 function switchTimestampTab(tab) {
