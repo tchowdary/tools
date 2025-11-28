@@ -248,6 +248,10 @@ body {
     padding: 24px 32px;
     border-bottom: 1px solid var(--content-border);
     transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
 }
 
 .content-title {
@@ -708,4 +712,29 @@ body {
 .json-comma {
     color: var(--content-text);
     margin-left: 2px;
+}
+
+/* Fullscreen Styles */
+.tool-section.fullscreen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 9999;
+    background: var(--main-bg);
+    display: flex !important;
+}
+
+.tool-section.fullscreen .content-header {
+    flex-shrink: 0;
+}
+
+.tool-section.fullscreen .content-body {
+    flex: 1;
+    overflow: auto;
+}
+
+.fullscreen-btn span {
+    font-size: 16px;
 }

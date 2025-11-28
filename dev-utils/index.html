@@ -62,8 +62,13 @@
             <!-- JSON Parser Tool -->
             <div class="tool-section active" id="json-parser">
                 <div class="content-header">
-                    <div class="content-title">📄 JSON Parser & Formatter</div>
-                    <div class="content-description">Parse, validate, and format JSON data with ease</div>
+                    <div>
+                        <div class="content-title">📄 JSON Parser & Formatter</div>
+                        <div class="content-description">Parse, validate, and format JSON data with ease</div>
+                    </div>
+                    <button class="btn btn-secondary fullscreen-btn" onclick="toggleFullscreen('json-parser')" title="Toggle fullscreen">
+                        <span>⛶</span> Fullscreen
+                    </button>
                 </div>
 
                 <div class="content-body">
@@ -121,8 +126,13 @@
             <!-- Base64 Encoder/Decoder Tool -->
             <div class="tool-section" id="base64-encoder">
                 <div class="content-header">
-                    <div class="content-title">🔐 Base64 Encoder/Decoder</div>
-                    <div class="content-description">Encode and decode Base64 data</div>
+                    <div>
+                        <div class="content-title">🔐 Base64 Encoder/Decoder</div>
+                        <div class="content-description">Encode and decode Base64 data</div>
+                    </div>
+                    <button class="btn btn-secondary fullscreen-btn" onclick="toggleFullscreen('base64-encoder')" title="Toggle fullscreen">
+                        <span>⛶</span> Fullscreen
+                    </button>
                 </div>
 
                 <div class="content-body">
@@ -194,8 +204,13 @@
             <!-- Timestamp Converter Tool -->
             <div class="tool-section" id="timestamp-converter">
                 <div class="content-header">
-                    <div class="content-title">🕐 Timestamp Converter</div>
-                    <div class="content-description">Convert between Unix timestamps and human-readable dates</div>
+                    <div>
+                        <div class="content-title">🕐 Timestamp Converter</div>
+                        <div class="content-description">Convert between Unix timestamps and human-readable dates</div>
+                    </div>
+                    <button class="btn btn-secondary fullscreen-btn" onclick="toggleFullscreen('timestamp-converter')" title="Toggle fullscreen">
+                        <span>⛶</span> Fullscreen
+                    </button>
                 </div>
 
                 <div class="content-body">
@@ -351,9 +366,16 @@
             <!-- JWT Decoder Tool -->
             <div class="tool-section" id="jwt-decoder">
                 <div class="content-header">
-                    <div class="content-title">🔑 JWT Decoder</div>
-                    <div class="content-description">Paste a JWT below to decode, validate, and verify</div>
-                    <button class="btn btn-secondary" onclick="generateJWTExample()" style="margin-left: auto;">Generate example</button>
+                    <div>
+                        <div class="content-title">🔑 JWT Decoder</div>
+                        <div class="content-description">Paste a JWT below to decode, validate, and verify</div>
+                    </div>
+                    <div style="display: flex; gap: 8px;">
+                        <button class="btn btn-secondary" onclick="generateJWTExample()">Generate example</button>
+                        <button class="btn btn-secondary fullscreen-btn" onclick="toggleFullscreen('jwt-decoder')" title="Toggle fullscreen">
+                            <span>⛶</span> Fullscreen
+                        </button>
+                    </div>
                 </div>
 
                 <div class="content-body">

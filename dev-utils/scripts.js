@@ -74,6 +74,20 @@ function toggleTheme() {
   updateThemeIcon(newTheme);
 }
 
+// Fullscreen toggle
+function toggleFullscreen(toolId) {
+  const toolSection = document.getElementById(toolId);
+  const btn = toolSection.querySelector('.fullscreen-btn');
+
+  if (toolSection.classList.contains('fullscreen')) {
+    toolSection.classList.remove('fullscreen');
+    btn.innerHTML = '<span>⛶</span> Fullscreen';
+  } else {
+    toolSection.classList.add('fullscreen');
+    btn.innerHTML = '<span>⛶</span> Exit Fullscreen';
+  }
+}
+
 function updateThemeIcon(theme) {
   const themeIcon = document.getElementById('themeIcon');
   themeIcon.textContent = theme === 'dark' ? '☀️' : '🌙';
