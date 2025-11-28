@@ -161,7 +161,7 @@ function renderJSONTree(data, container, isCollapsed = false) {
 function createJSONNode(data, key, level) {
   const container = document.createElement('div');
   container.className = 'json-node';
-  container.style.marginLeft = (level * 20) + 'px';
+  container.style.marginLeft = (level * 16) + 'px';
 
   if (data === null) {
     container.innerHTML = createKeyValue(key, 'null', 'json-null');
@@ -218,7 +218,8 @@ function createJSONNode(data, key, level) {
     });
 
     const closeBracket = document.createElement('div');
-    closeBracket.style.marginLeft = (level * 20) + 'px';
+    closeBracket.style.marginLeft = (level * 16) + 'px';
+    closeBracket.style.lineHeight = '1.3';
     closeBracket.innerHTML = '<span class="json-bracket">]</span>';
     content.appendChild(closeBracket);
 
@@ -272,7 +273,8 @@ function createJSONNode(data, key, level) {
     });
 
     const closeBrace = document.createElement('div');
-    closeBrace.style.marginLeft = (level * 20) + 'px';
+    closeBrace.style.marginLeft = (level * 16) + 'px';
+    closeBrace.style.lineHeight = '1.3';
     closeBrace.innerHTML = '<span class="json-bracket">}</span>';
     content.appendChild(closeBrace);
 
