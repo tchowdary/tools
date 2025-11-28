@@ -1,0 +1,133 @@
+/* JSON Tree Viewer Styles */
+.json-tree-viewer {
+    width: 100%;
+    height: 100%;
+    min-height: 500px;
+    padding: 16px;
+    background: var(--input-bg);
+    color: var(--input-text);
+    font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+    font-size: 15px;
+    line-height: 1.3;
+    overflow: auto;
+    box-sizing: border-box;
+    flex: 1;
+}
+
+.json-tree-viewer > .json-node {
+    margin: 0;
+    padding: 0;
+}
+
+.json-tree-viewer div {
+    margin: 0;
+}
+
+.json-node {
+    position: relative;
+    line-height: 1.3;
+    margin: 0;
+    padding: 0;
+}
+
+.json-expandable {
+    cursor: pointer;
+    user-select: none;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 0;
+    margin: 0;
+    line-height: 1.3;
+}
+
+.json-expandable:hover {
+    background: var(--icon-btn-hover);
+    border-radius: 3px;
+}
+
+.json-toggle {
+    display: inline-block;
+    width: 18px;
+    font-size: 14px;
+    color: var(--content-text-secondary);
+    transition: all 0.2s;
+    text-align: center;
+    line-height: 1.3;
+}
+
+.json-content {
+    margin: 0;
+    padding: 0;
+    line-height: 1.3;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-5px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.json-key {
+    color: #0369a1;
+    font-weight: 500;
+}
+
+[data-theme="dark"] .json-key {
+    color: #38bdf8;
+}
+
+.json-string {
+    color: #047857;
+}
+
+[data-theme="dark"] .json-string {
+    color: #34d399;
+}
+
+.json-number {
+    color: #c2410c;
+}
+
+[data-theme="dark"] .json-number {
+    color: #fbbf24;
+}
+
+.json-boolean {
+    color: #6d28d9;
+}
+
+[data-theme="dark"] .json-boolean {
+    color: #a78bfa;
+}
+
+.json-null {
+    color: #dc2626;
+    font-style: italic;
+}
+
+[data-theme="dark"] .json-null {
+    color: #f87171;
+}
+
+.json-bracket {
+    color: var(--content-text);
+    font-weight: 600;
+}
+
+.json-count {
+    color: var(--content-subtitle);
+    font-size: 11px;
+    margin-left: 8px;
+    font-weight: normal;
+}
+
+.json-comma {
+    color: var(--content-text);
+    margin-left: 2px;
+}

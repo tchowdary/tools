@@ -1,0 +1,83 @@
+:root {
+    /* Light Theme - Sidebar */
+    --sidebar-bg: #2d3748;
+    --sidebar-border: #4a5568;
+    --sidebar-text: #e2e8f0;
+    --sidebar-text-secondary: #a0aec0;
+    --sidebar-hover: #374151;
+    --sidebar-active: #1a202c;
+    --sidebar-input-bg: #1a202c;
+    --sidebar-input-border: #4a5568;
+    --sidebar-scrollbar-track: #1a202c;
+    --sidebar-scrollbar-thumb: #4a5568;
+    --sidebar-scrollbar-thumb-hover: #718096;
+
+    /* Light Theme - Main Content */
+    --main-bg: #f5f7fa;
+    --content-bg: #ffffff;
+    --content-text: #2d3748;
+    --content-text-secondary: #718096;
+    --content-border: #e2e8f0;
+    --panel-bg: #ffffff;
+    --panel-header-bg: #f7fafc;
+    --input-bg: #ffffff;
+    --input-border: #cbd5e0;
+    --input-text: #2d3748;
+    --input-placeholder: #a0aec0;
+
+    /* Buttons */
+    --btn-primary-bg: #2d3748;
+    --btn-primary-hover: #1a202c;
+    --btn-secondary-bg: #ffffff;
+    --btn-secondary-border: #cbd5e0;
+    --btn-secondary-hover-bg: #f7fafc;
+
+    /* Other elements */
+    --icon-btn-hover: #e2e8f0;
+    --error-bg: #fff5f5;
+    --error-border: #fc8181;
+    --error-text: #c53030;
+    --shadow: rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="dark"] {
+    /* Dark Theme - Sidebar */
+    --sidebar-bg: #1a1a1a;
+    --sidebar-border: #2d2d2d;
+    --sidebar-text: #e5e5e5;
+    --sidebar-text-secondary: #999999;
+    --sidebar-hover: #2d2d2d;
+    --sidebar-active: #0a0a0a;
+    --sidebar-input-bg: #0a0a0a;
+    --sidebar-input-border: #2d2d2d;
+    --sidebar-scrollbar-track: #0a0a0a;
+    --sidebar-scrollbar-thumb: #2d2d2d;
+    --sidebar-scrollbar-thumb-hover: #404040;
+
+    /* Dark Theme - Main Content */
+    --main-bg: #0f0f0f;
+    --content-bg: #1a1a1a;
+    --content-text: #e5e5e5;
+    --content-text-secondary: #999999;
+    --content-border: #2d2d2d;
+    --panel-bg: #1a1a1a;
+    --panel-header-bg: #141414;
+    --input-bg: #0a0a0a;
+    --input-border: #2d2d2d;
+    --input-text: #e5e5e5;
+    --input-placeholder: #666666;
+
+    /* Buttons */
+    --btn-primary-bg: #4299e1;
+    --btn-primary-hover: #3182ce;
+    --btn-secondary-bg: #2d2d2d;
+    --btn-secondary-border: #404040;
+    --btn-secondary-hover-bg: #333333;
+
+    /* Other elements */
+    --icon-btn-hover: #2d2d2d;
+    --error-bg: #2d1a1a;
+    --error-border: #8b3a3a;
+    --error-text: #fc8181;
+    --shadow: rgba(0, 0, 0, 0.3);
+}
