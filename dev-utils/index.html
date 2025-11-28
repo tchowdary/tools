@@ -104,7 +104,7 @@
                             </div>
                         </div>
 
-                        <div class="editor-panel">
+                        <div class="editor-panel" id="jsonOutputPanel">
                             <div class="editor-header">
                                 <div>
                                     <div class="editor-title">Formatted Output</div>
@@ -113,6 +113,7 @@
                                 <div class="editor-actions">
                                     <button class="icon-btn" onclick="copyOutput()" title="Copy">📋</button>
                                     <button class="icon-btn" onclick="downloadJSON()" title="Download">⬇️</button>
+                                    <button class="icon-btn" onclick="toggleJSONOutputFullscreen()" title="Toggle fullscreen" id="jsonOutputFullscreenBtn">⛶</button>
                                 </div>
                             </div>
                             <div class="editor-body">

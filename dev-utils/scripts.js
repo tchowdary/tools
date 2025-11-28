@@ -88,6 +88,20 @@ function toggleFullscreen(toolId) {
   }
 }
 
+// JSON Output Panel Fullscreen toggle
+function toggleJSONOutputFullscreen() {
+  const panel = document.getElementById('jsonOutputPanel');
+  const btn = document.getElementById('jsonOutputFullscreenBtn');
+
+  if (panel.classList.contains('fullscreen')) {
+    panel.classList.remove('fullscreen');
+    btn.title = 'Toggle fullscreen';
+  } else {
+    panel.classList.add('fullscreen');
+    btn.title = 'Exit fullscreen';
+  }
+}
+
 function updateThemeIcon(theme) {
   const themeIcon = document.getElementById('themeIcon');
   themeIcon.textContent = theme === 'dark' ? '☀️' : '🌙';

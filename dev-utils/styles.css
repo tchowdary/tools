@@ -738,3 +738,25 @@ body {
 .fullscreen-btn span {
     font-size: 16px;
 }
+
+/* JSON Output Panel Fullscreen */
+.editor-panel.fullscreen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 10000;
+    background: var(--panel-bg);
+    margin: 0;
+    border-radius: 0;
+}
+
+.editor-panel.fullscreen .editor-body {
+    height: calc(100vh - 60px);
+}
+
+.editor-panel.fullscreen .json-tree-viewer {
+    height: 100%;
+    min-height: 100%;
+}
