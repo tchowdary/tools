@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dev Utilities - Essential Tools</title>
+    <title>Dev Utilities</title>
     <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><text y='50%' x='50%' dominant-baseline='middle' text-anchor='middle' font-size='48'>🐾</text></svg>">
 </head>
 <body>
     <div class="app-container">
@@ -12,7 +13,7 @@
         <aside class="sidebar">
             <div class="sidebar-header">
                 <div class="logo">
-                    <div class="logo-icon">⚡</div>
+                    <div class="logo-icon">🐾</div>
                     <div>
                         <div>Dev Utilities</div>
                         <div class="subtitle">Essential Tools</div>
@@ -51,7 +52,7 @@
             </nav>
 
             <div class="theme-toggle" onclick="toggleTheme()">
-                <span>Theme</span>
+                <span></span>
                 <span class="theme-icon" id="themeIcon">🌙</span>
             </div>
         </aside>
@@ -105,7 +106,6 @@
                                     <div class="editor-subtitle">Formatted and validated JSON output</div>
                                 </div>
                                 <div class="editor-actions">
-                                    <button class="icon-btn" onclick="toggleFullScreen()" title="Full Screen">⛶</button>
                                     <button class="icon-btn" onclick="copyOutput()" title="Copy">📋</button>
                                     <button class="icon-btn" onclick="downloadJSON()" title="Download">⬇️</button>
                                 </div>
@@ -131,8 +131,7 @@
                     </div>
 
                     <div class="format-options">
-                        <div class="format-options-title">Base64 Operations</div>
-                        <div class="format-options-subtitle">Choose your operation and input data</div>
+                        
 
                         <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;">
                             <div class="button-group">
@@ -145,9 +144,7 @@
                             </div>
 
                             <div class="button-group">
-                                <button class="btn btn-secondary" onclick="loadBase64Sample()">
-                                    <span>🔖</span> Load Sample
-                                </button>
+                               
                                 <button class="btn btn-secondary" onclick="clearBase64()">
                                     <span>✖</span> Clear All
                                 </button>
@@ -208,30 +205,24 @@
                         <div class="format-options-subtitle">Current timestamp and date formats</div>
                         
                         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 12px; margin-top: 16px;">
-                            <div style="background: var(--editor-bg); padding: 12px; border-radius: 6px;">
+                            <div style="background: var(--editor-bg); padding: 12px; border-radius: 6px; border: 1px solid #0078d4;">
                                 <div style="font-size: 12px; color: var(--content-subtitle); margin-bottom: 6px;">Unix Timestamp (ms)</div>
-                                <div style="font-family: monospace; font-size: 14px; color: var(--content-text);" id="currentTimestampMs">-</div>
+                                <div class="format-options-title" style="font-family: monospace; font-size: 16px; color: var(--content-text);" id="currentTimestampMs">-</div>
                             </div>
-                            <div style="background: var(--editor-bg); padding: 12px; border-radius: 6px;">
+                            <div style="background: var(--editor-bg); padding: 12px; border-radius: 6px; border: 1px solid #0078d4;">
                                 <div style="font-size: 12px; color: var(--content-subtitle); margin-bottom: 6px;">Unix Timestamp (s)</div>
-                                <div style="font-family: monospace; font-size: 14px; color: var(--content-text);" id="currentTimestampS">-</div>
+                                <div class="format-options-title" style="font-family: monospace; font-size: 16px; color: var(--content-text);" id="currentTimestampS">-</div>
                             </div>
-                            <div style="background: var(--editor-bg); padding: 12px; border-radius: 6px;">
-                                <div style="font-size: 12px; color: var(--content-subtitle); margin-bottom: 6px;">ISO 8601</div>
-                                <div style="font-family: monospace; font-size: 14px; color: var(--content-text);" id="currentISO">-</div>
-                            </div>
-                            <div style="background: var(--editor-bg); padding: 12px; border-radius: 6px;">
+                           
+                            <div style="background: var(--editor-bg); padding: 12px; border-radius: 6px; border: 1px solid #0078d4;">
                                 <div style="font-size: 12px; color: var(--content-subtitle); margin-bottom: 6px;">UTC</div>
                                 <div style="font-family: monospace; font-size: 14px; color: var(--content-text);" id="currentUTC">-</div>
                             </div>
-                            <div style="background: var(--editor-bg); padding: 12px; border-radius: 6px;">
+                            <div style="background: var(--editor-bg); padding: 12px; border-radius: 6px; border: 1px solid #0078d4;">
                                 <div style="font-size: 12px; color: var(--content-subtitle); margin-bottom: 6px;">Local Time</div>
                                 <div style="font-family: monospace; font-size: 14px; color: var(--content-text);" id="currentLocal">-</div>
                             </div>
-                            <div style="background: var(--editor-bg); padding: 12px; border-radius: 6px;">
-                                <div style="font-size: 12px; color: var(--content-subtitle); margin-bottom: 6px;">Relative</div>
-                                <div style="font-family: monospace; font-size: 14px; color: var(--content-text);" id="currentRelative">Just now</div>
-                            </div>
+                            
                         </div>
                     </div>
 
@@ -252,11 +243,11 @@
                         <!-- Tab: Timestamp to Date -->
                         <div id="timestampToDateTab" style="display: block;">
                             <div style="margin-bottom: 16px;">
-                                <label style="display: block; font-size: 13px; color: var(--content-subtitle); margin-bottom: 8px;">Enter Unix Timestamp</label>
+                                <label style="display: block; font-size: 15px; color: var(--content-subtitle); margin-bottom: 8px;">Enter Unix Timestamp</label>
                                 <div style="display: flex; gap: 8px;">
                                     <input type="text" id="timestampInput" placeholder="e.g., 1701234567 or 1701234567890" 
-                                           style="flex: 1; padding: 10px; background: var(--editor-bg); border: 1px solid var(--border-color); border-radius: 6px; color: var(--content-text); font-family: monospace;"
-                                           oninput="convertTimestampToDate()">
+                                        style="flex: 1; padding: 10px; background: var(--editor-bg); border: 1px solid #0078d4; border-radius: 6px; color: var(--content-text); font-family: monospace;"
+                                        oninput="convertTimestampToDate()">
                                     <button class="btn btn-secondary" onclick="useCurrentTimestamp()">Use Current</button>
                                     <button class="btn btn-secondary" onclick="clearTimestampInput()">Clear</button>
                                 </div>
@@ -481,26 +472,8 @@
             </div>
 
             <!-- Placeholder Tools -->
-
+            
         </main>
-    </div>
-
-    <!-- Full Screen Modal -->
-    <div id="fullScreenModal" class="fullscreen-modal">
-        <div class="fullscreen-header">
-            <div>
-                <div class="fullscreen-title">Formatted JSON Output</div>
-                <div class="fullscreen-subtitle">Full Screen View</div>
-            </div>
-            <div class="fullscreen-actions">
-                <button class="icon-btn" onclick="copyOutput()" title="Copy">📋</button>
-                <button class="icon-btn" onclick="downloadJSON()" title="Download">⬇️</button>
-                <button class="icon-btn" onclick="toggleFullScreen()" title="Exit Full Screen">✖</button>
-            </div>
-        </div>
-        <div class="fullscreen-content">
-            <div class="json-tree-viewer" id="jsonOutputFullScreen"></div>
-        </div>
     </div>
 </body>
 <script src="scripts.js"></script>
