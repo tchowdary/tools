@@ -777,3 +777,32 @@ body {
     height: 100%;
     min-height: 100%;
 }
+
+/* Session Dropdown Styles */
+.session-dropdown {
+    padding: 8px 12px;
+    background: var(--input-bg);
+    border: 1px solid var(--input-border);
+    border-radius: 6px;
+    color: var(--input-text);
+    font-size: 13px;
+    outline: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    min-width: 200px;
+}
+
+.session-dropdown:hover {
+    border-color: #4299e1;
+}
+
+.session-dropdown:focus {
+    border-color: #4299e1;
+    box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.1);
+}
+
+.session-dropdown option {
+    background: var(--input-bg);
+    color: var(--input-text);
+    padding: 8px;
+}
