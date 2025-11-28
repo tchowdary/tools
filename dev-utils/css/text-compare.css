@@ -72,10 +72,10 @@
 
 /* Comparison Results */
 .comparison-results {
-    background: var(--editor-bg);
-    border: 1px solid var(--border-color);
+    background: transparent;
+    border: none;
     border-radius: 8px;
-    overflow: hidden;
+    overflow: visible;
 }
 
 .comparison-results-header {
@@ -83,8 +83,9 @@
     justify-content: space-between;
     align-items: center;
     padding: 12px 16px;
-    background: var(--sidebar-bg);
-    border-bottom: 1px solid var(--border-color);
+    background: var(--editor-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 8px 8px 0 0;
 }
 
 .comparison-results-title {
@@ -100,42 +101,21 @@
 
 .comparison-results-body {
     padding: 0;
-}
-
-/* View Mode Toggle */
-.view-mode-toggle {
-    display: flex;
-    gap: 8px;
-    padding: 12px 16px;
-    background: var(--sidebar-bg);
-    border-bottom: 1px solid var(--border-color);
-}
-
-.view-mode-btn {
-    padding: 8px 16px;
     background: transparent;
-    border: 1px solid var(--border-color);
-    border-radius: 6px;
-    color: var(--content-text);
-    font-size: 13px;
-    cursor: pointer;
-    transition: all 0.2s;
 }
 
-.view-mode-btn:hover {
-    background: var(--editor-bg);
-}
-
-.view-mode-btn.active {
-    background: #0078d4;
-    color: white;
-    border-color: #0078d4;
+/* View Mode Toggle - Hidden */
+.view-mode-toggle {
+    display: none;
 }
 
 /* Diff Container */
 .diff-container {
     padding: 16px;
-    background: var(--editor-bg);
+    background: transparent;
+    border: 1px solid var(--border-color);
+    border-top: none;
+    border-radius: 0 0 8px 8px;
 }
 
 .diff-side-by-side {
@@ -148,7 +128,7 @@
 }
 
 .diff-side {
-    background: var(--sidebar-bg);
+    background: transparent;
     border: 1px solid var(--border-color);
     border-radius: 6px;
     overflow: hidden;
@@ -156,7 +136,7 @@
 
 .diff-side-header {
     padding: 8px 12px;
-    background: var(--editor-bg);
+    background: transparent;
     border-bottom: 1px solid var(--border-color);
     font-weight: 600;
     color: var(--content-text);
@@ -166,6 +146,7 @@
 .diff-side-content {
     padding: 12px;
     overflow-x: auto;
+    background: transparent;
 }
 
 .diff-line {
@@ -218,9 +199,12 @@
     display: flex;
     gap: 24px;
     padding: 12px 16px;
-    background: var(--sidebar-bg);
-    border-top: 1px solid var(--border-color);
+    background: transparent;
+    border: 1px solid var(--border-color);
+    border-top: none;
+    border-radius: 0 0 8px 8px;
     font-size: 13px;
+    margin-top: -1px;
 }
 
 .diff-legend-item {
