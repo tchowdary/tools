@@ -33,6 +33,9 @@ document.addEventListener('DOMContentLoaded', function () {
   // Start current time updates
   updateCurrentTime();
   setInterval(updateCurrentTime, 1000);
+
+  // Load saved sessions on startup
+  loadSavedSessionsList();
 });
 
 // Section collapse/expand
@@ -360,6 +363,141 @@ function downloadJSON() {
   a.click();
   URL.revokeObjectURL(url);
   showToast('JSON downloaded');
+}
+
+// ============================================
+// Local Storage Functions for JSON Sessions
+// ============================================
+
+const MAX_SESSIONS = 10;
+const STORAGE_KEY = 'jsonSessions';
+
+function saveJSON() {
+  if (!jsonParsedData) {
+    showToast('No JSON data to save', 'error');
+    return;
+  }
+
+  try {
+    // Get existing sessions
+    let sessions = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+
+    // Create new session
+    const newSession = {
+      id: Date.now(),
+      timestamp: new Date().toISOString(),
+      data: jsonParsedData,
+      preview: generatePreview(jsonParsedData)
+    };
+
+    // Add new session at the beginning
+    sessions.unshift(newSession);
+
+    // Keep only the last MAX_SESSIONS
+    if (sessions.length > MAX_SESSIONS) {
+      sessions = sessions.slice(0, MAX_SESSIONS);
+    }
+
+    // Save to localStorage
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(sessions));
+
+    // Refresh the dropdown
+    loadSavedSessionsList();
+
+    showToast('JSON saved successfully');
+  } catch (e) {
+    showToast('Failed to save JSON: ' + e.message, 'error');
+  }
+}
+
+function loadSavedSession() {
+  const dropdown = document.getElementById('savedSessionsDropdown');
+  const sessionId = dropdown.value;
+
+  if (!sessionId) {
+    return;
+  }
+
+  try {
+    const sessions = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+    const session = sessions.find(function(s) { return s.id == sessionId; });
+
+    if (session) {
+      // Load the session data
+      const jsonString = JSON.stringify(session.data, null, 2);
+      document.getElementById('jsonInput').value = jsonString;
+
+      // Format and display
+      formatJSON();
+
+      showToast('Session loaded successfully');
+    }
+  } catch (e) {
+    showToast('Failed to load session: ' + e.message, 'error');
+  }
+
+  // Reset dropdown
+  dropdown.value = '';
+}
+
+function loadSavedSessionsList() {
+  const dropdown = document.getElementById('savedSessionsDropdown');
+
+  if (!dropdown) {
+    return;
+  }
+
+  try {
+    const sessions = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+
+    // Clear existing options except the first one
+    dropdown.innerHTML = '<option value="">Select a session...</option>';
+
+    // Add sessions to dropdown
+    sessions.forEach(function(session) {
+      const option = document.createElement('option');
+      option.value = session.id;
+
+      const date = new Date(session.timestamp);
+      const dateStr = date.toLocaleString();
+
+      option.textContent = dateStr + ' - ' + session.preview;
+      dropdown.appendChild(option);
+    });
+  } catch (e) {
+    console.error('Failed to load sessions list:', e);
+  }
+}
+
+function generatePreview(data) {
+  const jsonString = JSON.stringify(data);
+  const maxLength = 30;
+
+  if (jsonString.length <= maxLength) {
+    return jsonString;
+  }
+
+  return jsonString.substring(0, maxLength) + '...';
+}
+
+function deleteSavedSession(sessionId) {
+  try {
+    let sessions = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+    sessions = sessions.filter(function(s) { return s.id !== sessionId; });
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(sessions));
+    loadSavedSessionsList();
+    showToast('Session deleted');
+  } catch (e) {
+    showToast('Failed to delete session: ' + e.message, 'error');
+  }
+}
+
+function clearAllSessions() {
+  if (confirm('Are you sure you want to clear all saved sessions?')) {
+    localStorage.removeItem(STORAGE_KEY);
+    loadSavedSessionsList();
+    showToast('All sessions cleared');
+  }
 }
 
 // ============================================

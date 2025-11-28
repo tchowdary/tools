@@ -73,17 +73,28 @@
 
                 <div class="content-body">
                     <div class="format-options">
-                      <div class="button-group">
+                      <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;">
+                        <div class="button-group">
                                 <button class="btn btn-primary" onclick="formatJSON()">
                                     <span>📋</span> Format
                                 </button>
                                 <button class="btn btn-secondary" onclick="minifyJSON()">
                                     <span>🔄</span> Minify
                                 </button>
+                                <button class="btn btn-secondary" onclick="saveJSON()">
+                                    <span>💾</span> Save
+                                </button>
                                 <button class="btn btn-secondary" onclick="clearJSON()">
                                     <span>✖</span> Clear
                                 </button>
                             </div>
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                                <label style="font-size: 13px; color: var(--content-text-secondary);">Saved Sessions:</label>
+                                <select id="savedSessionsDropdown" onchange="loadSavedSession()" class="session-dropdown">
+                                    <option value="">Select a session...</option>
+                                </select>
+                            </div>
+                        </div>
                     </div>
 
                     <div class="error-message" id="errorMessage"></div>
