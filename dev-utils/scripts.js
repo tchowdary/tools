@@ -818,22 +818,6 @@ function clearJWTSecret() {
   document.getElementById('jwtSignatureStatus').style.display = 'none';
 }
 
-function switchJWTTab(section, tab) {
-  const jsonTab = document.getElementById(section + 'JsonTab');
-  const claimsTab = document.getElementById(section + 'ClaimsTab');
-  
-  if (tab === 'json') {
-    jsonTab.classList.add('active');
-    claimsTab.classList.remove('active');
-  } else {
-    claimsTab.classList.add('active');
-    jsonTab.classList.remove('active');
-  }
-  
-  // Note: Claims table view would require additional implementation
-  showToast('Claims table view coming soon', 'error');
-}
-
 function verifyJWTSignature() {
   const secret = document.getElementById('jwtSecret').value;
   const secretStatus = document.getElementById('jwtSecretStatus');

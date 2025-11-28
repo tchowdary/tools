@@ -606,7 +606,7 @@ body {
     background: var(--input-bg);
     color: var(--input-text);
     font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
-    font-size: 13px;
+    font-size: 15px;
     line-height: 1.3;
     overflow: auto;
     box-sizing: border-box;

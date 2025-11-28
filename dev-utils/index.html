@@ -387,12 +387,7 @@
                                 <div>
                                     <div class="panel-title">ENCODED VALUE</div>
                                 </div>
-                                <div style="display: flex; gap: 8px; align-items: center;">
-                                    <label style="display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--content-subtitle); cursor: pointer;">
-                                        <input type="checkbox" id="jwtAutoFocus" style="cursor: pointer;">
-                                        Enable auto-focus
-                                    </label>
-                                </div>
+                                
                             </div>
                             <div class="panel-content" style="display: flex; flex-direction: column; gap: 12px;">
                                 <div style="flex: 1; display: flex; flex-direction: column;">
@@ -425,9 +420,7 @@
                                 <div style="flex: 1; display: flex; flex-direction: column; border: 1px solid var(--border-color); border-radius: 8px; overflow: hidden;">
                                     <div class="panel-header" style="border-bottom: 1px solid var(--border-color);">
                                         <div class="panel-title">DECODED HEADER</div>
-                                        <div style="display: flex; gap: 8px;">
-                                            <button class="btn btn-secondary btn-sm active" id="headerJsonTab" onclick="switchJWTTab('header', 'json')" style="padding: 4px 12px; font-size: 12px;">JSON</button>
-                                            <button class="btn btn-secondary btn-sm" id="headerClaimsTab" onclick="switchJWTTab('header', 'claims')" style="padding: 4px 12px; font-size: 12px;">CLAIMS TABLE</button>
+                                        <div style="display: flex; gap: 8px;">                                           
                                             <button class="icon-btn" onclick="copyJWTHeader()" title="Copy">📋</button>
                                         </div>
                                     </div>
@@ -440,9 +433,7 @@
                                 <div style="flex: 1; display: flex; flex-direction: column; border: 1px solid var(--border-color); border-radius: 8px; overflow: hidden;">
                                     <div class="panel-header" style="border-bottom: 1px solid var(--border-color);">
                                         <div class="panel-title">DECODED PAYLOAD</div>
-                                        <div style="display: flex; gap: 8px;">
-                                            <button class="btn btn-secondary btn-sm active" id="payloadJsonTab" onclick="switchJWTTab('payload', 'json')" style="padding: 4px 12px; font-size: 12px;">JSON</button>
-                                            <button class="btn btn-secondary btn-sm" id="payloadClaimsTab" onclick="switchJWTTab('payload', 'claims')" style="padding: 4px 12px; font-size: 12px;">CLAIMS TABLE</button>
+                                        <div style="display: flex; gap: 8px;">                                            
                                             <button class="icon-btn" onclick="copyJWTPayload()" title="Copy">📋</button>
                                         </div>
                                     </div>
@@ -452,7 +443,7 @@
                                 </div>
 
                                 <!-- JWT Signature Verification -->
-                                <div style="border: 1px solid var(--border-color); border-radius: 8px; padding: 16px;">
+                                <!-- <div style="border: 1px solid var(--border-color); border-radius: 8px; padding: 16px;">
                                     <div style="margin-bottom: 12px;">
                                         <div style="font-size: 13px; font-weight: 600; color: var(--content-text); margin-bottom: 4px;">
                                             JWT SIGNATURE VERIFICATION <span style="color: var(--content-subtitle); font-weight: 400;">(OPTIONAL)</span>
@@ -485,7 +476,7 @@
                                             </select>
                                         </div>
                                     </div>
-                                </div>
+                                </div> -->
                             </div>
                         </div>
                     </div>
