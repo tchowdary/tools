@@ -223,8 +223,8 @@ export function initializePaneDividers() {
       let newLeftWidth = startLeftWidth + deltaX;
       let newRightWidth = startRightWidth - deltaX;
 
-      // Enforce minimum widths (200px)
-      const minWidth = 200;
+      // Enforce minimum widths (300px)
+      const minWidth = 300;
       if (newLeftWidth < minWidth) {
         newLeftWidth = minWidth;
         newRightWidth = containerWidth - minWidth - dividerWidth;
