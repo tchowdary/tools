@@ -158,3 +158,5 @@ window.toggleTheme = toggleTheme;
 window.toggleFullscreen = toggleFullscreen;
 window.toggleJSONOutputFullscreen = toggleJSONOutputFullscreen;
 window.toggleSidebar = toggleSidebar;
+
+console.log('UI module loaded. toggleSidebar:', typeof window.toggleSidebar);
