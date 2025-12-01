@@ -129,8 +129,34 @@ export function toggleJSONOutputFullscreen() {
   }
 }
 
+/**
+ * Toggles sidebar collapsed state
+ */
+export function toggleSidebar() {
+  const sidebar = document.querySelector('.sidebar');
+  const isCollapsed = sidebar.classList.toggle('collapsed');
+
+  // Save the collapsed state to localStorage
+  localStorage.setItem('sidebarCollapsed', isCollapsed);
+}
+
+/**
+ * Initializes sidebar state from localStorage
+ */
+export function initializeSidebar() {
+  const sidebar = document.querySelector('.sidebar');
+  const isCollapsed = localStorage.getItem('sidebarCollapsed') === 'true';
+
+  if (isCollapsed) {
+    sidebar.classList.add('collapsed');
+  }
+}
+
 // Make functions globally available for HTML onclick handlers
 window.toggleSection = toggleSection;
 window.toggleTheme = toggleTheme;
 window.toggleFullscreen = toggleFullscreen;
 window.toggleJSONOutputFullscreen = toggleJSONOutputFullscreen;
+window.toggleSidebar = toggleSidebar;
+
+console.log('UI module loaded. toggleSidebar:', typeof window.toggleSidebar);

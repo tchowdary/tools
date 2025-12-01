@@ -22,11 +22,14 @@
             <div class="sidebar-header">
                 <div class="logo">
                     <div class="logo-icon">🐾</div>
-                    <div>
+                    <div class="logo-text">
                         <div>Dev Utilities</div>
                         <div class="subtitle">Essential Tools</div>
                     </div>
                 </div>
+                <button class="sidebar-toggle-btn" onclick="toggleSidebar()" title="Toggle sidebar">
+                    <span>☰</span>
+                </button>
             </div>
 
             <div class="search-box">
@@ -41,26 +44,26 @@
                     <div class="nav-items">
                         <div class="nav-item active" data-tool="json-parser">
                             <span class="nav-item-icon">📄</span>
-                            <span>JSON Formatter</span>
+                            <span class="nav-item-text">JSON Formatter</span>
                         </div>
                         <div class="nav-item" data-tool="base64-encoder">
                             <span class="nav-item-icon">🔐</span>
-                            <span>Base64 Encoder</span>
+                            <span class="nav-item-text">Base64 Encoder</span>
                         </div>
                         <div class="nav-item" data-tool="timestamp-converter">
                             <span class="nav-item-icon">🕐</span>
-                            <span>Timestamp Converter</span>
+                            <span class="nav-item-text">Timestamp Converter</span>
                         </div>
                         <div class="nav-item" data-tool="jwt-decoder">
                             <span class="nav-item-icon">🔑</span>
-                            <span>JWT Decoder</span>
-                        </div>                        
+                            <span class="nav-item-text">JWT Decoder</span>
+                        </div>
                     </div>
                 </div>
             </nav>
 
             <div class="theme-toggle" onclick="toggleTheme()">
-                <span></span>
+                <span class="theme-text">Theme</span>
                 <span class="theme-icon" id="themeIcon">🌙</span>
             </div>
         </aside>
@@ -74,9 +77,6 @@
                         <div class="content-title">📄 JSON Viewer & Formatter</div>
                         <div class="content-description">Parse, validate, and format JSON data with ease</div>
                     </div>
-                    <button class="btn btn-secondary fullscreen-btn" onclick="toggleFullscreen('json-parser')" title="Toggle fullscreen">
-                        <span>⛶</span> Fullscreen
-                    </button>
                 </div>
 
                 <div class="content-body">
@@ -154,9 +154,6 @@ Hold press on the toggle [+] button to collapse all' oninput="formatJSON()"></te
                         <div class="content-title">🔐 Base64 Encoder/Decoder</div>
                         <div class="content-description">Encode and decode Base64 data</div>
                     </div>
-                    <button class="btn btn-secondary fullscreen-btn" onclick="toggleFullscreen('base64-encoder')" title="Toggle fullscreen">
-                        <span>⛶</span> Fullscreen
-                    </button>
                 </div>
 
                 <div class="content-body">
@@ -232,9 +229,6 @@ Hold press on the toggle [+] button to collapse all' oninput="formatJSON()"></te
                         <div class="content-title">🕐 Timestamp Converter</div>
                         <div class="content-description">Convert between Unix timestamps and human-readable dates</div>
                     </div>
-                    <button class="btn btn-secondary fullscreen-btn" onclick="toggleFullscreen('timestamp-converter')" title="Toggle fullscreen">
-                        <span>⛶</span> Fullscreen
-                    </button>
                 </div>
 
                 <div class="content-body">
@@ -396,9 +390,6 @@ Hold press on the toggle [+] button to collapse all' oninput="formatJSON()"></te
                     </div>
                     <div style="display: flex; gap: 8px;">
                         <button class="btn btn-secondary" onclick="generateJWTExample()">Generate example</button>
-                        <button class="btn btn-secondary fullscreen-btn" onclick="toggleFullscreen('jwt-decoder')" title="Toggle fullscreen">
-                            <span>⛶</span> Fullscreen
-                        </button>
                     </div>
                 </div>
 
