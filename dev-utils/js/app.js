@@ -2,7 +2,7 @@
 // Main Application Entry Point
 // ============================================
 
-import { initializeNavigation, initializeSearch, initializeTheme, initializeSidebar, initializePaneDividers } from './ui.js';
+import { initializeNavigation, initializeSearch, initializeTheme, initializeSidebar, initializePaneDividers, initializeKeyboardShortcuts } from './ui.js';
 import { updateCurrentTime } from './timestamp.js';
 import { loadSavedSessionsList } from './json-storage.js';
 
@@ -22,6 +22,7 @@ document.addEventListener('DOMContentLoaded', function () {
   initializeTheme();
   initializeSidebar();
   initializePaneDividers();
+  initializeKeyboardShortcuts();
 
   // Start current time updates
   updateCurrentTime();

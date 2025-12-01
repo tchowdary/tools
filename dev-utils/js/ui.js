@@ -153,6 +153,30 @@ export function initializeSidebar() {
 }
 
 /**
+ * Initializes keyboard shortcuts
+ */
+export function initializeKeyboardShortcuts() {
+  document.addEventListener('keydown', (e) => {
+    // Ctrl+Shift+F: Toggle JSON output fullscreen
+    if (e.ctrlKey && e.shiftKey && e.key === 'F') {
+      e.preventDefault();
+      const panel = document.getElementById('jsonOutputPanel');
+      if (panel) {
+        toggleJSONOutputFullscreen();
+      }
+    }
+
+    // Escape: Exit fullscreen mode
+    if (e.key === 'Escape') {
+      const panel = document.getElementById('jsonOutputPanel');
+      if (panel && panel.classList.contains('fullscreen')) {
+        toggleJSONOutputFullscreen();
+      }
+    }
+  });
+}
+
+/**
  * Initializes draggable pane dividers
  */
 export function initializePaneDividers() {
