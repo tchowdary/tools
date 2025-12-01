@@ -493,26 +493,50 @@ function createJsonView(json, parentElement, depth = 0) {
 
       createJsonView(value, children, depth + 1);
 
+      // Build the element structure without mixing innerHTML and appendChild
+      const indentSpan = document.createElement('span');
+      indentSpan.innerHTML = indent;
+      element.appendChild(indentSpan);
+      element.appendChild(toggle);
+
+      // Add key if not numeric
+      if (keyEl) {
+        const keySpan = document.createElement('span');
+        keySpan.innerHTML = keyEl;
+        element.appendChild(keySpan);
+      }
+
+      // Add opening bracket/brace
+      const bracketOpen = document.createElement('span');
       if (Array.isArray(value) && typeof value[0] !== 'undefined') {
-        element.innerHTML = indent;
-        element.appendChild(toggle);
-        element.innerHTML += keyEl + '[';
-        element.appendChild(children);
-        const closeIndent = document.createElement('span');
-        closeIndent.className = 'indent';
-        closeIndent.innerHTML = indent;
-        element.appendChild(closeIndent);
-        element.innerHTML += ']' + (isLast ? '' : ',');
+        bracketOpen.textContent = '[';
       } else {
-        element.innerHTML = indent;
-        element.appendChild(toggle);
-        element.innerHTML += keyEl + '{';
-        element.appendChild(children);
-        const closeIndent = document.createElement('span');
-        closeIndent.className = 'indent';
-        closeIndent.innerHTML = indent;
-        element.appendChild(closeIndent);
-        element.innerHTML += '}' + (isLast ? '' : ',');
+        bracketOpen.textContent = '{';
+      }
+      element.appendChild(bracketOpen);
+
+      // Add children
+      element.appendChild(children);
+
+      // Add closing bracket/brace with indent
+      const closeIndent = document.createElement('span');
+      closeIndent.className = 'indent';
+      closeIndent.innerHTML = indent;
+      element.appendChild(closeIndent);
+
+      const bracketClose = document.createElement('span');
+      if (Array.isArray(value) && typeof value[0] !== 'undefined') {
+        bracketClose.textContent = ']';
+      } else {
+        bracketClose.textContent = '}';
+      }
+      element.appendChild(bracketClose);
+
+      // Add comma if not last
+      if (!isLast) {
+        const comma = document.createElement('span');
+        comma.textContent = ',';
+        element.appendChild(comma);
       }
 
       parentElement.appendChild(element);
