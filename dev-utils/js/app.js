@@ -29,5 +29,4 @@ document.addEventListener('DOMContentLoaded', function () {
   // Load saved JSON sessions on startup
   loadSavedSessionsList();
 
-  console.log('Dev Utils application initialized successfully');
 });
