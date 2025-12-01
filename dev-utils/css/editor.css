@@ -1,12 +1,12 @@
 /* Editor Panels */
 .editor-container {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 20px;
+    display: flex;
+    gap: 0;
     margin-bottom: 20px;
     flex: 1;
     min-height: 0;
     height: 100%;
+    position: relative;
 }
 
 .editor-panel {
@@ -14,10 +14,50 @@
     border-radius: 8px;
     overflow: hidden;
     box-shadow: 0 1px 3px var(--shadow);
-    transition: all 0.3s ease;
+    transition: box-shadow 0.3s ease;
     display: flex;
     flex-direction: column;
     min-height: 0;
+    flex: 1;
+    min-width: 200px;
+}
+
+.pane-divider {
+    width: 8px;
+    background: transparent;
+    cursor: col-resize;
+    position: relative;
+    flex-shrink: 0;
+    transition: background 0.2s ease;
+    user-select: none;
+}
+
+.pane-divider::before {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 2px;
+    height: 40px;
+    background: var(--content-border);
+    border-radius: 1px;
+    transition: all 0.2s ease;
+}
+
+.pane-divider:hover::before,
+.pane-divider.dragging::before {
+    background: var(--primary-color, #0078d4);
+    height: 60px;
+    width: 3px;
+}
+
+.pane-divider:hover {
+    background: rgba(0, 120, 212, 0.05);
+}
+
+.pane-divider.dragging {
+    background: rgba(0, 120, 212, 0.1);
 }
 
 .panel-header {
