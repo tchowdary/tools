@@ -22,6 +22,15 @@
     min-width: 300px;
 }
 
+/* Default: Left pane (Input) is 40%, Right pane (Output) is 60% */
+.editor-panel:first-of-type {
+    flex: 0 0 40%;
+}
+
+.editor-panel:last-of-type {
+    flex: 0 0 60%;
+}
+
 .pane-divider {
     width: 8px;
     background: transparent;

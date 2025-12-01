@@ -1,7 +1,17 @@
 /* Responsive */
 @media (max-width: 768px) {
     .editor-container {
-        grid-template-columns: 1fr;
+        flex-direction: column;
+    }
+
+    .editor-panel:first-of-type,
+    .editor-panel:last-of-type {
+        flex: 1 1 auto;
+        width: 100%;
+    }
+
+    .pane-divider {
+        display: none;
     }
 
     .sidebar {
