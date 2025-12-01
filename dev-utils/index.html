@@ -71,7 +71,7 @@
             <div class="tool-section active" id="json-parser">
                 <div class="content-header">
                     <div>
-                        <div class="content-title">📄 JSON Parser & Formatter</div>
+                        <div class="content-title">📄 JSON Viewer & Formatter</div>
                         <div class="content-description">Parse, validate, and format JSON data with ease</div>
                     </div>
                     <button class="btn btn-secondary fullscreen-btn" onclick="toggleFullscreen('json-parser')" title="Toggle fullscreen">
@@ -111,15 +111,19 @@
                         <div class="editor-panel">
                             <div class="editor-header">
                                 <div>
-                                    <div class="editor-title">Input JSON</div>
-                                    <div class="editor-subtitle">Paste your JSON data here</div>
+                                    <div class="editor-title">Input</div>
+                                    <div class="editor-subtitle">Paste your data here</div>
                                 </div>
                                 <div class="editor-actions">
                                     <button class="icon-btn" onclick="copyInput()" title="Copy">📋</button>
                                 </div>
                             </div>
                             <div class="editor-body">
-                                <textarea class="code-editor" id="jsonInput" placeholder='Paste your JSON here...' oninput="formatJSON()"></textarea>
+                                <textarea class="code-editor" id="jsonInput" placeholder='Paste your JSON, XML, CSV, YAML, SVG images, .INI, URLs, serialized, hex, base64 or binary data here and I will visualize it for you.
+        
+Processing is 100% local: no data is sent to server.
+
+Hold press on the toggle [+] button to collapse all' oninput="formatJSON()"></textarea>
                             </div>
                         </div>
 
