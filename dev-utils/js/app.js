@@ -11,6 +11,7 @@ import './utils.js';
 import './json-formatter.js';
 import './base64.js';
 import './jwt.js';
+import './certificate.js';
 
 /**
  * Initializes the application when DOM is ready
