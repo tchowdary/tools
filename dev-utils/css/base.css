@@ -13,9 +13,8 @@ body {
     transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-/* Make emojis appear monochrome for consistency */
+/* Make emojis appear monochrome for consistency (except main logo) */
 .nav-item-icon,
-.logo-icon,
 .content-title,
 .btn span,
 .theme-icon {
