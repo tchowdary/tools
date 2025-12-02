@@ -300,6 +300,224 @@ function parsePEMCSR(pem) {
     return bytes;
 }
 
+function parsePEMGeneric(pem) {
+    // Remove all common PEM headers and whitespace
+    const pemContent = pem
+        .replace(/-----BEGIN [A-Z ]+-----/g, '')
+        .replace(/-----END [A-Z ]+-----/g, '')
+        .replace(/\s+/g, '');
+
+    // Decode base64
+    const binaryString = atob(pemContent);
+    const bytes = new Uint8Array(binaryString.length);
+    for (let i = 0; i < binaryString.length; i++) {
+        bytes[i] = binaryString.charCodeAt(i);
+    }
+    return bytes;
+}
+
+function decodePrivateKey(pem) {
+    const output = document.getElementById('certOutput');
+    const error = document.getElementById('certErrorMessage');
+
+    try {
+        const bytes = parsePEMGeneric(pem);
+        const parser = new ASN1Parser(bytes);
+
+        let result = '<div style="font-family: monospace; line-height: 1.8;">';
+        result += '<div style="font-size: 16px; font-weight: bold; margin-bottom: 16px;">🔐 Private Key</div>';
+        result += '<hr style="border: 1px solid var(--content-border); margin-bottom: 20px;">';
+
+        // Check if encrypted
+        if (pem.includes('ENCRYPTED')) {
+            result += '<div style="background: #fef3c7; color: #92400e; padding: 12px; border-radius: 6px; margin-bottom: 16px;">';
+            result += '<strong>⚠️ Encrypted Private Key</strong><br>';
+            result += 'This private key is encrypted. It cannot be decoded without the passphrase.';
+            result += '</div>';
+            output.innerHTML = result + '</div>';
+            return;
+        }
+
+        // Try to parse as PKCS#8 (BEGIN PRIVATE KEY)
+        if (pem.includes('BEGIN PRIVATE KEY')) {
+            const seq = parser.readSequence();
+
+            // Version
+            const version = parser.readByte();
+            parser.readLength();
+            const versionNum = parser.readByte();
+            result += `<div style="margin-bottom: 16px;"><strong>Format:</strong> PKCS#8</div>`;
+            result += `<div style="margin-bottom: 16px;"><strong>Version:</strong> ${versionNum}</div>`;
+
+            // Algorithm identifier
+            const algSeq = parser.readSequence();
+            const algOID = parser.readOID();
+            const algName = OID_NAMES[algOID] || algOID;
+            result += `<div style="margin-bottom: 16px;"><strong>Algorithm:</strong> ${algName}<br>`;
+            result += `<span style="margin-left: 20px; color: var(--content-text-secondary); font-size: 12px;">OID: ${algOID}</span></div>`;
+
+            parser.pos = algSeq.end;
+
+            // Private key data (OCTET STRING)
+            const keyTag = parser.readByte();
+            const keyLen = parser.readLength();
+            const keyBytes = parser.bytes.slice(parser.pos, parser.pos + keyLen);
+
+            // Try to parse RSA key
+            if (algOID === '1.2.840.113549.1.1.1') {
+                const keyParser = new ASN1Parser(keyBytes);
+                const keySeq = keyParser.readSequence();
+
+                keyParser.readByte(); // INTEGER tag for version
+                keyParser.readLength();
+                keyParser.readByte(); // version = 0
+
+                const modulusBytes = keyParser.readInteger();
+                const modulus = bytesToHex(modulusBytes).replace(/:/g, '');
+                const keySize = (modulusBytes.length - 1) * 8;
+
+                result += `<div style="margin-bottom: 16px;"><strong>Key Type:</strong> RSA</div>`;
+                result += `<div style="margin-bottom: 16px;"><strong>Key Size:</strong> ${keySize} bits</div>`;
+                result += `<div style="margin-bottom: 16px;"><strong>Modulus:</strong><br>`;
+                result += `<div style="font-size: 11px; word-break: break-all; color: var(--content-text-secondary); margin-left: 20px; line-height: 1.6;">`;
+                for (let i = 0; i < modulus.length; i += 64) {
+                    result += `${modulus.substring(i, i + 64)}<br>`;
+                }
+                result += `</div></div>`;
+            }
+
+        } else if (pem.includes('BEGIN RSA PRIVATE KEY')) {
+            // PKCS#1 RSA private key
+            const seq = parser.readSequence();
+
+            parser.readByte(); // INTEGER tag for version
+            parser.readLength();
+            const version = parser.readByte();
+
+            result += `<div style="margin-bottom: 16px;"><strong>Format:</strong> PKCS#1</div>`;
+            result += `<div style="margin-bottom: 16px;"><strong>Version:</strong> ${version}</div>`;
+            result += `<div style="margin-bottom: 16px;"><strong>Key Type:</strong> RSA</div>`;
+
+            const modulusBytes = parser.readInteger();
+            const modulus = bytesToHex(modulusBytes).replace(/:/g, '');
+            const keySize = (modulusBytes.length - 1) * 8;
+
+            result += `<div style="margin-bottom: 16px;"><strong>Key Size:</strong> ${keySize} bits</div>`;
+            result += `<div style="margin-bottom: 16px;"><strong>Modulus:</strong><br>`;
+            result += `<div style="font-size: 11px; word-break: break-all; color: var(--content-text-secondary); margin-left: 20px; line-height: 1.6;">`;
+            for (let i = 0; i < modulus.length; i += 64) {
+                result += `${modulus.substring(i, i + 64)}<br>`;
+            }
+            result += `</div></div>`;
+
+            const publicExponentBytes = parser.readInteger();
+            const publicExponent = parseInt(Array.from(publicExponentBytes).map(b => b.toString(16).padStart(2, '0')).join(''), 16);
+            result += `<div style="margin-bottom: 16px;"><strong>Public Exponent:</strong> ${publicExponent}</div>`;
+
+        } else if (pem.includes('BEGIN EC PRIVATE KEY')) {
+            // EC private key
+            const seq = parser.readSequence();
+
+            parser.readByte(); // INTEGER tag for version
+            parser.readLength();
+            const version = parser.readByte();
+
+            result += `<div style="margin-bottom: 16px;"><strong>Format:</strong> SEC1 EC Private Key</div>`;
+            result += `<div style="margin-bottom: 16px;"><strong>Version:</strong> ${version}</div>`;
+            result += `<div style="margin-bottom: 16px;"><strong>Key Type:</strong> Elliptic Curve (EC)</div>`;
+
+            // Private key (OCTET STRING)
+            parser.readByte();
+            const privKeyLen = parser.readLength();
+            const privKeyBytes = parser.bytes.slice(parser.pos, parser.pos + privKeyLen);
+            parser.pos += privKeyLen;
+
+            result += `<div style="margin-bottom: 16px;"><strong>Private Key Length:</strong> ${privKeyBytes.length * 8} bits</div>`;
+        }
+
+        result += '<div style="background: #fee2e2; color: #991b1b; padding: 12px; border-radius: 6px; margin-top: 20px;">';
+        result += '<strong>⚠️ Security Warning</strong><br>';
+        result += 'Private keys should be kept secure and never shared. This tool processes keys locally in your browser.';
+        result += '</div>';
+
+        result += '</div>';
+        output.innerHTML = result;
+
+    } catch (e) {
+        console.error('Private key parsing error:', e);
+        error.textContent = `❌ Error parsing private key: ${e.message}`;
+    }
+}
+
+function decodePublicKey(pem) {
+    const output = document.getElementById('certOutput');
+    const error = document.getElementById('certErrorMessage');
+
+    try {
+        const bytes = parsePEMGeneric(pem);
+        const parser = new ASN1Parser(bytes);
+
+        let result = '<div style="font-family: monospace; line-height: 1.8;">';
+        result += '<div style="font-size: 16px; font-weight: bold; margin-bottom: 16px;">🔓 Public Key</div>';
+        result += '<hr style="border: 1px solid var(--content-border); margin-bottom: 20px;">';
+
+        // Parse as SubjectPublicKeyInfo (PKCS#8)
+        const seq = parser.readSequence();
+
+        // Algorithm identifier
+        const algSeq = parser.readSequence();
+        const algOID = parser.readOID();
+        const algName = OID_NAMES[algOID] || algOID;
+
+        result += `<div style="margin-bottom: 16px;"><strong>Format:</strong> X.509 SubjectPublicKeyInfo (SPKI)</div>`;
+        result += `<div style="margin-bottom: 16px;"><strong>Algorithm:</strong> ${algName}<br>`;
+        result += `<span style="margin-left: 20px; color: var(--content-text-secondary); font-size: 12px;">OID: ${algOID}</span></div>`;
+
+        parser.pos = algSeq.end;
+
+        // Public key (BIT STRING)
+        const publicKeyBitString = parser.readBitString();
+        const publicKeySize = (publicKeyBitString.bytes.length - publicKeyBitString.unusedBits / 8) * 8;
+
+        // If RSA, parse the modulus
+        if (algOID === '1.2.840.113549.1.1.1') {
+            result += `<div style="margin-bottom: 16px;"><strong>Key Type:</strong> RSA</div>`;
+
+            const keyParser = new ASN1Parser(publicKeyBitString.bytes);
+            const keySeq = keyParser.readSequence();
+
+            const modulusBytes = keyParser.readInteger();
+            const modulus = bytesToHex(modulusBytes).replace(/:/g, '');
+            const keySize = (modulusBytes.length - 1) * 8;
+
+            result += `<div style="margin-bottom: 16px;"><strong>Key Size:</strong> ${keySize} bits</div>`;
+
+            const publicExponentBytes = keyParser.readInteger();
+            const publicExponent = parseInt(Array.from(publicExponentBytes).map(b => b.toString(16).padStart(2, '0')).join(''), 16);
+            result += `<div style="margin-bottom: 16px;"><strong>Public Exponent:</strong> ${publicExponent}</div>`;
+
+            result += `<div style="margin-bottom: 16px;"><strong>Modulus:</strong><br>`;
+            result += `<div style="font-size: 11px; word-break: break-all; color: var(--content-text-secondary); margin-left: 20px; line-height: 1.6;">`;
+            for (let i = 0; i < modulus.length; i += 64) {
+                result += `${modulus.substring(i, i + 64)}<br>`;
+            }
+            result += `</div></div>`;
+        } else if (algOID === '1.2.840.10045.2.1') {
+            result += `<div style="margin-bottom: 16px;"><strong>Key Type:</strong> Elliptic Curve (EC)</div>`;
+            result += `<div style="margin-bottom: 16px;"><strong>Key Size:</strong> ${publicKeySize} bits</div>`;
+        } else {
+            result += `<div style="margin-bottom: 16px;"><strong>Key Size:</strong> ${publicKeySize} bits</div>`;
+        }
+
+        result += '</div>';
+        output.innerHTML = result;
+
+    } catch (e) {
+        console.error('Public key parsing error:', e);
+        error.textContent = `❌ Error parsing public key: ${e.message}`;
+    }
+}
+
 function decodeCSR(pem) {
     const output = document.getElementById('certOutput');
     const error = document.getElementById('certErrorMessage');
@@ -442,21 +660,34 @@ export function decodeCertificate() {
     try {
         const pem = input.value.trim();
         if (!pem) {
-            error.textContent = '⚠️ Please enter a PEM encoded certificate or CSR';
+            error.textContent = '⚠️ Please enter a PEM encoded certificate, CSR, or key';
             return;
         }
 
-        // Detect if it's a CSR or certificate
+        // Detect the type of PEM content
         const isCSR = pem.includes('BEGIN CERTIFICATE REQUEST') || pem.includes('BEGIN NEW CERTIFICATE REQUEST');
         const isCert = pem.includes('BEGIN CERTIFICATE') && !isCSR;
+        const isPrivateKey = pem.includes('BEGIN PRIVATE KEY') || pem.includes('BEGIN RSA PRIVATE KEY') ||
+                             pem.includes('BEGIN EC PRIVATE KEY') || pem.includes('BEGIN ENCRYPTED PRIVATE KEY');
+        const isPublicKey = pem.includes('BEGIN PUBLIC KEY') || pem.includes('BEGIN RSA PUBLIC KEY');
 
-        if (!isCert && !isCSR) {
-            error.textContent = '❌ Invalid PEM format. Must contain "BEGIN CERTIFICATE" or "BEGIN CERTIFICATE REQUEST" header';
+        if (!isCert && !isCSR && !isPrivateKey && !isPublicKey) {
+            error.textContent = '❌ Invalid PEM format. Must contain a valid PEM header (CERTIFICATE, CERTIFICATE REQUEST, PRIVATE KEY, or PUBLIC KEY)';
             return;
         }
 
         if (isCSR) {
             decodeCSR(pem);
+            return;
+        }
+
+        if (isPrivateKey) {
+            decodePrivateKey(pem);
+            return;
+        }
+
+        if (isPublicKey) {
+            decodePublicKey(pem);
             return;
         }
 

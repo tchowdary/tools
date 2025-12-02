@@ -513,8 +513,8 @@ Hold press on the toggle [+] button to collapse all' oninput="formatJSON()"></te
             <div class="tool-section" id="cert-decoder">
                 <div class="content-header">
                     <div>
-                        <div class="content-title">📜 Certificate Decoder</div>
-                        <div class="content-description">Decode and analyze X.509 certificates and CSRs</div>
+                        <div class="content-title">📜 Certificate & Key Decoder</div>
+                        <div class="content-description">Decode certificates, CSRs, and cryptographic keys</div>
                     </div>
                     <div style="display: flex; gap: 8px;">
                         <button class="btn btn-secondary" onclick="loadSampleCert()">Load Sample</button>
@@ -547,17 +547,27 @@ Hold press on the toggle [+] button to collapse all' oninput="formatJSON()"></te
                                 </div>
                             </div>
                             <div class="editor-body">
-                                <textarea class="code-editor" id="certInput" placeholder="Paste your PEM encoded certificate or CSR here...
+                                <textarea class="code-editor" id="certInput" placeholder="Paste your PEM encoded certificate, CSR, or key here...
 
-Certificate Example:
+Certificate:
 -----BEGIN CERTIFICATE-----
 MIIDrzCCApegAwIBAgIQCDvgVpBCRrGhdWrJWZHHSjAN...
 -----END CERTIFICATE-----
 
-CSR Example:
+CSR:
 -----BEGIN CERTIFICATE REQUEST-----
 MIICvDCCAaQCAQAwdzELMAkGA1UEBhMCVVMxDTALBgNV...
------END CERTIFICATE REQUEST-----" oninput="decodeCertificate()"></textarea>
+-----END CERTIFICATE REQUEST-----
+
+Private Key (PKCS#8):
+-----BEGIN PRIVATE KEY-----
+MIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEA...
+-----END PRIVATE KEY-----
+
+Public Key:
+-----BEGIN PUBLIC KEY-----
+MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA...
+-----END PUBLIC KEY-----" oninput="decodeCertificate()"></textarea>
                             </div>
                         </div>
 
