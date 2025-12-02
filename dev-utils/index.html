@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dev Utilities</title>
+    <title>Dev Tools</title>
     <!-- CSS Modules -->
     <link rel="stylesheet" href="css/variables.css">
     <link rel="stylesheet" href="css/base.css">
@@ -23,7 +23,7 @@
                 <div class="logo">
                     <div class="logo-icon">🐾</div>
                     <div class="logo-text">
-                        <div>Dev Utilities</div>
+                        <div>Dev Tools</div>
                         <div class="subtitle">Essential Tools</div>
                     </div>
                 </div>
@@ -120,12 +120,14 @@
                             </div>
                             <div class="editor-body">
                                 <textarea class="code-editor" id="jsonInput" placeholder='Paste your JSON, XML, CSV, YAML, SVG images, .INI, URLs, serialized, hex, base64 or binary data here and I will visualize it for you.
-        
+
 Processing is 100% local: no data is sent to server.
 
 Hold press on the toggle [+] button to collapse all' oninput="formatJSON()"></textarea>
                             </div>
                         </div>
+
+                        <div class="pane-divider"></div>
 
                         <div class="editor-panel" id="jsonOutputPanel">
                             <div class="editor-header">
@@ -202,6 +204,8 @@ Hold press on the toggle [+] button to collapse all' oninput="formatJSON()"></te
                                 <textarea class="code-editor" id="base64Input" placeholder="Enter text to encode..." oninput="processBase64()"></textarea>
                             </div>
                         </div>
+
+                        <div class="pane-divider"></div>
 
                         <div class="editor-panel">
                             <div class="editor-header">
@@ -401,7 +405,7 @@ Hold press on the toggle [+] button to collapse all' oninput="formatJSON()"></te
                                 <div>
                                     <div class="panel-title">ENCODED VALUE</div>
                                 </div>
-                                
+
                             </div>
                             <div class="panel-content" style="display: flex; flex-direction: column; gap: 12px;">
                                 <div style="flex: 1; display: flex; flex-direction: column;">
@@ -426,6 +430,8 @@ Hold press on the toggle [+] button to collapse all' oninput="formatJSON()"></te
                                 </div>
                             </div>
                         </div>
+
+                        <div class="pane-divider"></div>
 
                         <!-- Right Panel - Decoded JWT -->
                         <div class="editor-panel">

@@ -1,12 +1,12 @@
 /* Editor Panels */
 .editor-container {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 20px;
+    display: flex;
+    gap: 0;
     margin-bottom: 20px;
     flex: 1;
     min-height: 0;
     height: 100%;
+    position: relative;
 }
 
 .editor-panel {
@@ -14,10 +14,59 @@
     border-radius: 8px;
     overflow: hidden;
     box-shadow: 0 1px 3px var(--shadow);
-    transition: all 0.3s ease;
+    transition: box-shadow 0.3s ease;
     display: flex;
     flex-direction: column;
     min-height: 0;
+    flex: 1;
+    min-width: 300px;
+}
+
+/* Default: Left pane (Input) is 40%, Right pane (Output) is 60% */
+.editor-panel:first-of-type {
+    flex: 0 0 40%;
+}
+
+.editor-panel:last-of-type {
+    flex: 0 0 60%;
+}
+
+.pane-divider {
+    width: 8px;
+    background: transparent;
+    cursor: col-resize;
+    position: relative;
+    flex-shrink: 0;
+    transition: background 0.2s ease;
+    user-select: none;
+}
+
+.pane-divider::before {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 2px;
+    height: 40px;
+    background: var(--content-border);
+    border-radius: 1px;
+    transition: all 0.2s ease;
+}
+
+.pane-divider:hover::before,
+.pane-divider.dragging::before {
+    background: var(--primary-color, #0078d4);
+    height: 60px;
+    width: 3px;
+}
+
+.pane-divider:hover {
+    background: rgba(0, 120, 212, 0.05);
+}
+
+.pane-divider.dragging {
+    background: rgba(0, 120, 212, 0.1);
 }
 
 .panel-header {
@@ -28,6 +77,14 @@
     justify-content: space-between;
     transition: all 0.3s ease;
     flex-shrink: 0;
+    gap: 8px;
+    min-height: 56px;
+}
+
+.panel-header > div:first-child {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
 }
 
 .panel-title {
@@ -37,6 +94,9 @@
     text-transform: uppercase;
     letter-spacing: 0.5px;
     transition: color 0.3s ease;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .panel-content {
@@ -62,6 +122,14 @@
     align-items: center;
     justify-content: space-between;
     transition: all 0.3s ease;
+    gap: 8px;
+    min-height: 56px;
+}
+
+.editor-header > div:first-child {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
 }
 
 .editor-title {
@@ -69,6 +137,9 @@
     font-weight: 600;
     color: var(--content-text);
     transition: color 0.3s ease;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .editor-subtitle {
@@ -76,11 +147,15 @@
     color: var(--content-text-secondary);
     margin-top: 2px;
     transition: color 0.3s ease;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .editor-actions {
     display: flex;
     gap: 8px;
+    flex-shrink: 0;
 }
 
 .icon-btn {
