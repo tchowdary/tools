@@ -514,7 +514,7 @@ Hold press on the toggle [+] button to collapse all' oninput="formatJSON()"></te
                 <div class="content-header">
                     <div>
                         <div class="content-title">📜 Certificate Decoder</div>
-                        <div class="content-description">Decode and analyze X.509 PEM certificates</div>
+                        <div class="content-description">Decode and analyze X.509 certificates and CSRs</div>
                     </div>
                     <div style="display: flex; gap: 8px;">
                         <button class="btn btn-secondary" onclick="loadSampleCert()">Load Sample</button>
@@ -547,12 +547,17 @@ Hold press on the toggle [+] button to collapse all' oninput="formatJSON()"></te
                                 </div>
                             </div>
                             <div class="editor-body">
-                                <textarea class="code-editor" id="certInput" placeholder="Paste your PEM encoded certificate here...
+                                <textarea class="code-editor" id="certInput" placeholder="Paste your PEM encoded certificate or CSR here...
 
-Example:
+Certificate Example:
 -----BEGIN CERTIFICATE-----
 MIIDrzCCApegAwIBAgIQCDvgVpBCRrGhdWrJWZHHSjAN...
------END CERTIFICATE-----" oninput="decodeCertificate()"></textarea>
+-----END CERTIFICATE-----
+
+CSR Example:
+-----BEGIN CERTIFICATE REQUEST-----
+MIICvDCCAaQCAQAwdzELMAkGA1UEBhMCVVMxDTALBgNV...
+-----END CERTIFICATE REQUEST-----" oninput="decodeCertificate()"></textarea>
                             </div>
                         </div>
 

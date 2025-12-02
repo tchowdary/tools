@@ -111,6 +111,7 @@ const OID_NAMES = {
     '2.5.29.37': 'Extended Key Usage',
     '2.5.29.31': 'CRL Distribution Points',
     '1.3.6.1.5.5.7.1.1': 'Authority Information Access',
+    '1.2.840.113549.1.9.14': 'Extension Request',
 };
 
 function parsePEM(pem) {
@@ -269,6 +270,162 @@ function parseExtensions(parser, end) {
     return extensions;
 }
 
+function parsePEMCSR(pem) {
+    // Remove PEM headers and whitespace
+    const pemContent = pem
+        .replace(/-----BEGIN CERTIFICATE REQUEST-----/g, '')
+        .replace(/-----END CERTIFICATE REQUEST-----/g, '')
+        .replace(/-----BEGIN NEW CERTIFICATE REQUEST-----/g, '')
+        .replace(/-----END NEW CERTIFICATE REQUEST-----/g, '')
+        .replace(/\s+/g, '');
+
+    // Decode base64
+    const binaryString = atob(pemContent);
+    const bytes = new Uint8Array(binaryString.length);
+    for (let i = 0; i < binaryString.length; i++) {
+        bytes[i] = binaryString.charCodeAt(i);
+    }
+    return bytes;
+}
+
+function decodeCSR(pem) {
+    const output = document.getElementById('certOutput');
+    const error = document.getElementById('certErrorMessage');
+
+    try {
+        const bytes = parsePEMCSR(pem);
+        const parser = new ASN1Parser(bytes);
+
+        // CSR SEQUENCE
+        const csrSeq = parser.readSequence();
+
+        // CertificationRequestInfo SEQUENCE
+        const reqInfoSeq = parser.readSequence();
+
+        let result = '<div style="font-family: monospace; line-height: 1.8;">';
+        result += '<div style="font-size: 16px; font-weight: bold; margin-bottom: 16px;">📝 Certificate Signing Request (CSR)</div>';
+        result += '<div style="background: var(--editor-bg); padding: 12px; border-radius: 6px; margin-bottom: 16px; font-size: 13px;">';
+        result += '<strong>ℹ️ About CSRs:</strong><br>';
+        result += '<span style="color: var(--content-text-secondary);">A Certificate Signing Request is sent to a Certificate Authority (CA) to apply for a digital certificate. ';
+        result += 'It contains the public key and identifying information about the entity requesting the certificate.</span>';
+        result += '</div>';
+        result += '<hr style="border: 1px solid var(--content-border); margin-bottom: 20px;">';
+
+        // Version
+        const versionTag = parser.readByte();
+        const versionLen = parser.readLength();
+        const version = parser.readByte();
+        result += `<div style="margin-bottom: 16px;"><strong>Version:</strong> v${version + 1}</div>`;
+
+        // Subject
+        const subjectSeq = parser.readSequence();
+        const subjectParts = parseDistinguishedName(parser, subjectSeq.end);
+        result += `<div style="margin-bottom: 16px;"><strong>Subject:</strong><br>`;
+        result += '<div style="background: var(--editor-bg); padding: 8px; border-radius: 4px; margin-left: 20px; margin-top: 8px;">';
+        result += '<div style="font-size: 12px; color: var(--content-text-secondary); margin-bottom: 8px;">The entity requesting the certificate:</div>';
+        result += formatDistinguishedName(subjectParts, true).replace('margin-left: 20px;', 'margin-left: 0px;');
+        result += '</div></div>';
+
+        // Subject Public Key Info
+        const spkiSeq = parser.readSequence();
+        const keyAlgSeq = parser.readSequence();
+        const keyAlgOID = parser.readOID();
+        const keyAlgName = OID_NAMES[keyAlgOID] || keyAlgOID;
+        parser.pos = keyAlgSeq.end;
+
+        const publicKeyBitString = parser.readBitString();
+        const publicKeySize = (publicKeyBitString.bytes.length - publicKeyBitString.unusedBits / 8) * 8;
+
+        result += `<div style="margin-bottom: 16px;"><strong>Subject Public Key Info:</strong><br>`;
+        result += `<div style="margin-left: 20px;">`;
+        result += `<div><strong>Algorithm:</strong> ${keyAlgName}</div>`;
+        result += `<div style="color: var(--content-text-secondary); font-size: 12px;">OID: ${keyAlgOID}</div>`;
+        result += `<div><strong>Key Size:</strong> ${publicKeySize} bits</div>`;
+        result += `</div></div>`;
+
+        parser.pos = spkiSeq.end;
+
+        // Attributes
+        if (parser.pos < reqInfoSeq.end) {
+            const attrsTag = parser.readByte(); // context tag [0]
+            const attrsLen = parser.readLength();
+            const attrsEnd = parser.pos + attrsLen;
+
+            if (attrsLen > 0) {
+                result += `<div style="margin-bottom: 16px;"><strong>Attributes:</strong><br>`;
+                result += `<div style="margin-left: 20px;">`;
+
+                while (parser.pos < attrsEnd) {
+                    const attrSeq = parser.readSequence();
+                    const attrOID = parser.readOID();
+
+                    // Read the SET containing attribute values
+                    const setTag = parser.readByte();
+                    const setLen = parser.readLength();
+                    const setEnd = parser.pos + setLen;
+
+                    const attrName = OID_NAMES[attrOID] || attrOID;
+
+                    result += `<div style="margin-bottom: 8px; padding: 8px; background: var(--editor-bg); border-radius: 4px;">`;
+                    result += `<div><strong>${attrName}</strong></div>`;
+                    result += `<div style="color: var(--content-text-secondary); font-size: 12px;">OID: ${attrOID}</div>`;
+
+                    // For extension request (1.2.840.113549.1.9.14), parse extensions
+                    if (attrOID === '1.2.840.113549.1.9.14') {
+                        const extSeq = parser.readSequence();
+                        const extensions = parseExtensions(parser, extSeq.end);
+                        if (extensions.length > 0) {
+                            result += '<div style="margin-top: 8px; margin-left: 20px;">';
+                            extensions.forEach((ext, idx) => {
+                                const criticalBadge = ext.critical ? '<span style="color: #ef4444; font-size: 11px; margin-left: 8px;">CRITICAL</span>' : '';
+                                result += `<div style="margin-bottom: 8px; font-size: 12px;">`;
+                                result += `<div><strong>[${idx + 1}] ${ext.name}</strong>${criticalBadge}</div>`;
+                                result += `<div style="color: var(--content-text-secondary); font-size: 11px; margin-left: 16px;">OID: ${ext.oid}</div>`;
+                                result += `</div>`;
+                            });
+                            result += '</div>';
+                        }
+                    } else {
+                        parser.pos = setEnd;
+                    }
+
+                    result += `</div>`;
+                }
+                result += `</div></div>`;
+            }
+        }
+
+        // Signature Algorithm
+        parser.pos = reqInfoSeq.end;
+        const sigAlgSeq = parser.readSequence();
+        const sigAlgOID = parser.readOID();
+        const sigAlgName = OID_NAMES[sigAlgOID] || sigAlgOID;
+        parser.pos = sigAlgSeq.end;
+
+        // Signature Value
+        const signatureBitString = parser.readBitString();
+        const signatureHex = bytesToHex(signatureBitString.bytes);
+
+        result += `<div style="margin-bottom: 16px;"><strong>Signature Algorithm:</strong> ${sigAlgName}<br>`;
+        result += `<div style="margin-left: 20px; color: var(--content-text-secondary); font-size: 12px;">OID: ${sigAlgOID}</div>`;
+        result += `</div>`;
+
+        result += `<div style="margin-bottom: 16px;"><strong>Signature:</strong><br>`;
+        result += `<div style="font-size: 11px; word-break: break-all; color: var(--content-text-secondary); margin-left: 20px; line-height: 1.6;">`;
+        for (let i = 0; i < signatureHex.length; i += 60) {
+            result += `${signatureHex.substring(i, i + 60)}<br>`;
+        }
+        result += `</div></div>`;
+
+        result += '</div>'; // Close main div
+        output.innerHTML = result;
+
+    } catch (e) {
+        console.error('CSR parsing error:', e);
+        error.textContent = `❌ Error parsing CSR: ${e.message}`;
+    }
+}
+
 export function decodeCertificate() {
     const input = document.getElementById('certInput');
     const output = document.getElementById('certOutput');
@@ -280,12 +437,21 @@ export function decodeCertificate() {
     try {
         const pem = input.value.trim();
         if (!pem) {
-            error.textContent = '⚠️ Please enter a PEM encoded certificate';
+            error.textContent = '⚠️ Please enter a PEM encoded certificate or CSR';
             return;
         }
 
-        if (!pem.includes('BEGIN CERTIFICATE')) {
-            error.textContent = '❌ Invalid PEM format. Must contain "BEGIN CERTIFICATE" header';
+        // Detect if it's a CSR or certificate
+        const isCSR = pem.includes('BEGIN CERTIFICATE REQUEST') || pem.includes('BEGIN NEW CERTIFICATE REQUEST');
+        const isCert = pem.includes('BEGIN CERTIFICATE') && !isCSR;
+
+        if (!isCert && !isCSR) {
+            error.textContent = '❌ Invalid PEM format. Must contain "BEGIN CERTIFICATE" or "BEGIN CERTIFICATE REQUEST" header';
+            return;
+        }
+
+        if (isCSR) {
+            decodeCSR(pem);
             return;
         }
 
@@ -301,6 +467,11 @@ export function decodeCertificate() {
 
         let result = '<div style="font-family: monospace; line-height: 1.8;">';
         result += '<div style="font-size: 16px; font-weight: bold; margin-bottom: 16px;">📜 Certificate Information</div>';
+        result += '<div style="background: var(--editor-bg); padding: 12px; border-radius: 6px; margin-bottom: 16px; font-size: 13px;">';
+        result += '<strong>ℹ️ About Distinguished Names (DN):</strong><br>';
+        result += '<span style="color: var(--content-text-secondary);">A Distinguished Name uniquely identifies an entity in an X.509 certificate. ';
+        result += 'It consists of attribute-value pairs like CN (Common Name), O (Organization), C (Country), etc.</span>';
+        result += '</div>';
         result += '<hr style="border: 1px solid var(--content-border); margin-bottom: 20px;">';
 
         // Version
