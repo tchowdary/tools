@@ -14,7 +14,7 @@
 }
 
 .sidebar-header {
-    padding: 20px 20px;
+    padding: 17px 20px;
     background: var(--sidebar-header-bg);
     border-bottom: none;
     border-top: 3px solid var(--bobcat-orange);
@@ -23,12 +23,12 @@
     align-items: center;
     justify-content: space-between;
     gap: 10px;
-    min-height: 67px;
+    height: 64px;
     box-sizing: border-box;
 }
 
 .sidebar.collapsed .sidebar-header {
-    padding: 20px 10px;
+    padding: 17px 10px;
     justify-content: center;
 }
 
@@ -57,9 +57,10 @@
     display: flex;
     align-items: center;
     gap: 10px;
-    font-size: 18px;
+    font-size: 16px;
     font-weight: 600;
     color: #ffffff;
+    line-height: 1.2;
 }
 
 .sidebar.collapsed .logo {
@@ -88,10 +89,11 @@
 }
 
 .subtitle {
-    font-size: 12px;
+    font-size: 11px;
     color: #cccccc;
-    margin-top: 4px;
+    margin-top: 2px;
     transition: color 0.3s ease;
+    line-height: 1.2;
 }
 
 .search-box {
