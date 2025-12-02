@@ -86,8 +86,8 @@
     --header-border: #333333;
 
     /* Buttons */
-    --btn-primary-bg: #4299e1;
-    --btn-primary-hover: #3182ce;
+    --btn-primary-bg: var(--bobcat-orange);
+    --btn-primary-hover: var(--bobcat-orange-hover);
     --btn-secondary-bg: #2d2d2d;
     --btn-secondary-border: #404040;
     --btn-secondary-hover-bg: #333333;
