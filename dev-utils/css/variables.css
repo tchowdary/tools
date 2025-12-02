@@ -1,16 +1,16 @@
 :root {
-    /* Light Theme - Sidebar */
-    --sidebar-bg: #2d3748;
-    --sidebar-border: #4a5568;
-    --sidebar-text: #e2e8f0;
-    --sidebar-text-secondary: #a0aec0;
-    --sidebar-hover: #374151;
-    --sidebar-active: #1a202c;
-    --sidebar-input-bg: #1a202c;
-    --sidebar-input-border: #4a5568;
-    --sidebar-scrollbar-track: #1a202c;
-    --sidebar-scrollbar-thumb: #4a5568;
-    --sidebar-scrollbar-thumb-hover: #718096;
+    /* Light Theme - Sidebar - Bobcat Design */
+    --sidebar-bg: #e8e8e8;
+    --sidebar-border: #d0d0d0;
+    --sidebar-text: #1a1a1a;
+    --sidebar-text-secondary: #666666;
+    --sidebar-hover: #d8d8d8;
+    --sidebar-active: #2d3748;
+    --sidebar-input-bg: #ffffff;
+    --sidebar-input-border: #d0d0d0;
+    --sidebar-scrollbar-track: #d8d8d8;
+    --sidebar-scrollbar-thumb: #a0a0a0;
+    --sidebar-scrollbar-thumb-hover: #808080;
 
     /* Light Theme - Main Content */
     --main-bg: #f5f7fa;
@@ -25,9 +25,14 @@
     --input-text: #2d3748;
     --input-placeholder: #a0aec0;
 
+    /* Bobcat Brand Colors */
+    --bobcat-orange: #E8561A;
+    --bobcat-orange-hover: #d14510;
+    --bobcat-black: #000000;
+
     /* Buttons */
-    --btn-primary-bg: #2d3748;
-    --btn-primary-hover: #1a202c;
+    --btn-primary-bg: #E8561A;
+    --btn-primary-hover: #d14510;
     --btn-secondary-bg: #ffffff;
     --btn-secondary-border: #cbd5e0;
     --btn-secondary-hover-bg: #f7fafc;

@@ -65,7 +65,7 @@
 .logo-icon {
     width: 32px;
     height: 32px;
-    background: #4299e1;
+    background: var(--bobcat-orange);
     border-radius: 6px;
     display: flex;
     align-items: center;
@@ -183,7 +183,7 @@
 
 .nav-item.active {
     background: var(--sidebar-active);
-    border-left: 3px solid #4299e1;
+    border-left: 3px solid var(--bobcat-orange);
 }
 
 .sidebar.collapsed .nav-item.active {
