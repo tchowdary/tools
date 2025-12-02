@@ -13,6 +13,14 @@ body {
     transition: background-color 0.3s ease, color 0.3s ease;
 }
 
+/* Make emojis appear black/monochrome for consistency */
+.nav-item-icon,
+.logo-icon,
+.content-title,
+.btn span {
+    filter: grayscale(1) brightness(0);
+}
+
 .app-container {
     display: flex;
     height: 100vh;
