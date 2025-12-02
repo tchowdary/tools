@@ -25,6 +25,12 @@
     --input-text: #2d3748;
     --input-placeholder: #a0aec0;
 
+    /* Header - Bobcat Black Design */
+    --header-bg: #000000;
+    --header-text: #ffffff;
+    --header-text-secondary: #cccccc;
+    --header-border: #333333;
+
     /* Bobcat Brand Colors */
     --bobcat-orange: #E8561A;
     --bobcat-orange-hover: #d14510;
@@ -71,6 +77,12 @@
     --input-border: #2d2d2d;
     --input-text: #e5e5e5;
     --input-placeholder: #666666;
+
+    /* Header - Dark Theme */
+    --header-bg: #000000;
+    --header-text: #ffffff;
+    --header-text-secondary: #cccccc;
+    --header-border: #333333;
 
     /* Buttons */
     --btn-primary-bg: #4299e1;

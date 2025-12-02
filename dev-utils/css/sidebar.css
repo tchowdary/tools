@@ -184,6 +184,7 @@
 .nav-item.active {
     background: var(--sidebar-active);
     border-left: 3px solid var(--bobcat-orange);
+    color: #ffffff;
 }
 
 .sidebar.collapsed .nav-item.active {

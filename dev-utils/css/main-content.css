@@ -9,9 +9,10 @@
 }
 
 .content-header {
-    background: var(--content-bg);
-    padding: 24px 32px;
-    border-bottom: 1px solid var(--content-border);
+    background: var(--header-bg);
+    padding: 20px 32px;
+    border-top: 3px solid var(--bobcat-orange);
+    border-bottom: none;
     transition: all 0.3s ease;
     display: flex;
     align-items: center;
@@ -20,16 +21,16 @@
 }
 
 .content-title {
-    font-size: 28px;
+    font-size: 24px;
     font-weight: 600;
-    color: var(--content-text);
-    margin-bottom: 4px;
+    color: var(--header-text);
+    margin-bottom: 2px;
     transition: color 0.3s ease;
 }
 
 .content-description {
-    font-size: 14px;
-    color: var(--content-text-secondary);
+    font-size: 13px;
+    color: var(--header-text-secondary);
     transition: color 0.3s ease;
 }
 
