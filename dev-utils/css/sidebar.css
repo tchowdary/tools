@@ -15,8 +15,9 @@
 
 .sidebar-header {
     padding: 20px;
-    border-bottom: 1px solid var(--sidebar-border);
-    transition: border-color 0.3s ease;
+    background: var(--sidebar-header-bg);
+    border-bottom: none;
+    transition: all 0.3s ease;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -31,7 +32,7 @@
 .sidebar-toggle-btn {
     background: transparent;
     border: none;
-    color: var(--sidebar-text);
+    color: #ffffff;
     cursor: pointer;
     padding: 8px;
     border-radius: 6px;
@@ -42,7 +43,7 @@
 }
 
 .sidebar-toggle-btn:hover {
-    background: var(--sidebar-hover);
+    background: rgba(255, 255, 255, 0.1);
 }
 
 .sidebar.collapsed .sidebar-toggle-btn {
@@ -55,7 +56,7 @@
     gap: 10px;
     font-size: 18px;
     font-weight: 600;
-    color: var(--sidebar-text);
+    color: #ffffff;
 }
 
 .sidebar.collapsed .logo {
@@ -85,7 +86,7 @@
 
 .subtitle {
     font-size: 12px;
-    color: var(--sidebar-text-secondary);
+    color: #cccccc;
     margin-top: 4px;
     transition: color 0.3s ease;
 }
@@ -184,7 +185,8 @@
 .nav-item.active {
     background: var(--sidebar-active);
     border-left: 3px solid var(--bobcat-orange);
-    color: #ffffff;
+    color: var(--bobcat-orange);
+    font-weight: 600;
 }
 
 .sidebar.collapsed .nav-item.active {
