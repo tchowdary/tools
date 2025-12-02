@@ -1,16 +1,17 @@
 :root {
-    /* Light Theme - Sidebar */
-    --sidebar-bg: #2d3748;
-    --sidebar-border: #4a5568;
-    --sidebar-text: #e2e8f0;
-    --sidebar-text-secondary: #a0aec0;
-    --sidebar-hover: #374151;
-    --sidebar-active: #1a202c;
-    --sidebar-input-bg: #1a202c;
-    --sidebar-input-border: #4a5568;
-    --sidebar-scrollbar-track: #1a202c;
-    --sidebar-scrollbar-thumb: #4a5568;
-    --sidebar-scrollbar-thumb-hover: #718096;
+    /* Light Theme - Sidebar - Bobcat Design */
+    --sidebar-bg: #ffffff;
+    --sidebar-border: #e0e0e0;
+    --sidebar-text: #000000;
+    --sidebar-text-secondary: #666666;
+    --sidebar-hover: #f5f5f5;
+    --sidebar-active: transparent;
+    --sidebar-input-bg: #f8f8f8;
+    --sidebar-input-border: #e0e0e0;
+    --sidebar-scrollbar-track: #f5f5f5;
+    --sidebar-scrollbar-thumb: #c0c0c0;
+    --sidebar-scrollbar-thumb-hover: #a0a0a0;
+    --sidebar-header-bg: #000000;
 
     /* Light Theme - Main Content */
     --main-bg: #f5f7fa;
@@ -25,9 +26,20 @@
     --input-text: #2d3748;
     --input-placeholder: #a0aec0;
 
+    /* Header - Bobcat Black Design */
+    --header-bg: #000000;
+    --header-text: #ffffff;
+    --header-text-secondary: #cccccc;
+    --header-border: #333333;
+
+    /* Bobcat Brand Colors */
+    --bobcat-orange: #FF3600;
+    --bobcat-orange-hover: #e63000;
+    --bobcat-black: #000000;
+
     /* Buttons */
-    --btn-primary-bg: #2d3748;
-    --btn-primary-hover: #1a202c;
+    --btn-primary-bg: var(--bobcat-orange);
+    --btn-primary-hover: var(--bobcat-orange-hover);
     --btn-secondary-bg: #ffffff;
     --btn-secondary-border: #cbd5e0;
     --btn-secondary-hover-bg: #f7fafc;
@@ -67,9 +79,15 @@
     --input-text: #e5e5e5;
     --input-placeholder: #666666;
 
+    /* Header - Dark Theme */
+    --header-bg: #000000;
+    --header-text: #ffffff;
+    --header-text-secondary: #cccccc;
+    --header-border: #333333;
+
     /* Buttons */
-    --btn-primary-bg: #4299e1;
-    --btn-primary-hover: #3182ce;
+    --btn-primary-bg: var(--bobcat-orange);
+    --btn-primary-hover: var(--bobcat-orange-hover);
     --btn-secondary-bg: #2d2d2d;
     --btn-secondary-border: #404040;
     --btn-secondary-hover-bg: #333333;
