@@ -136,6 +136,16 @@ function bytesToHex(bytes) {
         .toUpperCase();
 }
 
+// DN field descriptions
+const DN_FIELD_DESCRIPTIONS = {
+    'CN': 'Common Name - The name of the entity (person, server, organization)',
+    'C': 'Country - Two-letter country code (ISO 3166)',
+    'ST': 'State/Province - State or province name',
+    'L': 'Locality - City or locality name',
+    'O': 'Organization - Legal organization name',
+    'OU': 'Organizational Unit - Division or department within the organization',
+};
+
 function parseDistinguishedName(parser, end) {
     const parts = [];
     while (parser.pos < end) {
@@ -147,11 +157,36 @@ function parseDistinguishedName(parser, end) {
         const value = parser.readString();
 
         const name = OID_NAMES[oid] || oid;
-        parts.push(`${name}=${value}`);
+        parts.push({ name, value, oid });
 
         parser.pos = attrSeq.end;
     }
-    return parts.join(', ');
+    return parts;
+}
+
+function formatDistinguishedName(dnParts, asHtml = false) {
+    if (asHtml) {
+        let html = '<div style="margin-left: 20px;">';
+        dnParts.forEach(part => {
+            const description = DN_FIELD_DESCRIPTIONS[part.name] || '';
+            html += `<div style="margin-bottom: 8px;">`;
+            html += `<strong>${part.name}</strong> = ${escapeHtml(part.value)}`;
+            if (description) {
+                html += `<br><span style="color: var(--content-text-secondary); font-size: 12px; margin-left: 20px;">↳ ${description}</span>`;
+            }
+            html += `</div>`;
+        });
+        html += '</div>';
+        return html;
+    } else {
+        return dnParts.map(p => `${p.name}=${p.value}`).join(', ');
+    }
+}
+
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
 }
 
 function parseValidity(parser) {
@@ -240,7 +275,7 @@ export function decodeCertificate() {
     const error = document.getElementById('certErrorMessage');
 
     error.textContent = '';
-    output.textContent = '';
+    output.innerHTML = '';
 
     try {
         const pem = input.value.trim();
@@ -264,8 +299,9 @@ export function decodeCertificate() {
         const tbsSeq = parser.readSequence();
         const tbsStart = parser.pos;
 
-        let result = '📜 Certificate Information\n';
-        result += '='.repeat(80) + '\n\n';
+        let result = '<div style="font-family: monospace; line-height: 1.8;">';
+        result += '<div style="font-size: 16px; font-weight: bold; margin-bottom: 16px;">📜 Certificate Information</div>';
+        result += '<hr style="border: 1px solid var(--content-border); margin-bottom: 20px;">';
 
         // Version
         let version = 1;
@@ -276,24 +312,23 @@ export function decodeCertificate() {
             parser.readLength();
             version = parser.readByte() + 1;
         }
-        result += `Version: v${version}\n`;
+        result += `<div style="margin-bottom: 16px;"><strong>Version:</strong> v${version}</div>`;
 
         // Serial Number
         const serialBytes = parser.readInteger();
-        result += `Serial Number: ${bytesToHex(serialBytes)}\n\n`;
+        result += `<div style="margin-bottom: 16px;"><strong>Serial Number:</strong><br><span style="margin-left: 20px; word-break: break-all;">${bytesToHex(serialBytes)}</span></div>`;
 
         // Signature Algorithm
         const sigAlgSeq = parser.readSequence();
         const sigAlgOID = parser.readOID();
         const sigAlgName = OID_NAMES[sigAlgOID] || sigAlgOID;
         parser.pos = sigAlgSeq.end;
-        result += `Signature Algorithm: ${sigAlgName}\n`;
-        result += `  OID: ${sigAlgOID}\n\n`;
+        result += `<div style="margin-bottom: 16px;"><strong>Signature Algorithm:</strong> ${sigAlgName}<br><span style="margin-left: 20px; color: var(--content-text-secondary); font-size: 12px;">OID: ${sigAlgOID}</span></div>`;
 
         // Issuer
         const issuerSeq = parser.readSequence();
-        const issuer = parseDistinguishedName(parser, issuerSeq.end);
-        result += `Issuer:\n  ${issuer}\n\n`;
+        const issuerParts = parseDistinguishedName(parser, issuerSeq.end);
+        result += `<div style="margin-bottom: 16px;"><strong>Issuer:</strong><br>${formatDistinguishedName(issuerParts, true)}</div>`;
 
         // Validity
         const validity = parseValidity(parser);
@@ -301,23 +336,25 @@ export function decodeCertificate() {
         const isValid = now >= validity.notBefore && now <= validity.notAfter;
         const statusIcon = isValid ? '✅' : '❌';
 
-        result += `Validity: ${statusIcon}\n`;
-        result += `  Not Before: ${validity.notBefore.toUTCString()}\n`;
-        result += `  Not After:  ${validity.notAfter.toUTCString()}\n`;
+        result += `<div style="margin-bottom: 16px;"><strong>Validity:</strong> ${statusIcon}<br>`;
+        result += `<div style="margin-left: 20px;">`;
+        result += `<div><strong>Not Before:</strong> ${validity.notBefore.toUTCString()}</div>`;
+        result += `<div><strong>Not After:</strong> ${validity.notAfter.toUTCString()}</div>`;
 
         const daysRemaining = Math.floor((validity.notAfter - now) / (1000 * 60 * 60 * 24));
         if (isValid) {
-            result += `  Status: Valid (${daysRemaining} days remaining)\n\n`;
+            result += `<div><strong>Status:</strong> <span style="color: #10b981;">Valid (${daysRemaining} days remaining)</span></div>`;
         } else if (now < validity.notBefore) {
-            result += `  Status: Not yet valid\n\n`;
+            result += `<div><strong>Status:</strong> <span style="color: #f59e0b;">Not yet valid</span></div>`;
         } else {
-            result += `  Status: Expired\n\n`;
+            result += `<div><strong>Status:</strong> <span style="color: #ef4444;">Expired</span></div>`;
         }
+        result += `</div></div>`;
 
         // Subject
         const subjectSeq = parser.readSequence();
-        const subject = parseDistinguishedName(parser, subjectSeq.end);
-        result += `Subject:\n  ${subject}\n\n`;
+        const subjectParts = parseDistinguishedName(parser, subjectSeq.end);
+        result += `<div style="margin-bottom: 16px;"><strong>Subject:</strong><br>${formatDistinguishedName(subjectParts, true)}</div>`;
 
         // Subject Public Key Info
         const spkiSeq = parser.readSequence();
@@ -330,10 +367,12 @@ export function decodeCertificate() {
         const publicKeyBitString = parser.readBitString();
         const publicKeySize = (publicKeyBitString.bytes.length - publicKeyBitString.unusedBits / 8) * 8;
 
-        result += `Subject Public Key Info:\n`;
-        result += `  Algorithm: ${keyAlgName}\n`;
-        result += `  OID: ${keyAlgOID}\n`;
-        result += `  Key Size: ${publicKeySize} bits\n\n`;
+        result += `<div style="margin-bottom: 16px;"><strong>Subject Public Key Info:</strong><br>`;
+        result += `<div style="margin-left: 20px;">`;
+        result += `<div><strong>Algorithm:</strong> ${keyAlgName}</div>`;
+        result += `<div style="color: var(--content-text-secondary); font-size: 12px;">OID: ${keyAlgOID}</div>`;
+        result += `<div><strong>Key Size:</strong> ${publicKeySize} bits</div>`;
+        result += `</div></div>`;
 
         parser.pos = spkiSeq.end;
 
@@ -354,17 +393,21 @@ export function decodeCertificate() {
                 const extensions = parseExtensions(parser, extSeq.end);
 
                 if (extensions.length > 0) {
-                    result += `Extensions:\n`;
+                    result += `<div style="margin-bottom: 16px;"><strong>Extensions:</strong><br>`;
+                    result += `<div style="margin-left: 20px;">`;
                     extensions.forEach((ext, idx) => {
-                        result += `  [${idx + 1}] ${ext.name}${ext.critical ? ' (Critical)' : ''}\n`;
-                        result += `      OID: ${ext.oid}\n`;
+                        const criticalBadge = ext.critical ? '<span style="color: #ef4444; font-size: 11px; margin-left: 8px;">CRITICAL</span>' : '';
+                        result += `<div style="margin-bottom: 12px; padding: 8px; background: var(--editor-bg); border-radius: 4px;">`;
+                        result += `<div><strong>[${idx + 1}] ${ext.name}</strong>${criticalBadge}</div>`;
+                        result += `<div style="color: var(--content-text-secondary); font-size: 12px; margin-left: 20px;">OID: ${ext.oid}</div>`;
                         if (ext.value.length < 200) {
-                            result += `      Value: ${ext.value}\n`;
+                            result += `<div style="color: var(--content-text-secondary); font-size: 12px; margin-left: 20px; word-break: break-all;">Value: ${ext.value}</div>`;
                         } else {
-                            result += `      Value: ${ext.value.substring(0, 100)}...\n`;
+                            result += `<div style="color: var(--content-text-secondary); font-size: 12px; margin-left: 20px; word-break: break-all;">Value: ${ext.value.substring(0, 100)}...</div>`;
                         }
+                        result += `</div>`;
                     });
-                    result += '\n';
+                    result += `</div></div>`;
                 }
             }
         }
@@ -380,16 +423,20 @@ export function decodeCertificate() {
         const signatureBitString = parser.readBitString();
         const signatureHex = bytesToHex(signatureBitString.bytes);
 
-        result += `Certificate Signature:\n`;
-        result += `  Algorithm: ${certSigAlgName}\n`;
-        result += `  Signature (hex):\n`;
+        result += `<div style="margin-bottom: 16px;"><strong>Certificate Signature:</strong><br>`;
+        result += `<div style="margin-left: 20px;">`;
+        result += `<div><strong>Algorithm:</strong> ${certSigAlgName}</div>`;
+        result += `<div style="margin-top: 8px;"><strong>Signature (hex):</strong></div>`;
+        result += `<div style="font-size: 11px; word-break: break-all; color: var(--content-text-secondary); margin-left: 20px; line-height: 1.6;">`;
 
         // Format signature in 60-char lines
         for (let i = 0; i < signatureHex.length; i += 60) {
-            result += `    ${signatureHex.substring(i, i + 60)}\n`;
+            result += `${signatureHex.substring(i, i + 60)}<br>`;
         }
+        result += `</div></div></div>`;
 
-        output.textContent = result;
+        result += '</div>'; // Close main div
+        output.innerHTML = result;
 
     } catch (e) {
         console.error('Certificate parsing error:', e);
@@ -405,20 +452,21 @@ export function copyCertInput() {
 export function copyCertOutput() {
     const output = document.getElementById('certOutput');
     if (output.textContent) {
-        copyToClipboard(output.textContent, 'Certificate details copied to clipboard');
+        // Extract plain text from HTML
+        copyToClipboard(output.innerText, 'Certificate details copied to clipboard');
     }
 }
 
 export function clearCert() {
     document.getElementById('certInput').value = '';
-    document.getElementById('certOutput').textContent = '';
+    document.getElementById('certOutput').innerHTML = '';
     document.getElementById('certErrorMessage').textContent = '';
 }
 
 export function downloadCertOutput() {
     const output = document.getElementById('certOutput');
-    if (output.textContent) {
-        downloadFile(output.textContent, 'certificate-details.txt', 'text/plain');
+    if (output.innerText) {
+        downloadFile(output.innerText, 'certificate-details.txt', 'text/plain');
     }
 }
 
