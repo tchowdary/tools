@@ -6,16 +6,16 @@
  * Timezone configuration with IANA timezone identifiers
  * Sorted alphabetically by location name
  */
-const TIMEZONES = [
-    { name: 'Argentina', timezone: 'America/Argentina/Buenos_Aires', flag: '🇦🇷' },
-    { name: 'Dublin, Ireland', timezone: 'Europe/Dublin', flag: '🇮🇪' },
+const TIMEZONES = [        
+    { name: 'UTC', timezone: 'UTC', flag: '🌍' },
     { name: 'Fargo, US', timezone: 'America/Chicago', flag: '🇺🇸' },
+    { name: 'Statesville, US', timezone: 'America/New_York', flag: '🇺🇸' },    
+    { name: 'Czech Republic(CET)', timezone: 'Europe/Prague', flag: '🇨🇿' },    
+    { name: 'Korea', timezone: 'Asia/Seoul', flag: '🇰🇷' },
+    { name: 'Ireland', timezone: 'Europe/Dublin', flag: '🇮🇪' },
     { name: 'India', timezone: 'Asia/Kolkata', flag: '🇮🇳' },
-    { name: 'Prague, Czech Republic', timezone: 'Europe/Prague', flag: '🇨🇿' },
-    { name: 'Seoul, Korea', timezone: 'Asia/Seoul', flag: '🇰🇷' },
-    { name: 'Statesville, US', timezone: 'America/New_York', flag: '🇺🇸' },
-    { name: 'Ukraine', timezone: 'Europe/Kiev', flag: '🇺🇦' },
-    { name: 'UTC', timezone: 'UTC', flag: '🌍' }
+    { name: 'Argentina', timezone: 'America/Argentina/Buenos_Aires', flag: '🇦🇷' },
+    { name: 'Ukraine', timezone: 'Europe/Kiev', flag: '🇺🇦' }    
 ];
 
 let clockInterval = null;
@@ -63,8 +63,7 @@ function formatTime(date, timezone) {
     } catch (error) {
         console.error(`Error formatting time for timezone ${timezone}:`, error);
         return {
-            time: 'Error',
-            date: 'Invalid timezone',
+            time: 'Error',date: 'Invalid timezone',
             timezone: ''
         };
     }
@@ -123,8 +122,8 @@ export function startWorldClock() {
         clearInterval(clockInterval);
     }
 
-    // Update every second
-    clockInterval = setInterval(updateWorldClock, 1000);
+    // Update every 5 seconds
+    clockInterval = setInterval(updateWorldClock, 5000);
 }
 
 /**
