@@ -165,9 +165,21 @@ function parseDistinguishedName(parser, end) {
     return parts;
 }
 
-function formatDistinguishedName(dnParts, asHtml = false) {
+function formatDistinguishedName(dnParts, asHtml = false, showRaw = true) {
+    const rawDN = dnParts.map(p => `${p.name}=${p.value}`).join(', ');
+
     if (asHtml) {
-        let html = '<div style="margin-left: 20px;">';
+        let html = '';
+
+        // Show raw DN string first
+        if (showRaw) {
+            html += `<div style="margin-left: 20px; margin-bottom: 12px; padding: 8px; background: var(--editor-bg); border-radius: 4px;">`;
+            html += `<div style="font-family: monospace; word-break: break-all;">${escapeHtml(rawDN)}</div>`;
+            html += `</div>`;
+        }
+
+        // Show parsed fields with descriptions
+        html += '<div style="margin-left: 20px;">';
         dnParts.forEach(part => {
             const description = DN_FIELD_DESCRIPTIONS[part.name] || '';
             html += `<div style="margin-bottom: 8px;">`;
@@ -180,7 +192,7 @@ function formatDistinguishedName(dnParts, asHtml = false) {
         html += '</div>';
         return html;
     } else {
-        return dnParts.map(p => `${p.name}=${p.value}`).join(', ');
+        return rawDN;
     }
 }
 
@@ -304,11 +316,6 @@ function decodeCSR(pem) {
 
         let result = '<div style="font-family: monospace; line-height: 1.8;">';
         result += '<div style="font-size: 16px; font-weight: bold; margin-bottom: 16px;">📝 Certificate Signing Request (CSR)</div>';
-        result += '<div style="background: var(--editor-bg); padding: 12px; border-radius: 6px; margin-bottom: 16px; font-size: 13px;">';
-        result += '<strong>ℹ️ About CSRs:</strong><br>';
-        result += '<span style="color: var(--content-text-secondary);">A Certificate Signing Request is sent to a Certificate Authority (CA) to apply for a digital certificate. ';
-        result += 'It contains the public key and identifying information about the entity requesting the certificate.</span>';
-        result += '</div>';
         result += '<hr style="border: 1px solid var(--content-border); margin-bottom: 20px;">';
 
         // Version
@@ -321,10 +328,8 @@ function decodeCSR(pem) {
         const subjectSeq = parser.readSequence();
         const subjectParts = parseDistinguishedName(parser, subjectSeq.end);
         result += `<div style="margin-bottom: 16px;"><strong>Subject:</strong><br>`;
-        result += '<div style="background: var(--editor-bg); padding: 8px; border-radius: 4px; margin-left: 20px; margin-top: 8px;">';
-        result += '<div style="font-size: 12px; color: var(--content-text-secondary); margin-bottom: 8px;">The entity requesting the certificate:</div>';
-        result += formatDistinguishedName(subjectParts, true).replace('margin-left: 20px;', 'margin-left: 0px;');
-        result += '</div></div>';
+        result += formatDistinguishedName(subjectParts, true);
+        result += '</div>';
 
         // Subject Public Key Info
         const spkiSeq = parser.readSequence();
@@ -467,11 +472,6 @@ export function decodeCertificate() {
 
         let result = '<div style="font-family: monospace; line-height: 1.8;">';
         result += '<div style="font-size: 16px; font-weight: bold; margin-bottom: 16px;">📜 Certificate Information</div>';
-        result += '<div style="background: var(--editor-bg); padding: 12px; border-radius: 6px; margin-bottom: 16px; font-size: 13px;">';
-        result += '<strong>ℹ️ About Distinguished Names (DN):</strong><br>';
-        result += '<span style="color: var(--content-text-secondary);">A Distinguished Name uniquely identifies an entity in an X.509 certificate. ';
-        result += 'It consists of attribute-value pairs like CN (Common Name), O (Organization), C (Country), etc.</span>';
-        result += '</div>';
         result += '<hr style="border: 1px solid var(--content-border); margin-bottom: 20px;">';
 
         // Version
