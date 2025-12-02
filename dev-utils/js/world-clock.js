@@ -12,6 +12,7 @@ const TIMEZONES = [
     { name: 'Fargo, US', timezone: 'America/Chicago', flag: '🇺🇸' },
     { name: 'India', timezone: 'Asia/Kolkata', flag: '🇮🇳' },
     { name: 'Prague, Czech Republic', timezone: 'Europe/Prague', flag: '🇨🇿' },
+    { name: 'Seoul, Korea', timezone: 'Asia/Seoul', flag: '🇰🇷' },
     { name: 'Statesville, US', timezone: 'America/New_York', flag: '🇺🇸' },
     { name: 'Ukraine', timezone: 'Europe/Kiev', flag: '🇺🇦' },
     { name: 'UTC', timezone: 'UTC', flag: '🌍' }
@@ -78,23 +79,36 @@ export function updateWorldClock() {
 
     const now = new Date();
 
-    const clocksHTML = TIMEZONES.map(({ name, timezone, flag }) => {
+    const tableRows = TIMEZONES.map(({ name, timezone, flag }) => {
         const formatted = formatTime(now, timezone);
 
         return `
-            <div class="clock-item">
-                <div class="clock-header">
-                    <span class="clock-flag">${flag}</span>
-                    <span class="clock-location">${name}</span>
-                </div>
-                <div class="clock-time">${formatted.time}</div>
-                <div class="clock-date">${formatted.date}</div>
-                <div class="clock-timezone">${formatted.timezone}</div>
-            </div>
+            <tr class="clock-row">
+                <td class="clock-flag-cell">${flag}</td>
+                <td class="clock-location-cell">${name}</td>
+                <td class="clock-date-cell">${formatted.date}</td>
+                <td class="clock-time-cell">${formatted.time}</td>
+                <td class="clock-timezone-cell">${formatted.timezone}</td>
+            </tr>
         `;
     }).join('');
 
-    container.innerHTML = clocksHTML;
+    container.innerHTML = `
+        <table class="world-clock-table">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>Location</th>
+                    <th>Date</th>
+                    <th>Time</th>
+                    <th>Timezone</th>
+                </tr>
+            </thead>
+            <tbody>
+                ${tableRows}
+            </tbody>
+        </table>
+    `;
 }
 
 /**

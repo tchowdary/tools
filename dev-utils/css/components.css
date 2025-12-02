@@ -139,68 +139,82 @@
 
 /* World Clock Styles */
 .world-clock-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 20px;
+    overflow-x: auto;
     padding: 8px;
 }
 
-.clock-item {
+.world-clock-table {
+    width: 100%;
+    border-collapse: collapse;
     background: var(--panel-bg);
-    border: 1px solid var(--border-color);
     border-radius: 8px;
-    padding: 20px;
-    transition: all 0.3s ease;
+    overflow: hidden;
     box-shadow: 0 1px 3px var(--shadow);
 }
 
-.clock-item:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px var(--shadow);
-    border-color: var(--bobcat-orange);
+.world-clock-table thead {
+    background: var(--editor-bg);
+    border-bottom: 2px solid var(--border-color);
 }
 
-.clock-header {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 16px;
-    padding-bottom: 12px;
-    border-bottom: 1px solid var(--border-color);
-}
-
-.clock-flag {
-    font-size: 28px;
-    line-height: 1;
-}
-
-.clock-location {
-    font-size: 16px;
+.world-clock-table th {
+    padding: 16px;
+    text-align: left;
+    font-size: 13px;
     font-weight: 600;
+    color: var(--content-text);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.world-clock-table tbody tr {
+    border-bottom: 1px solid var(--border-color);
+    transition: background-color 0.2s ease;
+}
+
+.world-clock-table tbody tr:last-child {
+    border-bottom: none;
+}
+
+.world-clock-table tbody tr:hover {
+    background: var(--editor-bg);
+}
+
+.world-clock-table td {
+    padding: 16px;
     color: var(--content-text);
 }
 
-.clock-time {
-    font-size: 36px;
+.clock-flag-cell {
+    font-size: 24px;
+    line-height: 1;
+    width: 50px;
+    text-align: center;
+}
+
+.clock-location-cell {
+    font-size: 15px;
+    font-weight: 600;
+    min-width: 180px;
+}
+
+.clock-date-cell {
+    font-size: 14px;
+    min-width: 180px;
+}
+
+.clock-time-cell {
+    font-size: 20px;
     font-weight: 700;
     font-family: 'Courier New', monospace;
     color: var(--bobcat-orange);
-    margin-bottom: 8px;
-    text-align: center;
-    letter-spacing: 2px;
+    letter-spacing: 1px;
+    min-width: 100px;
 }
 
-.clock-date {
-    font-size: 14px;
-    color: var(--content-text);
-    margin-bottom: 6px;
-    text-align: center;
-    font-weight: 500;
-}
-
-.clock-timezone {
-    font-size: 12px;
+.clock-timezone-cell {
+    font-size: 13px;
     color: var(--content-text-secondary);
-    text-align: center;
     font-family: monospace;
+    min-width: 80px;
 }
