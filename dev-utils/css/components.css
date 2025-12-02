@@ -136,3 +136,71 @@
     color: var(--input-text);
     padding: 8px;
 }
+
+/* World Clock Styles */
+.world-clock-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+    padding: 8px;
+}
+
+.clock-item {
+    background: var(--panel-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 20px;
+    transition: all 0.3s ease;
+    box-shadow: 0 1px 3px var(--shadow);
+}
+
+.clock-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px var(--shadow);
+    border-color: var(--bobcat-orange);
+}
+
+.clock-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.clock-flag {
+    font-size: 28px;
+    line-height: 1;
+}
+
+.clock-location {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--content-text);
+}
+
+.clock-time {
+    font-size: 36px;
+    font-weight: 700;
+    font-family: 'Courier New', monospace;
+    color: var(--bobcat-orange);
+    margin-bottom: 8px;
+    text-align: center;
+    letter-spacing: 2px;
+}
+
+.clock-date {
+    font-size: 14px;
+    color: var(--content-text);
+    margin-bottom: 6px;
+    text-align: center;
+    font-weight: 500;
+}
+
+.clock-timezone {
+    font-size: 12px;
+    color: var(--content-text-secondary);
+    text-align: center;
+    font-family: monospace;
+}
