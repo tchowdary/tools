@@ -58,6 +58,10 @@
                             <span class="nav-item-icon">🔑</span>
                             <span class="nav-item-text">JWT Decoder</span>
                         </div>
+                        <div class="nav-item" data-tool="cert-decoder">
+                            <span class="nav-item-icon">📜</span>
+                            <span class="nav-item-text">Certificate Decoder</span>
+                        </div>
                     </div>
                 </div>
             </nav>
@@ -505,8 +509,91 @@ Hold press on the toggle [+] button to collapse all' oninput="formatJSON()"></te
                 </div>
             </div>
 
+            <!-- Certificate Decoder Tool -->
+            <div class="tool-section" id="cert-decoder">
+                <div class="content-header">
+                    <div>
+                        <div class="content-title">📜 Certificate & Key Decoder</div>
+                        <div class="content-description">Decode certificates, CSRs, and cryptographic keys</div>
+                    </div>
+                    <div style="display: flex; gap: 8px;">
+                        <button class="btn btn-secondary" onclick="loadSampleCert()">Load Sample</button>
+                    </div>
+                </div>
+
+                <div class="content-body">
+                    <div class="format-options">
+                        <div class="button-group">
+                            <button class="btn btn-primary" onclick="decodeCertificate()">
+                                <span>🔍</span> Decode
+                            </button>
+                            <button class="btn btn-secondary" onclick="clearCert()">
+                                <span>✖</span> Clear
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="error-message" id="certErrorMessage"></div>
+
+                    <div class="editor-container">
+                        <div class="editor-panel">
+                            <div class="editor-header">
+                                <div>
+                                    <div class="editor-title">PEM Certificate Input</div>
+                                    <div class="editor-subtitle">Paste PEM encoded certificate</div>
+                                </div>
+                                <div class="editor-actions">
+                                    <button class="icon-btn" onclick="copyCertInput()" title="Copy">📋</button>
+                                </div>
+                            </div>
+                            <div class="editor-body">
+                                <textarea class="code-editor" id="certInput" placeholder="Paste your PEM encoded certificate, CSR, or key here...
+
+Certificate:
+-----BEGIN CERTIFICATE-----
+MIIDrzCCApegAwIBAgIQCDvgVpBCRrGhdWrJWZHHSjAN...
+-----END CERTIFICATE-----
+
+CSR:
+-----BEGIN CERTIFICATE REQUEST-----
+MIICvDCCAaQCAQAwdzELMAkGA1UEBhMCVVMxDTALBgNV...
+-----END CERTIFICATE REQUEST-----
+
+Private Key (PKCS#8):
+-----BEGIN PRIVATE KEY-----
+MIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEA...
+-----END PRIVATE KEY-----
+
+Public Key:
+-----BEGIN PUBLIC KEY-----
+MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA...
+-----END PUBLIC KEY-----" oninput="decodeCertificate()"></textarea>
+                            </div>
+                        </div>
+
+                        <div class="pane-divider"></div>
+
+                        <div class="editor-panel">
+                            <div class="editor-header">
+                                <div>
+                                    <div class="editor-title">Certificate Details</div>
+                                    <div class="editor-subtitle">Parsed certificate information</div>
+                                </div>
+                                <div class="editor-actions">
+                                    <button class="icon-btn" onclick="copyCertOutput()" title="Copy">📋</button>
+                                    <button class="icon-btn" onclick="downloadCertOutput()" title="Download">⬇️</button>
+                                </div>
+                            </div>
+                            <div class="editor-body">
+                                <div class="code-editor" id="certOutput" style="white-space: normal; word-wrap: break-word; overflow: auto;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <!-- Placeholder Tools -->
-            
+
         </main>
     </div>
 </body>
