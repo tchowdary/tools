@@ -1,0 +1,4 @@
+# CloudFormation deployment order
+# Deploy S3 bucket first, then CloudFront distribution
+infrastructure/s3-bucket
+infrastructure/cloudfront

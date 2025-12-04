@@ -1,0 +1,46 @@
+# SAM Configuration for DevTools Deployment
+# This file contains environment-specific configuration for CloudFormation deployments
+
+version = 0.1
+
+#############################################################################
+# DEV Environment Configuration
+#############################################################################
+[dev]
+[dev.global.parameters]
+stack_name = "devtools"
+resolve_s3 = true
+region = "us-east-1"
+confirm_changeset = false
+capabilities = "CAPABILITY_IAM CAPABILITY_AUTO_EXPAND"
+disable_rollback = false
+
+# S3 Bucket Stack
+[dev.deploy.parameters.s3-bucket]
+stack_name = "devtools-s3-bucket"
+parameter_overrides = [
+    "EnvironmentRegion=dev-us-east-1",
+    # TODO: Uncomment and set your KMS Key ID if using KMS encryption
+    # "KMSKeyId=YOUR_KMS_KEY_ID"
+]
+
+# CloudFront Stack
+[dev.deploy.parameters.cloudfront]
+stack_name = "devtools-cloudfront"
+parameter_overrides = [
+    "EnvironmentRegion=dev-us-east-1",
+    # TODO: Update with your actual Route53 Hosted Zone ID
+    "HostedZoneId=ZXXXXXXXXXXXXX",
+    # TODO: Uncomment and set your alert email for CloudWatch alarms
+    # "AlertEmail=your-team@example.com"
+]
+
+#############################################################################
+# S3 Sync Configuration
+# Used by GitHub Actions to sync static files to S3
+#############################################################################
+[dev.s3-sync]
+source_directory = "dev-utils"
+# TODO: Update bucket name to match your S3 bucket
+destination_bucket = "devtools-dev-static-website"
+cloudfront_distribution_id = ""  # Will be populated after stack deployment

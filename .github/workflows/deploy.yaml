@@ -1,0 +1,170 @@
+name: Deploy DevTools
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'dev-utils/**'
+      - 'infrastructure/**'
+      - 'samconfig.toml'
+      - 'cloudformation.txt'
+      - '.github/workflows/deploy.yaml'
+
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to deploy to'
+        required: true
+        type: choice
+        options:
+          - dev
+        default: dev
+      deploy_infrastructure:
+        description: 'Deploy infrastructure stacks'
+        required: false
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+  id-token: write
+
+env:
+  # TODO: Update these values for your environment
+  S3_BUCKET: devtools-dev-static-website
+  CLOUDFRONT_DISTRIBUTION_ID: ''  # Set after initial deployment
+  AWS_REGION: us-east-1
+
+jobs:
+  #############################################################################
+  # Deploy Infrastructure (Optional - only when explicitly requested)
+  #############################################################################
+  deploy-infrastructure:
+    if: github.event_name == 'workflow_dispatch' && inputs.deploy_infrastructure
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.environment || 'dev' }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Prepare AWS
+        id: prepare-aws
+        uses: DoosanICA/db-dso-github-actions/prepare-aws@v4.1.1
+        with:
+          # TODO: Update with your GitHub Actions role ARN
+          github_assumed_role_arn: ${{ secrets.AWS_ROLE_TO_ASSUME }}
+          github_role_session_name: DEPLOY_INFRASTRUCTURE
+          github_aws_region: ${{ env.AWS_REGION }}
+          cfn_lint_install: true
+
+      - name: Deploy S3 Bucket Stack
+        run: |
+          aws cloudformation deploy \
+            --template-file infrastructure/s3-bucket/template.yaml \
+            --stack-name devtools-s3-bucket \
+            --parameter-overrides \
+              EnvironmentRegion=dev-us-east-1 \
+            --capabilities CAPABILITY_IAM \
+            --no-fail-on-empty-changeset \
+            --region ${{ env.AWS_REGION }}
+
+      - name: Deploy CloudFront Stack
+        run: |
+          aws cloudformation deploy \
+            --template-file infrastructure/cloudfront/template.yaml \
+            --stack-name devtools-cloudfront \
+            --parameter-overrides \
+              EnvironmentRegion=dev-us-east-1 \
+              HostedZoneId=${{ vars.HOSTED_ZONE_ID || 'ZXXXXXXXXXXXXX' }} \
+            --capabilities CAPABILITY_IAM \
+            --no-fail-on-empty-changeset \
+            --region ${{ env.AWS_REGION }}
+
+      - name: Get CloudFront Distribution ID
+        id: get-cf-id
+        run: |
+          DIST_ID=$(aws cloudformation describe-stacks \
+            --stack-name devtools-cloudfront \
+            --query "Stacks[0].Outputs[?OutputKey=='DistributionId'].OutputValue" \
+            --output text \
+            --region ${{ env.AWS_REGION }})
+          echo "distribution_id=$DIST_ID" >> $GITHUB_OUTPUT
+          echo "CloudFront Distribution ID: $DIST_ID"
+
+    outputs:
+      distribution_id: ${{ steps.get-cf-id.outputs.distribution_id }}
+
+  #############################################################################
+  # Deploy Static Content to S3
+  #############################################################################
+  deploy-content:
+    runs-on: ubuntu-latest
+    environment: ${{ github.event_name == 'workflow_dispatch' && inputs.environment || 'dev' }}
+    needs: [deploy-infrastructure]
+    if: always() && (needs.deploy-infrastructure.result == 'success' || needs.deploy-infrastructure.result == 'skipped')
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Prepare AWS
+        id: prepare-aws
+        uses: DoosanICA/db-dso-github-actions/prepare-aws@v4.1.1
+        with:
+          # TODO: Update with your GitHub Actions role ARN
+          github_assumed_role_arn: ${{ secrets.AWS_ROLE_TO_ASSUME }}
+          github_role_session_name: DEPLOY_CONTENT
+          github_aws_region: ${{ env.AWS_REGION }}
+          cfn_lint_install: false
+
+      - name: Get CloudFront Distribution ID
+        id: get-cf-id
+        run: |
+          # Use output from infrastructure job if available, otherwise query the stack
+          if [ -n "${{ needs.deploy-infrastructure.outputs.distribution_id }}" ]; then
+            DIST_ID="${{ needs.deploy-infrastructure.outputs.distribution_id }}"
+          else
+            DIST_ID=$(aws cloudformation describe-stacks \
+              --stack-name devtools-cloudfront \
+              --query "Stacks[0].Outputs[?OutputKey=='DistributionId'].OutputValue" \
+              --output text \
+              --region ${{ env.AWS_REGION }} 2>/dev/null || echo "")
+          fi
+          echo "distribution_id=$DIST_ID" >> $GITHUB_OUTPUT
+          echo "CloudFront Distribution ID: $DIST_ID"
+
+      - name: Sync static files to S3
+        run: |
+          echo "Syncing dev-utils to s3://${{ env.S3_BUCKET }}/"
+          aws s3 sync dev-utils/ s3://${{ env.S3_BUCKET }}/ \
+            --delete \
+            --cache-control "max-age=31536000" \
+            --exclude "*.html" \
+            --region ${{ env.AWS_REGION }}
+
+          # Sync HTML files with shorter cache
+          aws s3 sync dev-utils/ s3://${{ env.S3_BUCKET }}/ \
+            --cache-control "max-age=300" \
+            --exclude "*" \
+            --include "*.html" \
+            --region ${{ env.AWS_REGION }}
+
+      - name: Invalidate CloudFront cache
+        if: steps.get-cf-id.outputs.distribution_id != ''
+        run: |
+          echo "Invalidating CloudFront cache for distribution: ${{ steps.get-cf-id.outputs.distribution_id }}"
+          aws cloudfront create-invalidation \
+            --distribution-id ${{ steps.get-cf-id.outputs.distribution_id }} \
+            --paths "/*" \
+            --region ${{ env.AWS_REGION }}
+
+      - name: Deployment Summary
+        run: |
+          echo "## Deployment Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- **Environment:** dev" >> $GITHUB_STEP_SUMMARY
+          echo "- **S3 Bucket:** ${{ env.S3_BUCKET }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **CloudFront Distribution:** ${{ steps.get-cf-id.outputs.distribution_id }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Website URL:** https://devtools.dev.website.com" >> $GITHUB_STEP_SUMMARY

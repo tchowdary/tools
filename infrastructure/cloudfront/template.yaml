@@ -1,0 +1,306 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: CloudFront distribution for DevTools static website
+
+Parameters:
+
+  EnvironmentRegion:
+    Type: String
+    AllowedValues:
+      - dev-us-east-1
+    Description: Environment and region identifier
+
+  HostedZoneId:
+    Type: String
+    Description: Route53 Hosted Zone ID for the domain
+    # TODO: Update with your actual hosted zone ID
+    Default: 'ZXXXXXXXXXXXXX'
+
+  AlertEmail:
+    Type: String
+    Description: Email address for CloudWatch alarm notifications
+    Default: ''
+
+Conditions:
+  HasAlertEmail: !Not [!Equals [!Ref AlertEmail, '']]
+
+Metadata:
+  cfn-lint:
+    config:
+      ignore_checks:
+        - W8003
+
+Mappings:
+
+  Settings:
+    dev-us-east-1:
+      Domain: devtools.dev.website.com
+      # TODO: Update S3BucketName to match your S3 bucket stack output
+      S3BucketName: devtools-dev-static-website
+
+  Region:
+    global:
+      # Fixed global value for all CloudFront Distributions
+      CloudFrontHostedZoneId: Z2FDTNDATAQYW2
+      # Managed Cache Policy - CachingOptimized
+      # See: https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/using-managed-cache-policies.html
+      ManagedCachingOptimized: 658327ea-f89d-4fab-a63d-7e88639e58f6
+      # Managed Response Headers Policy - SecurityHeadersPolicy
+      # See: https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/using-managed-response-headers-policies.html
+      ManagedSecurityHeadersPolicy: 67f7725c-6f97-4210-82d7-5512b31e9d03
+
+Resources:
+
+  #############################################################################
+  # SSL Certificate
+  #############################################################################
+
+  Certificate:
+    Type: AWS::CertificateManager::Certificate
+    Properties:
+      CertificateTransparencyLoggingPreference: ENABLED
+      DomainName: !FindInMap [Settings, !Ref EnvironmentRegion, Domain]
+      DomainValidationOptions:
+        - DomainName: !FindInMap [Settings, !Ref EnvironmentRegion, Domain]
+          HostedZoneId: !Ref HostedZoneId
+      ValidationMethod: DNS
+      Tags:
+        - Key: Name
+          Value: !Sub DevTools-${EnvironmentRegion}-Certificate
+
+  #############################################################################
+  # CloudFront Origin Access Control
+  #############################################################################
+
+  OriginAccessControl:
+    Type: AWS::CloudFront::OriginAccessControl
+    Properties:
+      OriginAccessControlConfig:
+        Description: OAC for DevTools static website bucket
+        Name: !Sub devtools-${EnvironmentRegion}-oac
+        OriginAccessControlOriginType: s3
+        SigningBehavior: always
+        SigningProtocol: sigv4
+
+  #############################################################################
+  # CloudFront Function - Strip S3 Headers
+  #############################################################################
+
+  StripS3HeadersFunction:
+    Type: AWS::CloudFront::Function
+    Properties:
+      AutoPublish: true
+      FunctionCode: |
+        function handler(event) {
+            try {
+                var response = event.response;
+                var headers = response.headers;
+
+                if (headers) {
+                    // Delete server-side-encryption headers if they exist
+                    delete headers['x-amz-server-side-encryption'];
+                    delete headers['x-amz-server-side-encryption-aws-kms-key-id'];
+                    delete headers['x-amz-server-side-encryption-bucket-key-enabled'];
+                    delete headers['x-amz-version-id'];
+                    delete headers['server'];
+                }
+                return response;
+            } catch (e) {
+                // Return original response if header manipulation fails
+                return event.response;
+            }
+        }
+      FunctionConfig:
+        Comment: Strip AWS S3 Headers for security
+        Runtime: cloudfront-js-2.0
+      Name: !Sub devtools-${EnvironmentRegion}-strip-headers
+
+  #############################################################################
+  # CloudFront Distribution
+  #############################################################################
+
+  Distribution:
+    Type: AWS::CloudFront::Distribution
+    Properties:
+      DistributionConfig:
+        Aliases:
+          - !FindInMap [Settings, !Ref EnvironmentRegion, Domain]
+        Comment: !Sub DevTools Static Website - ${EnvironmentRegion}
+        DefaultCacheBehavior:
+          AllowedMethods:
+            - GET
+            - HEAD
+            - OPTIONS
+          CachedMethods:
+            - GET
+            - HEAD
+          CachePolicyId: !FindInMap [Region, global, ManagedCachingOptimized]
+          Compress: true
+          FunctionAssociations:
+            - EventType: viewer-response
+              FunctionARN: !GetAtt StripS3HeadersFunction.FunctionARN
+          OriginRequestPolicyId: 88a5eaf4-2fd4-4709-b370-b4c650ea3fcf
+          ResponseHeadersPolicyId: !FindInMap [Region, global, ManagedSecurityHeadersPolicy]
+          SmoothStreaming: false
+          TargetOriginId: S3Origin
+          ViewerProtocolPolicy: redirect-to-https
+        DefaultRootObject: index.html
+        CustomErrorResponses:
+          - ErrorCode: 403
+            ResponseCode: 200
+            ResponsePagePath: /index.html
+            ErrorCachingMinTTL: 10
+          - ErrorCode: 404
+            ResponseCode: 200
+            ResponsePagePath: /index.html
+            ErrorCachingMinTTL: 10
+        Enabled: true
+        HttpVersion: http2and3
+        IPV6Enabled: true
+        Origins:
+          - Id: S3Origin
+            OriginAccessControlId: !GetAtt OriginAccessControl.Id
+            DomainName: !Sub
+              - ${BucketName}.s3.us-east-1.amazonaws.com
+              - BucketName: !FindInMap [Settings, !Ref EnvironmentRegion, S3BucketName]
+            S3OriginConfig:
+              OriginAccessIdentity: ''
+        PriceClass: PriceClass_100
+        Restrictions:
+          GeoRestriction:
+            RestrictionType: blacklist
+            Locations:
+              - KP
+              - RU
+              - CN
+        ViewerCertificate:
+          AcmCertificateArn: !Ref Certificate
+          SslSupportMethod: sni-only
+          MinimumProtocolVersion: TLSv1.2_2021
+      Tags:
+        - Key: Name
+          Value: !Sub DevTools-${EnvironmentRegion}-Distribution
+        - Key: Environment
+          Value: dev
+
+  #############################################################################
+  # Route53 DNS Records
+  #############################################################################
+
+  DnsRecords:
+    Type: AWS::Route53::RecordSetGroup
+    Properties:
+      HostedZoneId: !Ref HostedZoneId
+      Comment: DNS records for DevTools CloudFront distribution
+      RecordSets:
+        - Type: A
+          Name: !FindInMap [Settings, !Ref EnvironmentRegion, Domain]
+          AliasTarget:
+            HostedZoneId: !FindInMap [Region, global, CloudFrontHostedZoneId]
+            DNSName: !GetAtt Distribution.DomainName
+        - Type: AAAA
+          Name: !FindInMap [Settings, !Ref EnvironmentRegion, Domain]
+          AliasTarget:
+            HostedZoneId: !FindInMap [Region, global, CloudFrontHostedZoneId]
+            DNSName: !GetAtt Distribution.DomainName
+
+  #############################################################################
+  # CloudWatch Alarms
+  #############################################################################
+
+  AlertsTopic:
+    Type: AWS::SNS::Topic
+    Condition: HasAlertEmail
+    Properties:
+      TopicName: !Sub devtools-${EnvironmentRegion}-alerts
+      Tags:
+        - Key: Environment
+          Value: dev
+
+  AlertsSubscription:
+    Type: AWS::SNS::Subscription
+    Condition: HasAlertEmail
+    Properties:
+      TopicArn: !Ref AlertsTopic
+      Endpoint: !Ref AlertEmail
+      Protocol: email
+
+  HighErrorRateAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Condition: HasAlertEmail
+    Properties:
+      AlarmName: !Sub ${AWS::StackName}-high-4xx-error-rate
+      AlarmDescription: High 4xx error rate on CloudFront distribution
+      MetricName: 4xxErrorRate
+      Namespace: AWS/CloudFront
+      Statistic: Average
+      Period: 300
+      EvaluationPeriods: 2
+      Threshold: 5
+      ComparisonOperator: GreaterThanThreshold
+      Dimensions:
+        - Name: DistributionId
+          Value: !Ref Distribution
+      AlarmActions:
+        - !Ref AlertsTopic
+
+  ServerErrorRateAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Condition: HasAlertEmail
+    Properties:
+      AlarmName: !Sub ${AWS::StackName}-high-5xx-error-rate
+      AlarmDescription: High 5xx error rate on CloudFront distribution
+      MetricName: 5xxErrorRate
+      Namespace: AWS/CloudFront
+      Statistic: Average
+      Period: 300
+      EvaluationPeriods: 2
+      Threshold: 1
+      ComparisonOperator: GreaterThanThreshold
+      Dimensions:
+        - Name: DistributionId
+          Value: !Ref Distribution
+      AlarmActions:
+        - !Ref AlertsTopic
+
+  LowCacheHitRateAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Condition: HasAlertEmail
+    Properties:
+      AlarmName: !Sub ${AWS::StackName}-low-cache-hit-rate
+      AlarmDescription: Low cache hit rate on CloudFront distribution
+      MetricName: CacheHitRate
+      Namespace: AWS/CloudFront
+      Statistic: Average
+      Period: 900
+      EvaluationPeriods: 3
+      Threshold: 80
+      ComparisonOperator: LessThanThreshold
+      Dimensions:
+        - Name: DistributionId
+          Value: !Ref Distribution
+      AlarmActions:
+        - !Ref AlertsTopic
+
+Outputs:
+
+  DistributionId:
+    Value: !Ref Distribution
+    Export:
+      Name: !Sub ${AWS::StackName}-DistributionId
+
+  DistributionDomainName:
+    Value: !GetAtt Distribution.DomainName
+    Export:
+      Name: !Sub ${AWS::StackName}-DistributionDomainName
+
+  WebsiteUrl:
+    Value: !Sub
+      - https://${Domain}
+      - Domain: !FindInMap [Settings, !Ref EnvironmentRegion, Domain]
+    Export:
+      Name: !Sub ${AWS::StackName}-WebsiteUrl
+
+  CertificateArn:
+    Value: !Ref Certificate
+    Export:
+      Name: !Sub ${AWS::StackName}-CertificateArn

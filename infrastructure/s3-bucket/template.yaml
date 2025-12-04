@@ -1,0 +1,122 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: S3 bucket for DevTools static website hosting
+
+Parameters:
+
+  EnvironmentRegion:
+    Type: String
+    AllowedValues:
+      - dev-us-east-1
+    Description: Environment and region identifier
+
+  KMSKeyId:
+    Type: String
+    Description: KMS Key ID for bucket encryption
+    Default: ''
+
+Conditions:
+  UseKMSEncryption: !Not [!Equals [!Ref KMSKeyId, '']]
+
+Mappings:
+  Settings:
+    dev-us-east-1:
+      BucketName: devtools-dev-static-website
+
+Resources:
+
+  StaticWebsiteBucket:
+    Type: 'AWS::S3::Bucket'
+    Properties:
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - BucketKeyEnabled: true
+            ServerSideEncryptionByDefault:
+              SSEAlgorithm: !If
+                - UseKMSEncryption
+                - aws:kms
+                - AES256
+              KMSMasterKeyID: !If
+                - UseKMSEncryption
+                - !Ref KMSKeyId
+                - !Ref AWS::NoValue
+      BucketName: !FindInMap [Settings, !Ref EnvironmentRegion, BucketName]
+      LifecycleConfiguration:
+        Rules:
+          - Id: expired-delete-and-multipart
+            Status: Enabled
+            AbortIncompleteMultipartUpload:
+              DaysAfterInitiation: 1
+            ExpiredObjectDeleteMarker: true
+          - Id: delete-non-current
+            Status: Enabled
+            NoncurrentVersionExpiration:
+              NoncurrentDays: 30
+      VersioningConfiguration:
+        Status: Enabled
+      OwnershipControls:
+        Rules:
+          - ObjectOwnership: BucketOwnerEnforced
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
+      Tags:
+        - Key: Name
+          Value: !FindInMap [Settings, !Ref EnvironmentRegion, BucketName]
+        - Key: Environment
+          Value: dev
+
+  StaticWebsiteBucketPolicy:
+    Type: 'AWS::S3::BucketPolicy'
+    Properties:
+      Bucket: !Ref StaticWebsiteBucket
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Sid: 'EnforceTLSRequestsOnly'
+            Effect: Deny
+            Principal: '*'
+            Action: 's3:*'
+            Resource:
+              - !Sub '${StaticWebsiteBucket.Arn}/*'
+              - !GetAtt StaticWebsiteBucket.Arn
+            Condition:
+              Bool:
+                'aws:SecureTransport': false
+          - Sid: 'DenyOutdatedTLSVersions'
+            Effect: Deny
+            Principal: '*'
+            Action: 's3:*'
+            Resource:
+              - !Sub '${StaticWebsiteBucket.Arn}/*'
+              - !GetAtt StaticWebsiteBucket.Arn
+            Condition:
+              NumericLessThan:
+                's3:TlsVersion': 1.2
+          - Sid: 'AllowCloudFrontServicePrincipal'
+            Effect: Allow
+            Principal:
+              Service: cloudfront.amazonaws.com
+            Action: 's3:GetObject'
+            Resource: !Sub '${StaticWebsiteBucket.Arn}/*'
+            Condition:
+              StringEquals:
+                'AWS:SourceArn': !Sub 'arn:${AWS::Partition}:cloudfront::${AWS::AccountId}:distribution/*'
+
+Outputs:
+
+  StaticWebsiteBucket:
+    Value: !Ref StaticWebsiteBucket
+    Export:
+      Name: !Sub ${AWS::StackName}-StaticWebsiteBucket
+
+  StaticWebsiteBucketArn:
+    Value: !GetAtt StaticWebsiteBucket.Arn
+    Export:
+      Name: !Sub ${AWS::StackName}-StaticWebsiteBucketArn
+
+  StaticWebsiteBucketDomainName:
+    Value: !Sub ${StaticWebsiteBucket}.s3.${AWS::Region}.amazonaws.com
+    Export:
+      Name: !Sub ${AWS::StackName}-StaticWebsiteBucketDomainName
